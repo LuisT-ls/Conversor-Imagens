@@ -1,0 +1,87 @@
+/* Estilos para o modo escuro */
+[data-theme='dark'] {
+  background-color: var(--body-bg);
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .card {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme='dark'] .form-control,
+[data-theme='dark'] .form-select {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .table {
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .table-hover tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.075);
+}
+
+[data-theme='dark'] .dropdown-menu {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme='dark'] .dropdown-item {
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.075);
+}
+
+[data-theme='dark'] .modal-content {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme='dark'] .close {
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .drop-zone {
+  border-color: var(--card-border);
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .drop-zone:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .preview-container {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme='dark'] .filter-btn {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .filter-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .filter-btn.active {
+  background-color: var(--primary-color);
+}
+
+[data-theme='dark'] .nav-pills .nav-link {
+  color: var(--body-color);
+}
+
+[data-theme='dark'] .nav-pills .nav-link.active {
+  color: white;
+}
+
+[data-theme='dark'] hr {
+  border-color: var(--card-border);
+}

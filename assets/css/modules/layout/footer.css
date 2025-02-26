@@ -1,0 +1,25 @@
+/* Footer */
+.footer {
+  background-color: var(--color-dark);
+  color: var(--color-text-light);
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+.footer .social-links a {
+  color: var(--color-text-light);
+  transition: color 0.3s ease;
+}
+
+.footer .social-links a:hover {
+  color: var(--color-primary);
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.footer .fa-heart {
+  color: var(--color-danger);
+}

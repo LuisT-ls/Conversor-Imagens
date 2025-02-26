@@ -1,0 +1,146 @@
+/* Importações de módulos */
+@import 'modules/base/reset.css';
+@import 'modules/utils/variables.css';
+@import 'modules/utils/animations.css';
+@import 'modules/utils/spacing.css';
+@import 'modules/components/buttons.css';
+@import 'modules/layout/header.css';
+@import 'modules/layout/footer.css';
+@import 'modules/features/image-converter.css';
+@import 'modules/features/image-editor.css';
+@import 'modules/features/batch-converter.css';
+@import 'modules/features/dark-mode.css';
+
+/* Estilos gerais */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Drop Zone */
+.drop-zone {
+  height: 200px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  color: #6c757d;
+  border: 2px dashed #dee2e6;
+  border-radius: 10px;
+  transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+.drop-zone:hover {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}
+
+.drop-zone-active {
+  border-color: #198754;
+  background-color: rgba(25, 135, 84, 0.1);
+}
+
+.drop-zone-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.drop-zone-thumb::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 5px 0;
+  color: white;
+  background: rgba(0, 0, 0, 0.75);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Área de prévia */
+.preview-container {
+  padding: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.img-thumbnail {
+  max-height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-thumbnail img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+/* Filtros de imagem */
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.filter-btn {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  background-color: #e9ecef;
+}
+
+.filter-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Animações */
+.slide-up {
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .drop-zone {
+    height: 150px;
+  }
+
+  .img-thumbnail {
+    max-height: 150px;
+  }
+
+  .img-thumbnail img {
+    max-height: 150px;
+  }
+}
