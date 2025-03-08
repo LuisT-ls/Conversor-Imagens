@@ -1,8 +1,74 @@
-// historyManager.js - Handle conversion history functionality
 import { showNotification, formatFileSize } from '../app.js'
 
 // Maximum history entries to store
 const MAX_HISTORY_ENTRIES = 100
+
+// Armazenamento de histórico para uso global
+let history = []
+
+export function addToHistory(entry) {
+  // Adicionar um ID único se não tiver
+  if (!entry.id) {
+    entry.id = Date.now().toString()
+  }
+
+  // Se não tiver data, adicionar a data atual
+  if (!entry.date) {
+    entry.date = new Date().toISOString()
+  }
+
+  // Add the entry to the beginning of the array
+  history.unshift(entry)
+
+  // Limit the number of entries
+  if (history.length > MAX_HISTORY_ENTRIES) {
+    history = history.slice(0, MAX_HISTORY_ENTRIES)
+  }
+
+  // Save to local storage
+  saveHistory()
+
+  // Disparar evento para notificar outros componentes
+  document.dispatchEvent(new CustomEvent('conversion:added', { detail: entry }))
+}
+
+function saveHistory() {
+  try {
+    // Convert in-memory format to storage format
+    const storageHistory = history.map(entry => {
+      const { convertedBlob, ...rest } = entry
+      return rest
+    })
+
+    localStorage.setItem('conversionHistory', JSON.stringify(storageHistory))
+  } catch (error) {
+    console.error('Error saving history:', error)
+  }
+}
+
+// Load history from local storage
+function loadHistory() {
+  try {
+    const storedHistory = localStorage.getItem('conversionHistory')
+
+    if (!storedHistory) {
+      return []
+    }
+
+    // Parse the history
+    const parsedHistory = JSON.parse(storedHistory)
+
+    // Convert stored history format to in-memory format
+    // (Local storage can't store blobs, so we need to create dummy blobs)
+    return parsedHistory.map(entry => ({
+      ...entry,
+      convertedBlob: new Blob([], { type: entry.convertedType })
+    }))
+  } catch (error) {
+    console.error('Error loading history:', error)
+    return []
+  }
+}
 
 export function initHistoryManager() {
   console.log('Initializing history manager functionality...')
@@ -15,10 +81,13 @@ export function initHistoryManager() {
   const exportHistoryBtn = document.getElementById('exportHistoryBtn')
 
   // Load history from local storage
-  let history = loadHistory()
+  history = loadHistory()
 
   // Initialize event listeners
   document.addEventListener('conversion:completed', handleConversionCompleted)
+  document.addEventListener('conversion:added', function () {
+    renderHistory() // Re-renderizar o histórico quando um novo item for adicionado
+  })
   clearHistoryBtn.addEventListener('click', clearHistory)
   exportHistoryBtn.addEventListener('click', exportHistory)
 
@@ -28,26 +97,7 @@ export function initHistoryManager() {
   // Handle conversion completed event
   function handleConversionCompleted(event) {
     const entry = event.detail
-
-    // Add the entry to history
     addToHistory(entry)
-
-    // Re-render the history
-    renderHistory()
-  }
-
-  // Add an entry to history
-  function addToHistory(entry) {
-    // Add the entry to the beginning of the array
-    history.unshift(entry)
-
-    // Limit the number of entries
-    if (history.length > MAX_HISTORY_ENTRIES) {
-      history = history.slice(0, MAX_HISTORY_ENTRIES)
-    }
-
-    // Save to local storage
-    saveHistory()
   }
 
   // Render the history
@@ -231,35 +281,10 @@ export function initHistoryManager() {
     showNotification('Histórico exportado com sucesso.', 'success')
   }
 
-  // Load history from local storage
-  function loadHistory() {
-    try {
-      const storedHistory = localStorage.getItem('conversionHistory')
-
-      if (!storedHistory) {
-        return []
-      }
-
-      // Parse the history
-      const parsedHistory = JSON.parse(storedHistory)
-
-      // Convert stored history format to in-memory format
-      // (Local storage can't store blobs, so we need to create dummy blobs)
-      return parsedHistory.map(entry => ({
-        ...entry,
-        convertedBlob: new Blob([], { type: entry.convertedType })
-      }))
-    } catch (error) {
-      console.error('Error loading history:', error)
-      return []
-    }
-  }
-
   // Save history to local storage
   function saveHistory() {
     try {
       // Convert in-memory format to storage format
-      // (Remove blobs as they can't be stored in local storage)
       const storageHistory = history.map(entry => {
         const { convertedBlob, ...rest } = entry
         return rest

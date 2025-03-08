@@ -1,12 +1,18 @@
 // imageConverter.js - Handle image conversion functionality
-import { showNotification, formatFileSize, getMimeType } from '../app.js'
+import {
+  showNotification,
+  formatFileSize,
+  getMimeType,
+  createBlobUrl,
+  createDownloadLink
+} from '../app.js'
+// Importamos o módulo inteiro e usaremos historyManager.addToHistory()
+import * as historyManager from './historyManager.js'
 
-// Variables to keep track of the current state
+// Global variables to store image data
 let originalImage = null
-let originalImageType = ''
-let originalImageName = ''
-let convertedImageData = null
-let convertedImageType = ''
+let convertedImage = null
+let originalFileInfo = null
 
 export function initImageConverter() {
   console.log('Initializing image converter functionality...')
@@ -14,7 +20,6 @@ export function initImageConverter() {
   // DOM elements
   const dropZone = document.getElementById('dropZone')
   const fileInput = document.getElementById('fileInput')
-  const previewThumb = document.getElementById('previewThumb')
   const formatSelect = document.getElementById('formatSelect')
   const qualityRange = document.getElementById('qualityRange')
   const qualityValue = document.getElementById('qualityValue')
@@ -24,101 +29,157 @@ export function initImageConverter() {
   const resizeSelect = document.getElementById('resizeSelect')
   const convertButton = document.getElementById('convertButton')
   const progressBar = document.getElementById('progressBar')
-  const progressBarInner = progressBar.querySelector('.progress-bar')
-  const preview = document.getElementById('preview')
-  const previewContainer = preview.querySelector('.preview-container')
-  const previewPlaceholder = preview.querySelector('.preview-placeholder')
   const originalPreview = document.getElementById('originalPreview')
   const convertedPreview = document.getElementById('convertedPreview')
   const originalInfo = document.getElementById('originalInfo')
   const convertedInfo = document.getElementById('convertedInfo')
+  const preview = document.getElementById('preview')
   const actionButtons = document.querySelector('.action-buttons')
   const downloadLink = document.getElementById('downloadLink')
-  const shareButton = document.getElementById('shareButton')
   const formatOptions = document.getElementById('formatOptions')
+  const previewContainer = document.querySelector('.preview-container')
+  const previewPlaceholder = document.querySelector('.preview-placeholder')
 
   // Initialize event listeners
-  initializeDropZone()
-  initializeInputHandlers()
-
-  // Set up format-specific options
-  updateFormatOptions()
+  dropZone.addEventListener('click', () => fileInput.click())
+  fileInput.addEventListener('change', handleFileSelect)
   formatSelect.addEventListener('change', updateFormatOptions)
-
-  // Handle image selection
-  fileInput.addEventListener('change', handleFileSelection)
-
-  // Handle conversion button click
+  qualityRange.addEventListener('input', updateQualityValue)
   convertButton.addEventListener('click', convertImage)
+  resizeSelect.addEventListener('change', handleResizeSelect)
+  widthInput.addEventListener('input', handleWidthInput)
+  heightInput.addEventListener('input', handleHeightInput)
 
-  // Initialize the drop zone functionality
-  function initializeDropZone() {
-    // Handle drag over
-    dropZone.addEventListener('dragover', e => {
-      e.preventDefault()
-      dropZone.classList.add('drop-zone-active')
-    })
+  // Initialize drag and drop functionality
+  initDragAndDrop()
 
-    // Handle drag leave
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('drop-zone-active')
-    })
+  // Initialize default values
+  updateQualityValue()
+  updateFormatOptions()
 
-    // Handle drop
-    dropZone.addEventListener('drop', e => {
-      e.preventDefault()
-      dropZone.classList.remove('drop-zone-active')
-
-      if (e.dataTransfer.files.length) {
-        fileInput.files = e.dataTransfer.files
-        handleFileSelection()
-      }
-    })
-
-    // Handle click
-    dropZone.addEventListener('click', () => {
-      fileInput.click()
-    })
+  // Function to handle file selection
+  function handleFileSelect(event) {
+    const file = event.target.files[0]
+    if (file && file.type.match('image.*')) {
+      processSelectedFile(file)
+    } else {
+      showNotification(
+        'Por favor, selecione um arquivo de imagem válido.',
+        'error'
+      )
+    }
   }
 
-  // Initialize input handlers for interconnected controls
-  function initializeInputHandlers() {
-    // Update quality display
-    qualityRange.addEventListener('input', () => {
-      qualityValue.textContent = `${qualityRange.value}%`
-    })
+  // Process the selected file
+  function processSelectedFile(file) {
+    // Store original file info
+    originalFileInfo = {
+      name: file.name,
+      size: file.size,
+      type: file.type
+    }
 
-    // Handle aspect ratio
-    widthInput.addEventListener('input', () => {
-      if (aspectRatio.checked && originalImage) {
-        const originalAspectRatio = originalImage.width / originalImage.height
-        heightInput.value = Math.round(widthInput.value / originalAspectRatio)
-      }
-    })
+    // Create a file reader to read the file
+    const reader = new FileReader()
 
-    heightInput.addEventListener('input', () => {
-      if (aspectRatio.checked && originalImage) {
-        const originalAspectRatio = originalImage.width / originalImage.height
-        widthInput.value = Math.round(heightInput.value * originalAspectRatio)
-      }
-    })
+    // Show loading indicator
+    const dropZonePrompt = dropZone.querySelector('.drop-zone-prompt')
+    const dropZoneThumb = dropZone.querySelector('.drop-zone-thumb')
 
-    // Handle preset sizes
-    resizeSelect.addEventListener('change', () => {
-      if (resizeSelect.value === 'original') {
+    dropZonePrompt.classList.add('d-none')
+    dropZoneThumb.classList.remove('d-none')
+    dropZoneThumb.innerHTML =
+      '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>'
+
+    // When the file is loaded
+    reader.onload = function (e) {
+      // Store the original image
+      originalImage = e.target.result
+
+      // Create an image element to get dimensions
+      const img = new Image()
+      img.onload = function () {
+        // Set original dimensions
+        originalFileInfo.width = img.width
+        originalFileInfo.height = img.height
+
+        // Update the drop zone with a thumbnail
+        dropZoneThumb.innerHTML = ''
+        dropZoneThumb.style.backgroundImage = `url(${originalImage})`
+
+        // Enable the convert button
+        convertButton.disabled = false
+
+        // Reset the input fields
         widthInput.value = ''
         heightInput.value = ''
-        widthInput.placeholder = 'Original'
-        heightInput.placeholder = 'Original'
-      } else {
-        const dimensions = resizeSelect.value.split('x')
-        widthInput.value = dimensions[0]
-        heightInput.value = dimensions[1]
+        widthInput.placeholder = img.width
+        heightInput.placeholder = img.height
+        resizeSelect.value = 'original'
+
+        // Show notification
+        showNotification('Imagem carregada com sucesso!', 'success')
       }
-    })
+
+      img.src = originalImage
+    }
+
+    // Read the file as a data URL
+    reader.readAsDataURL(file)
   }
 
-  // Update format-specific options based on selected format
+  // Initialize drag and drop functionality
+  function initDragAndDrop() {
+    // Prevent default drag behaviors
+    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false)
+      document.body.addEventListener(eventName, preventDefaults, false)
+    })
+
+    // Highlight drop zone when a file is dragged over it
+    ;['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, highlight, false)
+    })
+
+    // Remove highlight when a file is dragged away
+    ;['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, unhighlight, false)
+    })
+
+    // Handle dropped files
+    dropZone.addEventListener('drop', handleDrop, false)
+
+    function preventDefaults(e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    function highlight() {
+      dropZone.classList.add('drop-zone-active')
+    }
+
+    function unhighlight() {
+      dropZone.classList.remove('drop-zone-active')
+    }
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer
+      const file = dt.files[0]
+
+      if (file && file.type.match('image.*')) {
+        processSelectedFile(file)
+      } else {
+        showNotification('Por favor, solte apenas arquivos de imagem.', 'error')
+      }
+    }
+  }
+
+  // Update quality value display
+  function updateQualityValue() {
+    qualityValue.textContent = `${qualityRange.value}%`
+  }
+
+  // Update format-specific options
   function updateFormatOptions() {
     const format = formatSelect.value
 
@@ -126,295 +187,665 @@ export function initImageConverter() {
     formatOptions.innerHTML = ''
 
     // Add format-specific options
-    if (format === 'jpeg') {
-      formatOptions.innerHTML = `
-                <div class="col-md-6 mb-3">
-                    <label for="jpegProgressive" class="form-label">Modo progressivo:</label>
-                    <select id="jpegProgressive" class="form-select">
-                        <option value="false">Não</option>
-                        <option value="true">Sim</option>
-                    </select>
-                </div>
-            `
-    } else if (format === 'png') {
-      formatOptions.innerHTML = `
-                <div class="col-md-6 mb-3">
-                    <label for="pngCompression" class="form-label">Nível de compressão:</label>
-                    <select id="pngCompression" class="form-select">
-                        <option value="0">Sem compressão</option>
-                        <option value="3">Baixa</option>
-                        <option value="6" selected>Média</option>
-                        <option value="9">Alta</option>
-                    </select>
-                </div>
-            `
-    } else if (format === 'webp') {
-      formatOptions.innerHTML = `
-                <div class="col-md-6 mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="webpLossless">
-                        <label class="form-check-label" for="webpLossless">
-                            Usar compressão sem perdas
-                        </label>
-                    </div>
-                </div>
-            `
+    let optionsHTML = ''
+
+    switch (format) {
+      case 'webp':
+        optionsHTML = `
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="webpLossless">
+              <label class="form-check-label" for="webpLossless">Usar compressão sem perdas</label>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="webpAlpha" checked>
+              <label class="form-check-label" for="webpAlpha">Preservar transparência</label>
+            </div>
+          </div>
+        `
+        break
+
+      case 'jpeg':
+        optionsHTML = `
+          <div class="col-md-6 mb-3">
+            <label for="jpegProgressive" class="form-label">Modo:</label>
+            <select id="jpegProgressive" class="form-select">
+              <option value="false">Baseline (Padrão)</option>
+              <option value="true">Progressivo</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="jpegSubsampling" class="form-label">Subamostragem de crominância:</label>
+            <select id="jpegSubsampling" class="form-select">
+              <option value="4:2:0">4:2:0 (Boa compressão)</option>
+              <option value="4:2:2">4:2:2 (Equilibrado)</option>
+              <option value="4:4:4">4:4:4 (Melhor qualidade)</option>
+            </select>
+          </div>
+        `
+        break
+
+      case 'png':
+        optionsHTML = `
+          <div class="col-md-6 mb-3">
+            <label for="pngCompression" class="form-label">Nível de compressão:</label>
+            <select id="pngCompression" class="form-select">
+              <option value="0">Sem compressão (0)</option>
+              <option value="3">Baixo (3)</option>
+              <option value="6" selected>Médio (6)</option>
+              <option value="9">Alto (9)</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="pngAlpha" checked>
+              <label class="form-check-label" for="pngAlpha">Preservar transparência</label>
+            </div>
+          </div>
+        `
+        break
+
+      case 'svg':
+        optionsHTML = `
+          <div class="col-md-6 mb-3">
+            <label for="svgPrecision" class="form-label">Precisão do traçado:</label>
+            <select id="svgPrecision" class="form-select">
+              <option value="1">Baixa</option>
+              <option value="5" selected>Média</option>
+              <option value="10">Alta</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="svgOptimize" checked>
+              <label class="form-check-label" for="svgOptimize">Otimizar SVG</label>
+            </div>
+          </div>
+        `
+        break
+
+      case 'ico':
+        optionsHTML = `
+          <div class="col-md-6 mb-3">
+            <label for="icoSizes" class="form-label">Tamanhos:</label>
+            <select id="icoSizes" class="form-select" multiple size="4">
+              <option value="16" selected>16x16</option>
+              <option value="24">24x24</option>
+              <option value="32" selected>32x32</option>
+              <option value="48" selected>48x48</option>
+              <option value="64">64x64</option>
+              <option value="128">128x128</option>
+            </select>
+            <small class="form-text text-muted">Ctrl+clique para selecionar múltiplos</small>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="icoTransparent" checked>
+              <label class="form-check-label" for="icoTransparent">Preservar transparência</label>
+            </div>
+          </div>
+        `
+        break
+    }
+
+    formatOptions.innerHTML = optionsHTML
+  }
+
+  // Handle resize select change
+  function handleResizeSelect() {
+    const value = resizeSelect.value
+
+    if (value === 'original') {
+      widthInput.value = ''
+      heightInput.value = ''
+      widthInput.placeholder = originalFileInfo.width
+      heightInput.placeholder = originalFileInfo.height
+    } else {
+      const dimensions = value.split('x')
+      widthInput.value = dimensions[0]
+      heightInput.value = dimensions[1]
     }
   }
 
-  // Handle file selection
-  function handleFileSelection() {
-    const file = fileInput.files[0]
-
-    if (!file) return
-
-    // Check if the file is an image
-    if (!file.type.startsWith('image/')) {
-      showNotification(
-        'Por favor, selecione um arquivo de imagem válido.',
-        'error'
-      )
-      return
+  // Handle width input change (maintain aspect ratio if needed)
+  function handleWidthInput() {
+    if (aspectRatio.checked && widthInput.value && originalFileInfo) {
+      const ratio = originalFileInfo.height / originalFileInfo.width
+      heightInput.value = Math.round(widthInput.value * ratio)
     }
-
-    // Save original file info
-    originalImageType = file.type
-    originalImageName = file.name
-
-    // Display file in drop zone
-    const reader = new FileReader()
-
-    reader.onload = e => {
-      // Show thumbnail in the drop zone
-      previewThumb.style.backgroundImage = `url('${e.target.result}')`
-      previewThumb.classList.remove('d-none')
-      dropZone.querySelector('.drop-zone-prompt').classList.add('d-none')
-
-      // Create Image object to get dimensions
-      const img = new Image()
-      img.onload = () => {
-        originalImage = img
-
-        // Enable convert button
-        convertButton.disabled = false
-
-        // Suggest original dimensions as placeholders
-        widthInput.placeholder = img.width
-        heightInput.placeholder = img.height
-
-        // Reset resize select to original
-        resizeSelect.value = 'original'
-      }
-      img.src = e.target.result
-    }
-
-    reader.readAsDataURL(file)
   }
 
-  // Convert the image based on the selected options
-  function convertImage() {
+  // Handle height input change (maintain aspect ratio if needed)
+  function handleHeightInput() {
+    if (aspectRatio.checked && heightInput.value && originalFileInfo) {
+      const ratio = originalFileInfo.width / originalFileInfo.height
+      widthInput.value = Math.round(heightInput.value * ratio)
+    }
+  }
+
+  // Main function to convert image
+  async function convertImage() {
     if (!originalImage) {
       showNotification('Por favor, selecione uma imagem primeiro.', 'error')
       return
     }
 
-    // Show progress bar
-    progressBar.classList.remove('d-none')
-    progressBarInner.style.width = '0%'
+    try {
+      // Show progress bar
+      progressBar.classList.remove('d-none')
+      const progressBarInner = progressBar.querySelector('.progress-bar')
+      progressBarInner.style.width = '0%'
 
-    // Get conversion parameters
-    const format = formatSelect.value
-    const quality = parseInt(qualityRange.value) / 100
+      // Get conversion parameters
+      const format = formatSelect.value
+      const quality = parseInt(qualityRange.value) / 100
 
-    // Get target dimensions
-    let width = widthInput.value
-      ? parseInt(widthInput.value)
-      : originalImage.width
-    let height = heightInput.value
-      ? parseInt(heightInput.value)
-      : originalImage.height
+      // Get dimensions
+      let width = widthInput.value
+        ? parseInt(widthInput.value)
+        : originalFileInfo.width
+      let height = heightInput.value
+        ? parseInt(heightInput.value)
+        : originalFileInfo.height
 
-    // Create canvas for the original image (for pre-processing)
-    const canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = height
-    const ctx = canvas.getContext('2d')
+      // Animate progress
+      let progress = 0
+      const progressInterval = setInterval(() => {
+        progress += 5
+        if (progress > 90) clearInterval(progressInterval)
+        progressBarInner.style.width = `${progress}%`
+      }, 50)
 
-    // Draw the image on the canvas with the desired dimensions
-    ctx.drawImage(originalImage, 0, 0, width, height)
+      // Convert the image based on the selected format
+      let result
 
-    // Update progress
-    progressBarInner.style.width = '30%'
+      // Create a temporary canvas element
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
 
-    // Get format-specific options
-    let conversionOptions = { quality }
+      // Load the original image
+      const img = new Image()
 
-    if (format === 'jpeg') {
-      const progressive = document.getElementById('jpegProgressive')
-      if (progressive && progressive.value === 'true') {
-        conversionOptions.progressive = true
-      }
-    } else if (format === 'png') {
-      const compression = document.getElementById('pngCompression')
-      if (compression) {
-        conversionOptions.compressionLevel = parseInt(compression.value)
-      }
-    } else if (format === 'webp') {
-      const lossless = document.getElementById('webpLossless')
-      if (lossless && lossless.checked) {
-        conversionOptions.lossless = true
-      }
-    }
+      // Create a promise to handle image loading
+      const imageLoaded = new Promise(resolve => {
+        img.onload = resolve
+        img.src = originalImage
+      })
 
-    // Update progress
-    progressBarInner.style.width = '50%'
+      // Wait for the image to load
+      await imageLoaded
 
-    // Handle special formats like ICO and SVG
-    if (format === 'ico') {
-      handleIcoConversion(canvas)
-      return
-    } else if (format === 'svg') {
-      handleSvgConversion()
-      return
-    }
+      // Set canvas dimensions
+      canvas.width = width
+      canvas.height = height
 
-    // Convert the image using the selected options
-    canvas.toBlob(
-      blob => {
-        if (!blob) {
-          showNotification('Erro ao converter a imagem.', 'error')
-          progressBar.classList.add('d-none')
-          return
+      // Draw the image on the canvas with the specified dimensions
+      ctx.drawImage(img, 0, 0, width, height)
+
+      // Convert based on format
+      switch (format) {
+        case 'webp': {
+          const webpLossless =
+            document.getElementById('webpLossless')?.checked || false
+          const webpAlpha =
+            document.getElementById('webpAlpha')?.checked || true
+
+          result = await convertToWebP(canvas, {
+            quality: webpLossless ? 1 : quality,
+            lossless: webpLossless,
+            alpha: webpAlpha
+          })
+          break
         }
 
-        // Save converted image data
-        convertedImageData = blob
-        convertedImageType = getMimeType(format)
+        case 'jpeg': {
+          const progressive =
+            document.getElementById('jpegProgressive')?.value === 'true'
 
-        // Update progress
-        progressBarInner.style.width = '80%'
+          result = await convertToJPEG(canvas, {
+            quality,
+            progressive
+          })
+          break
+        }
 
-        // Show the preview
-        showPreview(blob)
+        case 'png': {
+          const pngAlpha = document.getElementById('pngAlpha')?.checked || true
+          const compression = parseInt(
+            document.getElementById('pngCompression')?.value || 6
+          )
 
-        // Add to history
-        addToHistory(blob)
+          result = await convertToPNG(canvas, {
+            compressionLevel: compression,
+            alpha: pngAlpha
+          })
+          break
+        }
 
-        // Hide progress bar
-        setTimeout(() => {
-          progressBar.classList.add('d-none')
-          progressBarInner.style.width = '100%'
-        }, 500)
+        case 'svg': {
+          const precision = parseInt(
+            document.getElementById('svgPrecision')?.value || 5
+          )
+          const optimize =
+            document.getElementById('svgOptimize')?.checked || true
 
-        showNotification('Imagem convertida com sucesso!', 'success')
-      },
-      getMimeType(format),
-      conversionOptions
-    )
-  }
+          result = await convertToSVG(canvas, {
+            precision,
+            optimize
+          })
+          break
+        }
 
-  // Handle ICO conversion (special case)
-  function handleIcoConversion(canvas) {
-    try {
-      // For ICO, we need to convert to PNG first, then to ICO
-      canvas.toBlob(pngBlob => {
-        // Here we'd use a library like png-to-ico
-        // For this example, we'll just use the PNG as a placeholder
-        // In a real implementation, you'd use the PngToIco library properly
+        case 'ico': {
+          // Get selected sizes
+          const sizeSelect = document.getElementById('icoSizes')
+          const sizes = Array.from(sizeSelect.selectedOptions).map(option =>
+            parseInt(option.value)
+          )
+          const transparent =
+            document.getElementById('icoTransparent')?.checked || true
 
-        // Simulate the conversion
-        setTimeout(() => {
-          convertedImageData = pngBlob
-          convertedImageType = 'image/x-icon'
+          result = await convertToICO(canvas, {
+            sizes: sizes.length ? sizes : [16, 32, 48],
+            transparent
+          })
+          break
+        }
 
-          // Show the preview
-          showPreview(pngBlob)
+        default:
+          throw new Error(`Formato não suportado: ${format}`)
+      }
 
-          // Add to history
-          addToHistory(pngBlob)
+      // Clear the interval and set progress to 100%
+      clearInterval(progressInterval)
+      progressBarInner.style.width = '100%'
 
-          // Hide progress bar
-          progressBar.classList.add('d-none')
-          progressBarInner.style.width = '100%'
+      // Store the converted image
+      convertedImage = result
 
-          showNotification('Imagem convertida para ICO com sucesso!', 'success')
-        }, 1000)
-      }, 'image/png')
+      // Update the previews
+      updatePreviews()
+
+      // Add to history
+      historyManager.addToHistory({
+        originalName: originalFileInfo.name,
+        originalSize: originalFileInfo.size,
+        originalType: originalFileInfo.type,
+        convertedSize: result.data.size,
+        convertedType: result.type,
+        convertedData: result.data,
+        convertedName: generateFileName(originalFileInfo.name, format),
+        timestamp: new Date().toISOString()
+      })
+
+      // Hide progress bar after a small delay
+      setTimeout(() => {
+        progressBar.classList.add('d-none')
+      }, 500)
+
+      // Show notification
+      showNotification('Imagem convertida com sucesso!', 'success')
     } catch (error) {
-      console.error('Error converting to ICO:', error)
-      showNotification('Erro ao converter para ICO.', 'error')
+      console.error('Error converting image:', error)
       progressBar.classList.add('d-none')
+      showNotification(`Erro ao converter imagem: ${error.message}`, 'error')
     }
   }
 
-  // Handle SVG conversion (special case)
-  function handleSvgConversion() {
-    showNotification(
-      'Conversão para SVG não está completamente implementada.',
-      'warning'
-    )
-    progressBar.classList.add('d-none')
-  }
+  // Update preview area with original and converted images
+  async function updatePreviews() {
+    if (!originalImage || !convertedImage) return
 
-  // Show the preview of original and converted images
-  function showPreview(blob) {
-    // Create URLs for the images
-    const convertedUrl = URL.createObjectURL(blob)
-
-    // Show the original image
-    originalPreview.innerHTML = `<img src="${originalImage.src}" class="img-fluid" alt="Imagem Original">`
-    originalInfo.textContent = `${originalImageName} - ${formatFileSize(
-      new Blob([originalImage.src]).size
-    )}`
-
-    // Show the converted image
-    convertedPreview.innerHTML = `<img src="${convertedUrl}" class="img-fluid" alt="Imagem Convertida">`
-    const newFilename =
-      originalImageName.split('.')[0] + '.' + formatSelect.value
-    convertedInfo.textContent = `${newFilename} - ${formatFileSize(blob.size)}`
-
-    // Show the preview container and hide the placeholder
+    // Show preview container and hide placeholder
     previewContainer.classList.remove('d-none')
     previewPlaceholder.classList.add('d-none')
 
+    // Update original image preview
+    originalPreview.innerHTML = ''
+    const originalImg = document.createElement('img')
+    originalImg.src = originalImage
+    originalImg.className = 'img-fluid'
+    originalPreview.appendChild(originalImg)
+
+    // Update original image info
+    originalInfo.textContent = `${originalFileInfo.width}x${
+      originalFileInfo.height
+    } - ${formatFileSize(originalFileInfo.size)}`
+
+    // Update converted image preview
+    convertedPreview.innerHTML = ''
+
+    // Handle SVG differently
+    if (convertedImage.type === 'image/svg+xml') {
+      try {
+        // Decodificar o blob para string
+        const svgString = new TextDecoder().decode(
+          new Uint8Array(await convertedImage.data.arrayBuffer())
+        )
+
+        // Inserir diretamente o SVG como HTML
+        convertedPreview.innerHTML = svgString
+
+        // Pegar o elemento SVG inserido e ajustar suas dimensões
+        const svgElement = convertedPreview.querySelector('svg')
+        if (svgElement) {
+          svgElement.setAttribute('width', '100%')
+          svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet')
+          svgElement.removeAttribute('height')
+        }
+      } catch (e) {
+        console.error('Erro ao processar SVG:', e)
+        // Fallback: mostrar como link para download
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(convertedImage.data)
+        link.textContent = 'Clique para visualizar SVG'
+        link.download = 'imagem.svg'
+        link.className = 'btn btn-primary'
+        convertedPreview.appendChild(link)
+      }
+    } else {
+      const convertedImg = document.createElement('img')
+      convertedImg.src = URL.createObjectURL(convertedImage.data)
+      convertedImg.className = 'img-fluid'
+      convertedPreview.appendChild(convertedImg)
+    }
+
+    // Update converted image info
+    convertedInfo.textContent = `${convertedImage.width}x${
+      convertedImage.height
+    } - ${formatFileSize(convertedImage.data.size)}`
+
     // Set up the download link
-    downloadLink.href = convertedUrl
-    downloadLink.download = newFilename
+    const format = formatSelect.value
+    const fileName = generateFileName(originalFileInfo.name, format)
+    downloadLink.href = URL.createObjectURL(convertedImage.data)
+    downloadLink.download = fileName
 
     // Show action buttons
     actionButtons.classList.remove('d-none')
   }
 
-  // Add the conversion to history
-  function addToHistory(blob) {
-    // Create history entry
-    const historyEntry = {
-      id: Date.now().toString(),
-      date: new Date().toISOString(),
-      originalName: originalImageName,
-      originalType: originalImageType,
-      originalSize: new Blob([originalImage.src]).size,
-      convertedName: originalImageName.split('.')[0] + '.' + formatSelect.value,
-      convertedType: convertedImageType,
-      convertedSize: blob.size,
-      convertedBlob: blob
+  // Convert canvas to WebP format
+  async function convertToWebP(canvas, options = {}) {
+    return new Promise(resolve => {
+      canvas.toBlob(
+        blob => {
+          resolve({
+            data: blob,
+            type: 'image/webp',
+            width: canvas.width,
+            height: canvas.height
+          })
+        },
+        'image/webp',
+        options.quality
+      )
+    })
+  }
+
+  // Convert canvas to JPEG format
+  async function convertToJPEG(canvas, options = {}) {
+    return new Promise(resolve => {
+      // Draw white background for JPEG (because JPEG doesn't support transparency)
+      if (options.fillBackground !== false) {
+        const ctx = canvas.getContext('2d')
+        const oldData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = '#FFFFFF'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.putImageData(oldData, 0, 0)
+      }
+
+      canvas.toBlob(
+        blob => {
+          resolve({
+            data: blob,
+            type: 'image/jpeg',
+            width: canvas.width,
+            height: canvas.height
+          })
+        },
+        'image/jpeg',
+        options.quality
+      )
+    })
+  }
+
+  // Convert canvas to PNG format
+  async function convertToPNG(canvas, options = {}) {
+    return new Promise(resolve => {
+      canvas.toBlob(blob => {
+        resolve({
+          data: blob,
+          type: 'image/png',
+          width: canvas.width,
+          height: canvas.height
+        })
+      }, 'image/png')
+    })
+  }
+
+  // Convert canvas to SVG format
+  async function convertToSVG(canvas, options = {}) {
+    // Obter os dados da imagem do canvas
+    const ctx = canvas.getContext('2d')
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const pixelData = imageData.data
+
+    // Determinar a precisão (quantos pixels pular)
+    const precision = options.precision || 5
+
+    // Iniciar o SVG com um elemento de fundo branco
+    let svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvas.width} ${canvas.height}" width="${canvas.width}" height="${canvas.height}">`
+
+    // Adicionar um retângulo de fundo branco
+    svgString += `<rect width="${canvas.width}" height="${canvas.height}" fill="white"/>`
+
+    // Agrupar pixels semelhantes para reduzir o tamanho do SVG
+    const regions = []
+
+    // Percorrer a imagem com a precisão especificada
+    for (let y = 0; y < canvas.height; y += precision) {
+      let currentRegion = null
+
+      for (let x = 0; x < canvas.width; x += precision) {
+        const index = (y * canvas.width + x) * 4
+        const r = pixelData[index]
+        const g = pixelData[index + 1]
+        const b = pixelData[index + 2]
+        const a = pixelData[index + 3]
+
+        // Ignorar pixels totalmente transparentes
+        if (a < 10) {
+          if (currentRegion) {
+            regions.push(currentRegion)
+            currentRegion = null
+          }
+          continue
+        }
+
+        const color = `rgb(${r},${g},${b})`
+
+        // Se não há região atual ou a cor é diferente, criar uma nova região
+        if (!currentRegion || currentRegion.color !== color) {
+          if (currentRegion) {
+            regions.push(currentRegion)
+          }
+
+          currentRegion = {
+            color: color,
+            y: y,
+            startX: x,
+            endX: x + precision
+          }
+        } else {
+          // Estender a região atual
+          currentRegion.endX = x + precision
+        }
+      }
+
+      // Adicionar a última região da linha
+      if (currentRegion) {
+        regions.push(currentRegion)
+      }
     }
 
-    // Dispatch custom event to be handled by the history manager
-    const event = new CustomEvent('conversion:completed', {
-      detail: historyEntry
+    // Adicionar retângulos para cada região
+    for (const region of regions) {
+      const width = region.endX - region.startX
+
+      // Ignorar regiões muito pequenas
+      if (width < precision) continue
+
+      svgString += `<rect x="${region.startX}" y="${region.y}" width="${width}" height="${precision}" fill="${region.color}" />`
+    }
+
+    // Fechar a tag SVG
+    svgString += '</svg>'
+
+    // Criar um Blob com o SVG
+    const blob = new Blob([svgString], { type: 'image/svg+xml' })
+
+    return {
+      data: blob,
+      type: 'image/svg+xml',
+      width: canvas.width,
+      height: canvas.height
+    }
+  }
+
+  // Convert canvas to ICO format
+  async function convertToICO(canvas, options = {}) {
+    // Tamanhos de ícones a serem gerados
+    const sizes = options.sizes || [16, 32, 48]
+
+    // Criar um canvas para cada tamanho de ícone
+    const iconCanvases = sizes.map(size => {
+      const iconCanvas = document.createElement('canvas')
+      iconCanvas.width = size
+      iconCanvas.height = size
+
+      // Desenhar a imagem redimensionada no canvas
+      const ctx = iconCanvas.getContext('2d')
+      ctx.drawImage(canvas, 0, 0, size, size)
+
+      return { size, canvas: iconCanvas }
     })
-    document.dispatchEvent(event)
+
+    // Criar um arquivo ICO manualmente
+    // Estrutura do arquivo ICO: https://en.wikipedia.org/wiki/ICO_(file_format)
+
+    // 1. Cabeçalho do arquivo ICO (6 bytes)
+    const header = new Uint8Array(6)
+    // Reservado (deve ser 0)
+    header[0] = 0
+    header[1] = 0
+    // Tipo (1 = ICO)
+    header[2] = 1
+    header[3] = 0
+    // Número de imagens
+    header[4] = iconCanvases.length
+    header[5] = 0
+
+    // 2. Diretório de imagens (16 bytes por imagem)
+    const directory = new Uint8Array(16 * iconCanvases.length)
+
+    // 3. Converter cada canvas para PNG
+    const pngPromises = iconCanvases.map(({ canvas }) => {
+      return new Promise(resolve => {
+        canvas.toBlob(blob => resolve(blob), 'image/png')
+      })
+    })
+
+    // Aguardar todas as conversões PNG
+    const pngBlobs = await Promise.all(pngPromises)
+
+    // Converter Blobs em ArrayBuffers
+    const pngArrayBuffers = await Promise.all(
+      pngBlobs.map(blob => blob.arrayBuffer())
+    )
+
+    // Calcular o deslocamento para os dados da imagem
+    let imageDataOffset = 6 + 16 * iconCanvases.length // Cabeçalho + diretório
+
+    // Preencher o diretório e preparar os buffers de imagem
+    for (let i = 0; i < iconCanvases.length; i++) {
+      const { size } = iconCanvases[i]
+      const pngArrayBuffer = pngArrayBuffers[i]
+      const pngData = new Uint8Array(pngArrayBuffer)
+
+      // Largura (0 significa 256)
+      directory[i * 16] = size === 256 ? 0 : size
+      // Altura (0 significa 256)
+      directory[i * 16 + 1] = size === 256 ? 0 : size
+      // Número de cores da paleta (0 para PNG pois usamos true color)
+      directory[i * 16 + 2] = 0
+      // Reservado (deve ser 0)
+      directory[i * 16 + 3] = 0
+      // Planos de cor (deve ser 1 para ICO)
+      directory[i * 16 + 4] = 1
+      directory[i * 16 + 5] = 0
+      // Bits por pixel (32 para PNG com transparência)
+      directory[i * 16 + 6] = 32
+      directory[i * 16 + 7] = 0
+      // Tamanho da imagem em bytes
+      directory[i * 16 + 8] = pngData.length & 0xff
+      directory[i * 16 + 9] = (pngData.length >> 8) & 0xff
+      directory[i * 16 + 10] = (pngData.length >> 16) & 0xff
+      directory[i * 16 + 11] = (pngData.length >> 24) & 0xff
+      // Offset para os dados da imagem
+      directory[i * 16 + 12] = imageDataOffset & 0xff
+      directory[i * 16 + 13] = (imageDataOffset >> 8) & 0xff
+      directory[i * 16 + 14] = (imageDataOffset >> 16) & 0xff
+      directory[i * 16 + 15] = (imageDataOffset >> 24) & 0xff
+
+      // Atualizar o offset para a próxima imagem
+      imageDataOffset += pngData.length
+    }
+
+    // Combinar todos os buffers
+    const totalLength =
+      6 +
+      16 * iconCanvases.length +
+      pngArrayBuffers.reduce((sum, buffer) => sum + buffer.byteLength, 0)
+    const icoBuffer = new Uint8Array(totalLength)
+
+    // Copiar o cabeçalho
+    icoBuffer.set(header, 0)
+
+    // Copiar o diretório
+    icoBuffer.set(directory, 6)
+
+    // Copiar os dados das imagens
+    let currentOffset = 6 + 16 * iconCanvases.length
+    for (let i = 0; i < pngArrayBuffers.length; i++) {
+      const pngData = new Uint8Array(pngArrayBuffers[i])
+      icoBuffer.set(pngData, currentOffset)
+      currentOffset += pngData.length
+    }
+
+    // Criar Blob a partir do buffer combinado
+    const blob = new Blob([icoBuffer], { type: 'image/x-icon' })
+
+    return {
+      data: blob,
+      type: 'image/x-icon',
+      width: canvas.width,
+      height: canvas.height
+    }
+  }
+
+  // Generate a filename for the converted image
+  function generateFileName(originalName, format) {
+    // Remove the original extension
+    const baseName =
+      originalName.substring(0, originalName.lastIndexOf('.')) || originalName
+    return `${baseName}.${format}`
   }
 }
 
-// Export a method to get the current converted image data
+// Exposed function to get the current converted image data
 export function getConvertedImageData() {
-  return {
-    data: convertedImageData,
-    type: convertedImageType,
-    name: originalImageName
-      ? originalImageName.split('.')[0] + '.' + convertedImageType.split('/')[1]
-      : 'converted_image.' + convertedImageType.split('/')[1]
-  }
+  return convertedImage
 }
