@@ -97,19 +97,39 @@ function initCanvas() {
     canvas.dispose()
   }
 
-  // Criar novo canvas
+  // Obter o tamanho do contêiner
+  const container =
+    document.querySelector('.canvas-container') ||
+    document.querySelector('.editor-area')
+  const containerWidth = container ? container.clientWidth : 800
+
+  // Definir dimensões iniciais mais adequadas
+  const canvasWidth = Math.min(containerWidth - 20, 800) // Subtrair margem
+  const canvasHeight = Math.floor(canvasWidth * 0.75) // Proporção 4:3 mais comum para imagens
+
+  // Criar novo canvas com tamanho adequado
   canvas = new fabric.Canvas('editorCanvas', {
     backgroundColor: '#f5f5f5',
     preserveObjectStacking: true,
-    width: 800,
-    height: 500
+    width: canvasWidth,
+    height: canvasHeight,
+    selection: true, // Permitir seleção de objetos
+    interactive: true // Garantir que o canvas seja interativo
   })
 
   // Ajustar cor de fundo do canvas para o tema atual
   adjustCanvasBackground()
 
-  // Adicionar tratamento de redimensionamento
-  window.addEventListener('resize', adjustCanvasSize)
+  // Adicionar tratamento de redimensionamento com throttle para evitar múltiplas chamadas
+  let resizeTimeout
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(adjustCanvasSize, 250)
+  })
+
+  console.log(
+    `Canvas initialized with dimensions: ${canvasWidth}x${canvasHeight}`
+  )
 }
 
 // Verificar e ajustar para o modo escuro
@@ -137,36 +157,58 @@ function loadImage(file) {
   const reader = new FileReader()
 
   reader.onload = e => {
-    fabric.Image.fromURL(e.target.result, img => {
-      // Armazenar imagem original para resets
-      originalImage = img
+    const imgUrl = e.target.result
 
-      // Redimensionar imagem para caber no canvas
-      const scale = calculateImageScale(img)
-      img.scale(scale)
+    // Carregar a imagem primeiro para obter suas dimensões nativas
+    const tmpImg = new Image()
+    tmpImg.onload = function () {
+      const imgWidth = this.width
+      const imgHeight = this.height
+      console.log(`Original image dimensions: ${imgWidth}x${imgHeight}`)
 
-      // Centralizar imagem no canvas
-      img.set({
-        originX: 'center',
-        originY: 'center',
-        left: canvas.width / 2,
-        top: canvas.height / 2
+      // Ajustar o canvas para melhor acomodar a imagem
+      adjustCanvasToImage(imgWidth, imgHeight)
+
+      // Agora carregar a imagem no Fabric.js
+      fabric.Image.fromURL(imgUrl, img => {
+        // Armazenar imagem original para resets
+        originalImage = img
+
+        // Redimensionar imagem para caber no canvas
+        const scale = calculateImageScale(img)
+        console.log(`Applied scale factor: ${scale}`)
+        img.scale(scale)
+
+        // Centralizar imagem no canvas
+        img.set({
+          originX: 'center',
+          originY: 'center',
+          left: canvas.width / 2,
+          top: canvas.height / 2,
+          selectable: true // Garantir que a imagem seja selecionável
+        })
+
+        // Limpar canvas e adicionar a imagem
+        canvas.clear()
+        canvas.add(img)
+        canvas.setActiveObject(img)
+
+        // Definir o zoom do canvas para garantir visibilidade total
+        canvas.setZoom(1)
+        canvas.renderAll()
+
+        // Esconder indicação de carregamento
+        showLoadingState(false)
+
+        // Resetar todos os controles
+        resetControls()
+
+        // Mostrar feedback
+        showNotification('Imagem carregada com sucesso', 'success')
       })
+    }
 
-      // Limpar canvas e adicionar a imagem
-      canvas.clear()
-      canvas.add(img)
-      canvas.setActiveObject(img)
-
-      // Redimensionar canvas para melhor ajuste à imagem
-      adjustCanvasSize()
-
-      // Esconder indicação de carregamento
-      showLoadingState(false)
-
-      // Resetar todos os controles
-      resetControls()
-    })
+    tmpImg.src = imgUrl
   }
 
   reader.onerror = () => {
@@ -177,6 +219,50 @@ function loadImage(file) {
   reader.readAsDataURL(file)
 }
 
+function adjustCanvasToImage(imgWidth, imgHeight) {
+  if (!canvas) return
+
+  const container =
+    document.querySelector('.canvas-container') ||
+    document.querySelector('.editor-area')
+  if (!container) return
+
+  const containerWidth = container.clientWidth - 20 // Subtrair margem
+  let canvasWidth, canvasHeight
+
+  // Calcular a melhor proporção para o canvas
+  const imgRatio = imgHeight / imgWidth
+
+  if (imgRatio > 1) {
+    // Imagem na vertical (retrato)
+    canvasHeight = Math.min(containerWidth * 0.85, 600)
+    canvasWidth = canvasHeight / imgRatio
+  } else {
+    // Imagem na horizontal (paisagem) ou quadrada
+    canvasWidth = Math.min(containerWidth, 800)
+    canvasHeight = canvasWidth * imgRatio
+
+    // Garantir altura mínima
+    if (canvasHeight < 300) {
+      canvasHeight = 300
+      // Ajustar largura para manter proporção
+      canvasWidth = canvasHeight / imgRatio
+    }
+  }
+
+  // Garantir que o canvas não seja muito pequeno
+  canvasWidth = Math.max(canvasWidth, 400)
+  canvasHeight = Math.max(canvasHeight, 300)
+
+  // Atualizar dimensões do canvas
+  canvas.setDimensions({
+    width: Math.floor(canvasWidth),
+    height: Math.floor(canvasHeight)
+  })
+
+  console.log(`Canvas adjusted to: ${canvas.width}x${canvas.height}`)
+}
+
 // Calcular escala apropriada para a imagem
 function calculateImageScale(img) {
   const canvasWidth = canvas.width
@@ -184,16 +270,16 @@ function calculateImageScale(img) {
   const imgWidth = img.width
   const imgHeight = img.height
 
-  // Adicionar margem de 10% para não encostar nos bordos
-  const maxWidth = canvasWidth * 0.9
-  const maxHeight = canvasHeight * 0.9
+  // Adicionar margem de 5% para não encostar nos bordos
+  const maxWidth = canvasWidth * 0.95
+  const maxHeight = canvasHeight * 0.95
 
   // Calcular escala para largura e altura
   const scaleX = maxWidth / imgWidth
   const scaleY = maxHeight / imgHeight
 
   // Usar a menor escala para garantir que a imagem caiba completamente
-  return Math.min(scaleX, scaleY)
+  return Math.min(scaleX, scaleY, 1) // Limitar a 1 para não ampliar pequenas imagens
 }
 
 // Ajustar tamanho do canvas com base na janela
@@ -205,31 +291,42 @@ function adjustCanvasSize() {
 
   const containerWidth = container.clientWidth
 
-  // Manter proporção 16:10 ou ajustar conforme necessário
-  const canvasWidth = Math.min(containerWidth, 800)
-  const canvasHeight = canvasWidth * 0.625 // Proporção 16:10
+  // Preservar proporção atual do canvas
+  const currentRatio = canvas.height / canvas.width
 
+  // Calcular novas dimensões mantendo a proporção
+  const newWidth = Math.min(containerWidth - 20, 800) // Margem de 20px
+  const newHeight = Math.floor(newWidth * currentRatio)
+
+  // Atualizar dimensões do canvas
   canvas.setDimensions({
-    width: canvasWidth,
-    height: canvasHeight
+    width: newWidth,
+    height: newHeight
   })
 
-  // Reposicionar imagem se houver
+  // Reposicionar objetos
+  canvas.centerObject(canvas.getObjects()[0])
+
+  // Reajustar escala dos objetos se necessário
   if (canvas.getObjects().length > 0) {
-    const img = canvas.getObjects()[0]
-    if (img) {
-      img.set({
-        left: canvasWidth / 2,
-        top: canvasHeight / 2
+    const mainImage = canvas.getObjects()[0]
+    if (mainImage && mainImage.type === 'image') {
+      const scale = calculateImageScale(mainImage)
+
+      // Só aplicar nova escala se for significativamente diferente
+      if (Math.abs(mainImage.scaleX - scale) > 0.05) {
+        mainImage.scale(scale)
+      }
+
+      // Centralizar a imagem
+      mainImage.set({
+        left: newWidth / 2,
+        top: newHeight / 2
       })
-
-      // Se for necessário reajustar a escala
-      const scale = calculateImageScale(img)
-      img.scale(scale)
-
-      canvas.renderAll()
     }
   }
+
+  canvas.renderAll()
 }
 
 // Mostrar estado de carregamento
@@ -615,6 +712,9 @@ function addTextToImage() {
   canvas.setActiveObject(textObj)
   canvas.renderAll()
 
+  // Mover o foco para fora do modal antes de fechá-lo
+  document.getElementById('textTool').focus()
+
   // Fechar modal
   const textModal = bootstrap.Modal.getInstance(
     document.getElementById('textToolModal')
@@ -660,6 +760,7 @@ function saveEditedImage() {
 }
 
 // Exportar para o conversor
+// Substitua a função exportToConverter atual por esta versão melhorada
 function exportToConverter() {
   if (!canvas) return
 
@@ -678,7 +779,7 @@ function exportToConverter() {
     const blob = dataURLtoBlob(dataUrl)
     const file = new File([blob], 'imagem-editada.png', { type: 'image/png' })
 
-    // Armazenar no sessionStorage (método temporal, ideal seria usar IndexedDB para arquivos maiores)
+    // Armazenar no sessionStorage
     sessionStorage.setItem('editedImage', dataUrl)
 
     // Alternar para a aba do conversor
@@ -687,9 +788,12 @@ function exportToConverter() {
       const tab = new bootstrap.Tab(converterTab)
       tab.show()
 
-      // Disparar evento customizado para que o conversor saiba que há uma imagem editada
-      const event = new CustomEvent('editedImageAvailable')
-      document.dispatchEvent(event)
+      // Disparar o evento editedImageAvailable
+      setTimeout(() => {
+        const event = new CustomEvent('editedImageAvailable')
+        document.dispatchEvent(event)
+        console.log('Evento editedImageAvailable disparado')
+      }, 100)
 
       showNotification('Imagem exportada para o conversor', 'success')
     }

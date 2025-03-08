@@ -843,6 +843,41 @@ export function initImageConverter() {
       originalName.substring(0, originalName.lastIndexOf('.')) || originalName
     return `${baseName}.${format}`
   }
+
+  document.addEventListener('editedImageAvailable', handleEditedImage)
+
+  // Função para carregar imagem editada do editor
+  function handleEditedImage() {
+    // Tentar obter a imagem do sessionStorage
+    const imageDataUrl = sessionStorage.getItem('editedImage')
+
+    if (!imageDataUrl) {
+      console.error('Imagem editada não encontrada no sessionStorage')
+      return
+    }
+
+    // Converter o Data URL para um File/Blob
+    fetch(imageDataUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        // Criar um arquivo a partir do blob
+        const file = new File([blob], 'imagem-editada.png', {
+          type: 'image/png'
+        })
+
+        // Processar o arquivo como se tivesse sido selecionado pelo usuário
+        processSelectedFile(file)
+
+        // Limpar o sessionStorage
+        sessionStorage.removeItem('editedImage')
+
+        showNotification('Imagem do editor carregada com sucesso!', 'success')
+      })
+      .catch(error => {
+        console.error('Erro ao carregar imagem editada:', error)
+        showNotification('Erro ao carregar imagem do editor', 'error')
+      })
+  }
 }
 
 // Exposed function to get the current converted image data
