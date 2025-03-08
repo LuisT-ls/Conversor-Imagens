@@ -62,7 +62,9 @@ export function showNotification(message, type = 'success', duration = 3000) {
     close: true,
     gravity: 'top',
     position: 'right',
-    backgroundColor: bgColor,
+    style: {
+      background: bgColor
+    },
     stopOnFocus: true
   }).showToast()
 }
