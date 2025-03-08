@@ -1,6 +1,4 @@
-/* assets/css/modules/utils/animations.css */
-
-/* Keyframes definitions */
+/* Animações e efeitos */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -21,48 +19,12 @@
   }
 }
 
-@keyframes slideDown {
+@keyframes scaleIn {
   from {
-    transform: translateY(-20px);
+    transform: scale(0.95);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes popIn {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  80% {
-    transform: scale(1.05);
-  }
-  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -80,15 +42,6 @@
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;
@@ -98,110 +51,65 @@
   }
 }
 
-/* Animation utility classes */
+/* Classes de animação aplicáveis */
 .fade-in {
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeIn var(--transition-speed) var(--transition-function);
 }
 
 .slide-up {
-  animation: slideUp 0.5s ease forwards;
+  animation: slideUp 0.5s var(--transition-function);
 }
 
-.slide-down {
-  animation: slideDown 0.5s ease forwards;
-}
-
-.slide-in-left {
-  animation: slideInLeft 0.5s ease forwards;
-}
-
-.slide-in-right {
-  animation: slideInRight 0.5s ease forwards;
-}
-
-.pop-in {
-  animation: popIn 0.4s ease forwards;
+.scale-in {
+  animation: scaleIn 0.4s var(--transition-function);
 }
 
 .pulse {
-  animation: pulse 1.5s ease infinite;
+  animation: pulse 2s infinite;
 }
 
-.spin {
-  animation: spin 1s linear infinite;
+/* Animação do Loading */
+.loading {
+  position: relative;
+  overflow: hidden;
 }
 
-/* Staggered animations for lists */
-.stagger-fade > * {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.stagger-fade > *:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.stagger-fade > *:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.stagger-fade > *:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.stagger-fade > *:nth-child(4) {
-  animation-delay: 0.4s;
-}
-.stagger-fade > *:nth-child(5) {
-  animation-delay: 0.5s;
-}
-.stagger-fade > *:nth-child(6) {
-  animation-delay: 0.6s;
-}
-.stagger-fade > *:nth-child(7) {
-  animation-delay: 0.7s;
-}
-.stagger-fade > *:nth-child(8) {
-  animation-delay: 0.8s;
-}
-.stagger-fade > *:nth-child(9) {
-  animation-delay: 0.9s;
-}
-.stagger-fade > *:nth-child(10) {
-  animation-delay: 1s;
-}
-
-/* Shimmer effect for loading states */
-.shimmer {
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0) 100%
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0)
   );
   background-size: 1000px 100%;
-  animation: shimmer 2s infinite linear;
+  animation: shimmer 2s infinite;
 }
 
-/* Transition utilities */
-.transition-fast {
-  transition: var(--transition-fast);
+/* Transições */
+.transition-all {
+  transition: all var(--transition-speed) var(--transition-function);
 }
 
-.transition-base {
-  transition: var(--transition-base);
+.hover-scale {
+  transition: transform var(--transition-speed) var(--transition-function);
 }
 
-.transition-slow {
-  transition: var(--transition-slow);
+.hover-scale:hover {
+  transform: scale(1.05);
 }
 
-/* Appear animations for tab content */
-.tab-pane.fade {
-  transition: opacity 0.25s ease;
+.hover-elevate {
+  transition: transform var(--transition-speed) var(--transition-function),
+    box-shadow var(--transition-speed) var(--transition-function);
 }
 
-.tab-pane.fade:not(.show) {
-  opacity: 0;
-}
-
-.tab-pane.fade.show {
-  opacity: 1;
+.hover-elevate:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow);
 }

@@ -1,111 +1,131 @@
-/* dark-mode.css - Styles for the dark mode feature */
+/* Configurações do modo escuro */
 
-/* Dark Theme Toggle Button Animation */
-.dark-theme-toggle {
-  position: relative;
-  width: 60px;
-  height: 30px;
-  border-radius: 15px;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.3s ease;
+[data-theme='dark'] {
+  /* Cores principais */
+  --bg-light: #1a1e23;
+  --bg-white: #252a32;
+  --text-dark: #f8f9fa;
+  --text-muted: #adb5bd;
+  --border-color: #495057;
+  --primary-color: #5c7aff;
+
+  /* Overrides para elementos específicos */
+  color-scheme: dark;
 }
 
-.dark-theme-toggle .toggle-icon {
-  display: inline-block;
-  transition: transform 0.3s ease;
+/* Alterações específicas para o tema escuro */
+[data-theme='dark'] .card {
+  background-color: var(--bg-white);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 
-body.dark-theme .dark-theme-toggle .toggle-icon.moon {
-  transform: translateX(-20px) scale(0);
-  opacity: 0;
+[data-theme='dark'] .form-control,
+[data-theme='dark'] .form-select {
+  background-color: #2c3035;
+  border-color: #495057;
+  color: var(--text-light);
 }
 
-body.dark-theme .dark-theme-toggle .toggle-icon.sun {
-  transform: translateX(0) scale(1);
-  opacity: 1;
+[data-theme='dark'] .form-control:focus,
+[data-theme='dark'] .form-select:focus {
+  border-color: var(--primary-light);
+  background-color: #2c3035;
 }
 
-.dark-theme-toggle .toggle-icon.sun {
-  transform: translateX(20px) scale(0);
-  opacity: 0;
+[data-theme='dark'] .modal-content {
+  background-color: var(--bg-white);
+  color: var(--text-light);
 }
 
-/* Custom Dark Theme Styles for Specific Components */
-
-/* Canvas in Editor */
-body.dark-theme .canvas-container {
-  background-color: #2c2c2c;
-  border-color: #444;
+[data-theme='dark'] .table {
+  color: var(--text-light);
 }
 
-/* Filter Buttons */
-body.dark-theme .filter-btn {
-  background-color: #333;
-  border-color: #444;
-  color: #e1e1e1;
-}
-
-body.dark-theme .filter-btn:hover {
-  background-color: #444;
-}
-
-body.dark-theme .filter-btn.active {
-  background-color: #0d6efd;
-  color: white;
-}
-
-/* Drop Zone */
-body.dark-theme .drop-zone {
-  border-color: #444;
-  color: #e1e1e1;
-}
-
-body.dark-theme .drop-zone-active {
-  border-color: #0d6efd;
-  background-color: rgba(13, 110, 253, 0.1);
-}
-
-/* Modal Dialogs */
-body.dark-theme .modal-header {
-  border-bottom-color: #444;
-}
-
-body.dark-theme .modal-footer {
-  border-top-color: #444;
-}
-
-/* Progress Bars */
-body.dark-theme .progress {
-  background-color: #333;
-}
-
-/* Tooltips */
-body.dark-theme .tooltip .tooltip-inner {
-  background-color: #2c2c2c;
-  color: #e1e1e1;
-  border: 1px solid #444;
-}
-
-body.dark-theme .tooltip .tooltip-arrow::before {
-  border-top-color: #444;
-}
-
-/* Links */
-body.dark-theme a:not(.btn) {
-  color: #6ea8fe;
-}
-
-body.dark-theme a:not(.btn):hover {
-  color: #8bb9fe;
-}
-
-/* Table Styles */
-body.dark-theme .table-hover tbody tr:hover {
+[data-theme='dark'] .table-hover tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-body.dark-theme .table td,
-body.dark-theme .table th {
-  border-color: #444;
+[data-theme='dark'] .nav-pills .nav-link:not(.active) {
+  color: var(--text-muted);
+}
+
+[data-theme='dark'] .nav-pills .nav-link:hover:not(.active) {
+  background-color: rgba(92, 122, 255, 0.1);
+  color: var(--text-light);
+}
+
+[data-theme='dark'] .drop-zone {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .drop-zone:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .btn-outline-secondary {
+  border-color: #6c757d;
+  color: #adb5bd;
+}
+
+[data-theme='dark'] .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+[data-theme='dark'] .bg-light {
+  background-color: var(--bg-light) !important;
+}
+
+[data-theme='dark'] .text-muted {
+  color: var(--text-muted) !important;
+}
+
+[data-theme='dark'] .img-thumbnail {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Animação para a transição do tema */
+body,
+.card,
+.form-control,
+.form-select,
+.modal-content,
+.table,
+.nav-pills .nav-link,
+.drop-zone,
+.btn,
+.bg-light,
+.text-muted,
+.img-thumbnail {
+  transition: background-color var(--transition-speed)
+      var(--transition-function),
+    border-color var(--transition-speed) var(--transition-function),
+    color var(--transition-speed) var(--transition-function),
+    box-shadow var(--transition-speed) var(--transition-function);
+}
+
+/* Alteração do ícone do botão de tema */
+[data-theme='dark'] #themeToggle i.fa-moon {
+  display: none;
+}
+
+[data-theme='dark'] #themeToggle i.fa-sun {
+  display: inline-block;
+}
+
+#themeToggle i.fa-sun {
+  display: none;
+}
+
+/* Estilização do botão de tema para o estado dark */
+[data-theme='dark'] #themeToggle {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] #themeToggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }

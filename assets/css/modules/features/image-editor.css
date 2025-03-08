@@ -1,226 +1,176 @@
-/* assets/css/modules/features/image-editor.css */
+/* Estilos para o editor de imagens */
 
-/* Canvas container styling */
+/* Área do editor */
 .editor-area {
-  margin-top: 1.5rem;
+  margin: 2rem 0;
 }
 
 .canvas-container {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  background-color: rgba(0, 0, 0, 0.02);
-  border-radius: var(--border-radius-md);
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: var(--border-radius);
+  padding: 1rem;
   overflow: hidden;
+  position: relative;
+  min-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition-base);
+  border: 1px solid var(--border-color);
 }
 
-.canvas-container:hover {
-  box-shadow: var(--shadow-md);
-}
-
-#editorCanvas {
+canvas#editorCanvas {
   max-width: 100%;
-  max-height: 100%;
-  display: block;
-  margin: 0 auto;
+  max-height: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Editor controls styling */
+/* Controles do editor */
 .editor-controls {
-  background-color: var(--very-light-gray);
   padding: 1.5rem;
-  border-radius: var(--border-radius-md);
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: var(--border-radius);
   height: 100%;
+  border: 1px solid var(--border-color);
 }
 
 .editor-controls h5 {
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: 1rem;
-  color: var(--dark);
+  margin-bottom: 1.2rem;
+  color: var(--text-dark);
+  font-weight: 600;
   position: relative;
+  display: inline-block;
 }
 
 .editor-controls h5::after {
   content: '';
   position: absolute;
   left: 0;
-  bottom: -0.5rem;
-  height: 2px;
+  bottom: -5px;
   width: 30px;
+  height: 2px;
   background-color: var(--primary-color);
-  border-radius: var(--border-radius-pill);
 }
 
-/* Range controls styling */
+/* Sliders de ajuste */
 .editor-controls .form-range {
-  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
 }
 
-/* Filter buttons styling */
+.editor-controls .form-label {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.editor-controls hr {
+  margin: 1.5rem 0;
+  opacity: 0.1;
+}
+
+/* Grid de filtros */
 .filters-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .filter-btn {
-  padding: 0.5rem;
-  border: 1px solid var(--light-gray);
-  background-color: var(--white);
-  border-radius: var(--border-radius-md);
-  font-size: 0.875rem;
-  transition: var(--transition-base);
+  padding: 0.5rem 0.25rem;
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.85rem;
+  text-align: center;
   cursor: pointer;
+  transition: all var(--transition-speed) var(--transition-function);
 }
 
 .filter-btn:hover {
-  background-color: var(--very-light-gray);
+  background-color: rgba(74, 107, 255, 0.05);
+  border-color: var(--primary-color);
 }
 
 .filter-btn.active {
   background-color: var(--primary-color);
-  color: var(--white);
+  color: white;
   border-color: var(--primary-color);
 }
 
-/* Tools styling */
-.btn-group {
-  margin-top: 1rem;
+/* Ferramentas de edição */
+.editor-controls .btn-group {
+  margin-bottom: 1.2rem;
 }
 
+.editor-controls .btn-outline-secondary {
+  padding: 0.5rem;
+  border-color: var(--border-color);
+}
+
+.editor-controls .btn-outline-secondary:hover {
+  background-color: rgba(74, 107, 255, 0.1);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.editor-controls .btn-outline-secondary.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.editor-controls .btn-outline-secondary i {
+  margin: 0;
+}
+
+/* Botão de reset */
 #resetEditor {
   margin-top: 1rem;
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
+  color: var(--text-dark);
+  font-weight: 600;
 }
 
-/* Text tool modal styling */
-#textToolModal .form-control-color {
-  width: 100%;
-  height: 40px;
+#resetEditor:hover {
+  background-color: #e5ac00;
+  border-color: #e5ac00;
 }
 
-/* Editor actions styling */
+/* Ações do editor */
 .editor-actions {
   margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--very-light-gray);
 }
 
-/* Canvas loading state */
-.canvas-loading {
-  position: absolute;
-  top: 0;
-  left: 0;
+.editor-actions .btn {
+  font-weight: 600;
+}
+
+/* Modal de texto */
+#textToolModal .form-control-color {
   width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
+  height: 38px;
 }
 
-.canvas-loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid var(--light-gray);
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Animações para as ferramentas ativas */
+.btn-outline-secondary.active i {
+  animation: pulse 1.5s infinite;
 }
 
-/* Canvas overlay for crop */
-.canvas-crop-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 5;
-  pointer-events: none;
+/* Responsividade */
+@media (max-width: 991.98px) {
+  .canvas-container {
+    margin-bottom: 1.5rem;
+  }
+
+  .editor-controls {
+    padding: 1rem;
+  }
 }
 
-.crop-rect {
-  position: absolute;
-  border: 2px dashed white;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-  pointer-events: all;
-  cursor: move;
-}
-
-.crop-handle {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: white;
-  border: 1px solid var(--primary-color);
-  z-index: 6;
-}
-
-.crop-handle-nw {
-  top: -5px;
-  left: -5px;
-  cursor: nw-resize;
-}
-.crop-handle-ne {
-  top: -5px;
-  right: -5px;
-  cursor: ne-resize;
-}
-.crop-handle-sw {
-  bottom: -5px;
-  left: -5px;
-  cursor: sw-resize;
-}
-.crop-handle-se {
-  bottom: -5px;
-  right: -5px;
-  cursor: se-resize;
-}
-
-/* Dark mode specific styles */
-body.dark-mode .canvas-container {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-body.dark-mode .editor-controls {
-  background-color: var(--dark-bg-tertiary);
-}
-
-body.dark-mode .editor-controls h5 {
-  color: var(--dark-text-primary);
-}
-
-body.dark-mode .filter-btn {
-  background-color: var(--dark-bg-tertiary);
-  border-color: var(--dark-border-color);
-  color: var(--dark-text-primary);
-}
-
-body.dark-mode .filter-btn:hover {
-  background-color: var(--dark-bg-secondary);
-}
-
-body.dark-mode .filter-btn.active {
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-
-body.dark-mode .editor-actions {
-  border-color: var(--dark-border-color);
-}
-
-body.dark-mode .canvas-loading {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-body.dark-mode .canvas-loading-spinner {
-  border-color: var(--dark-border-color);
-  border-top-color: var(--primary-color);
+@media (max-width: 767.98px) {
+  .filters-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

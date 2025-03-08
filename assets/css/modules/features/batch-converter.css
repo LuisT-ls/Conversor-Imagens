@@ -1,255 +1,198 @@
-/* assets/css/modules/features/batch-converter.css */
+/* Estilos para a conversão em lote */
 
-/* Batch file list styling */
+/* Área de configurações de lote */
+.batch-settings {
+  padding: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: var(--border-radius);
+  margin: 1.5rem 0;
+  border: 1px solid var(--border-color);
+}
+
+/* Lista de arquivos em lote */
 .batch-file-list {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .table {
-  width: 100%;
-  margin-bottom: 1rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 .table thead th {
-  background-color: var(--very-light-gray);
-  padding: 0.75rem 1rem;
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.02);
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-dark);
+  font-weight: 600;
+  padding: 1rem;
 }
 
 .table tbody td {
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   vertical-align: middle;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--border-color);
 }
 
 .table-hover tbody tr {
-  transition: var(--transition-base);
+  transition: background-color var(--transition-speed)
+    var(--transition-function);
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
-/* Batch file item styling */
-.file-item {
-  display: flex;
-  align-items: center;
+/* Badges de status */
+.batch-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
 }
 
-.file-item-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--border-radius-md);
-  background-color: rgba(67, 97, 238, 0.1);
-  margin-right: 1rem;
-  color: var(--primary-color);
+.batch-status-pending {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: var(--secondary-color);
 }
 
-.file-item-icon i {
-  font-size: 1.2rem;
+.batch-status-processing {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: var(--warning-color);
 }
 
-.file-item-details {
-  flex: 1;
+.batch-status-completed {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: var(--success-color);
 }
 
-.file-item-name {
-  font-weight: var(--font-weight-medium);
-  margin-bottom: 0.25rem;
-  white-space: nowrap;
+.batch-status-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--danger-color);
+}
+
+/* Barra de progresso em linha */
+.batch-progress {
+  height: 6px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
+  margin-top: 0.5rem;
 }
 
-.file-item-meta {
-  font-size: 0.75rem;
-  color: var(--medium-gray);
+.batch-progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  width: 0;
+  transition: width 0.3s ease;
 }
 
-/* Status indicators */
-.status-badge {
-  display: inline-flex;
+/* Visualização de arquivo na tabela */
+.batch-file-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  margin-right: 10px;
+}
+
+.batch-file-info {
+  display: flex;
   align-items: center;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: var(--font-weight-medium);
-  border-radius: var(--border-radius-pill);
 }
 
-.status-badge i {
-  margin-right: 0.35rem;
+.batch-file-name {
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 0.2rem;
+  word-break: break-word;
 }
 
-.status-pending {
-  background-color: rgba(249, 199, 79, 0.2);
-  color: #9a7d20;
+.batch-file-size {
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
-.status-processing {
-  background-color: rgba(76, 201, 240, 0.2);
-  color: #2a7d94;
-}
-
-.status-success {
-  background-color: rgba(46, 196, 182, 0.2);
-  color: #186b62;
-}
-
-.status-error {
-  background-color: rgba(230, 57, 70, 0.2);
-  color: #9c2631;
-}
-
-/* File actions */
-.file-actions {
+/* Ações da tabela */
+.batch-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.file-action-btn {
-  width: 2rem;
-  height: 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--border-radius-md);
-  background-color: var(--white);
-  border: 1px solid var(--very-light-gray);
-  color: var(--medium-gray);
-  transition: var(--transition-base);
+.batch-actions button {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: var(--border-radius-sm);
 }
 
-.file-action-btn:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: var(--white);
-}
-
-.file-action-btn.btn-danger:hover {
-  background-color: var(--danger-color);
-  border-color: var(--danger-color);
-}
-
-/* Batch settings styling */
-.batch-settings {
-  background-color: rgba(0, 0, 0, 0.02);
-  border-radius: var(--border-radius-md);
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-  box-shadow: var(--shadow-sm);
-}
-
+/* Placeholder de arquivos */
 #batchPlaceholder {
-  padding: 3rem 0;
+  padding: 3rem 2rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: var(--border-radius);
+  border: 1px dashed var(--border-color);
 }
 
-/* Download all button */
+/* Botões de ação de lote */
+#convertBatchButton,
 #downloadAllButton {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+}
+
+/* Animação para item adicionado à lista */
+@keyframes highlightRow {
+  0% {
+    background-color: rgba(74, 107, 255, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.highlight-row {
+  animation: highlightRow 2s ease-out;
+}
+
+/* Estilos para o compressor e histórico (que compartilham estilos semelhantes) */
+.compression-settings,
+#compressionResults {
+  margin: 1.5rem 0;
+}
+
+#compressionResults .card {
+  height: 100%;
+}
+
+#compressionResults .card-header {
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid var(--border-color);
+}
+
+#compressionResults .card-body {
+  padding: 1.5rem;
+}
+
+#compressionResults .img-thumbnail {
+  max-width: 100%;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1.5rem;
 }
 
-#downloadAllButton i {
-  margin-right: 0.5rem;
-}
-
-/* Progress indicators for batch items */
-.progress-sm {
-  height: 0.25rem;
-  border-radius: var(--border-radius-pill);
-  margin-top: 0.5rem;
-}
-
-/* History tab styling */
-.history-list {
-  margin-top: 1.5rem;
-}
-
-#historyPlaceholder {
-  padding: 3rem 0;
-}
-
-/* Dark mode specific styles */
-body.dark-mode .batch-settings {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-body.dark-mode .table thead th {
-  background-color: var(--dark-bg-tertiary);
-  border-bottom-color: var(--dark-border-color);
-}
-
-body.dark-mode .table tbody td {
-  border-top-color: var(--dark-border-color);
-}
-
-body.dark-mode .table-hover tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-body.dark-mode .file-item-icon {
-  background-color: rgba(67, 97, 238, 0.2);
-}
-
-body.dark-mode .file-item-meta {
-  color: var(--dark-text-secondary);
-}
-
-body.dark-mode .file-action-btn {
-  background-color: var(--dark-bg-tertiary);
-  border-color: var(--dark-border-color);
-  color: var(--dark-text-secondary);
-}
-
-body.dark-mode .status-pending {
-  background-color: rgba(249, 199, 79, 0.1);
-}
-
-body.dark-mode .status-processing {
-  background-color: rgba(76, 201, 240, 0.1);
-}
-
-body.dark-mode .status-success {
-  background-color: rgba(46, 196, 182, 0.1);
-}
-
-body.dark-mode .status-error {
-  background-color: rgba(230, 57, 70, 0.1);
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .file-item-name {
-    max-width: 120px;
-  }
-
-  .table thead th,
-  .table tbody td {
-    padding: 0.5rem;
-  }
-
-  .file-item-icon {
-    width: 2rem;
-    height: 2rem;
-    margin-right: 0.5rem;
-  }
-
-  .file-action-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
+#compressionResults .img-thumbnail img {
+  max-height: 180px;
+  max-width: 100%;
+  object-fit: contain;
 }

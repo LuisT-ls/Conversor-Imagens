@@ -1,6 +1,4 @@
-/* assets/css/modules/base/reset.css */
-
-/* Modern CSS Reset with customizations */
+/* Reset e base */
 *,
 *::before,
 *::after {
@@ -9,115 +7,96 @@
   padding: 0;
 }
 
-/* Set core body defaults */
 html {
+  font-size: 16px;
   scroll-behavior: smooth;
-  height: 100%;
 }
 
 body {
-  min-height: 100vh;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
-  font-family: var(--font-family-base);
-  color: var(--dark);
-  background-color: var(--white);
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-family-sans);
+  line-height: var(--line-height-base);
+  color: var(--text-dark);
+  background-color: var(--bg-light);
   overflow-x: hidden;
+  transition: background-color var(--transition-speed)
+      var(--transition-function),
+    color var(--transition-speed) var(--transition-function);
 }
 
-/* Make footer stick to bottom */
-main {
-  flex: 1 0 auto;
-}
-
-footer {
-  flex-shrink: 0;
-}
-
-/* Remove default margin and padding */
 h1,
 h2,
 h3,
 h4,
 h5,
-h6,
-p,
-ul,
-ol,
-figure,
-blockquote,
-dl,
-dd {
-  margin: 0;
-  padding: 0;
+h6 {
+  font-family: var(--font-family-headings);
+  margin-bottom: 0.5rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
 }
 
-/* Remove list styles */
-ul,
-ol {
-  list-style: none;
-}
-
-/* Remove default styling from links */
 a {
+  color: var(--primary-color);
   text-decoration: none;
-  color: inherit;
+  transition: color var(--transition-speed) var(--transition-function);
 }
 
-/* Set default image behavior */
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+img {
   max-width: 100%;
+  height: auto;
 }
 
-/* Make form elements easier to work with */
-input,
-button,
-textarea,
-select {
-  font: inherit;
+/* Bootstrap overrides */
+.btn {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) var(--transition-function);
+  box-shadow: var(--box-shadow-sm);
+  text-transform: uppercase;
+  font-size: 0.9rem;
 }
 
-/* Remove animations for people who've turned them off */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-::-webkit-scrollbar-track {
-  background: var(--very-light-gray);
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--light-gray);
-  border-radius: 10px;
+.form-control {
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: border-color var(--transition-speed) var(--transition-function),
+    box-shadow var(--transition-speed) var(--transition-function);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--medium-gray);
+.form-control:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(74, 107, 255, 0.25);
 }
 
-/* Focus outline */
-:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+.card {
+  border-radius: var(--border-radius-lg);
+  border: none;
+  overflow: hidden;
+  transition: all var(--transition-speed) var(--transition-function);
+}
+
+.modal-content {
+  border-radius: var(--border-radius-lg);
+  border: none;
 }

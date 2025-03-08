@@ -24,22 +24,50 @@
     <link rel="stylesheet" href="assets/css/main.css" />
   </head>
   <body>
-    <header class="bg-dark text-white text-center py-4">
+    <header class="bg-dark text-white py-4">
       <div class="container">
         <div class="row align-items-center">
-          <div class="col-md-8">
-            <h1><i class="fas fa-image me-2"></i>Conversor de Imagens</h1>
-            <p class="lead">
-              Uma ferramenta completa para trabalhar com suas imagens
-            </p>
+          <div class="col-md-7">
+            <div class="header-content">
+              <h1>
+                <i class="fas fa-image header-icon"></i>Conversor de Imagens
+              </h1>
+              <p class="lead">
+                Uma ferramenta completa para trabalhar com suas imagens
+              </p>
+              <div class="header-badges d-none d-md-flex">
+                <span class="badge-item"
+                  ><i class="fas fa-bolt"></i> Rápido</span
+                >
+                <span class="badge-item"
+                  ><i class="fas fa-shield-alt"></i> Seguro</span
+                >
+                <span class="badge-item"
+                  ><i class="fas fa-magic"></i> Versátil</span
+                >
+              </div>
+            </div>
           </div>
-          <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <button id="themeToggle" class="btn btn-outline-light">
-              <i class="fas fa-moon"></i>
-              <span id="themeText">Tema Escuro</span>
-            </button>
+          <div class="col-md-5 text-md-end mt-4 mt-md-0">
+            <div class="header-actions">
+              <button
+                id="themeToggle"
+                class="btn-theme"
+                aria-label="Alternar tema"
+              >
+                <div class="theme-switch">
+                  <i class="fas fa-moon"></i>
+                  <i class="fas fa-sun"></i>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="header-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
       </div>
     </header>
 

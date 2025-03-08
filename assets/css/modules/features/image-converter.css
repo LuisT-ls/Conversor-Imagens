@@ -1,336 +1,190 @@
-/* assets/css/modules/features/image-converter.css */
+/* Estilos para o conversor de imagens */
 
-/* Drop zone styling */
+/* Drop Zone */
 .drop-zone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  min-height: 200px;
-  border: 2px dashed var(--light-gray);
+  border: 2px dashed var(--border-color);
   border-radius: var(--border-radius-lg);
   background-color: rgba(0, 0, 0, 0.02);
-  padding: 2rem;
+  padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: var(--transition-base);
-  overflow: hidden;
+  transition: all var(--transition-speed) var(--transition-function);
   position: relative;
+  min-height: 200px;
 }
 
 .drop-zone:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-  border-color: var(--primary-light);
-}
-
-.drop-zone.drag-over {
-  background-color: rgba(67, 97, 238, 0.05);
   border-color: var(--primary-color);
+  background-color: rgba(74, 107, 255, 0.02);
 }
 
 .drop-zone-prompt {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--medium-gray);
-  transition: var(--transition-base);
+  justify-content: center;
+  height: 100%;
 }
 
 .drop-zone-prompt i {
   color: var(--primary-color);
-  margin-bottom: 1rem;
-  transition: var(--transition-base);
+  transition: transform var(--transition-speed) var(--transition-function);
 }
 
 .drop-zone:hover .drop-zone-prompt i {
   transform: translateY(-5px);
 }
 
+.drop-zone-prompt p {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .drop-zone-thumb {
   width: 100%;
   height: 100%;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius);
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
-  display: none;
-}
-
-.drop-zone-thumb.d-block {
-  display: block;
-}
-
-.drop-zone-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
 }
 
 .drop-zone-thumb::after {
-  content: attr(data-label);
+  content: 'Clique para alterar';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
   color: white;
-  font-size: 0.875rem;
-  text-align: center;
-}
-
-/* Preview area styling */
-.preview-container {
-  background-color: var(--very-light-gray);
-  border-radius: var(--border-radius-md);
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.preview-placeholder {
-  padding: 3rem 0;
-  text-align: center;
-}
-
-#originalPreview,
-#convertedPreview {
-  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.02);
-  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity var(--transition-speed) var(--transition-function);
 }
 
-#originalPreview img,
-#convertedPreview img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+.drop-zone-thumb:hover::after {
+  opacity: 1;
 }
 
-/* Format options styling */
-#formatOptions {
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: var(--border-radius-md);
-  background-color: rgba(0, 0, 0, 0.02);
-  animation: fadeIn 0.3s ease;
-  display: none;
+/* Área de configurações de conversão */
+.form-range::-webkit-slider-thumb {
+  background: var(--primary-color);
 }
 
-#formatOptions.show {
-  display: block;
+.form-range::-webkit-slider-runnable-track {
+  background-color: rgba(74, 107, 255, 0.2);
 }
 
-/* Action buttons styling */
-.action-buttons {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--very-light-gray);
+.form-range::-moz-range-thumb {
+  background: var(--primary-color);
 }
 
-#downloadLink,
-#shareButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.form-range::-moz-range-track {
+  background-color: rgba(74, 107, 255, 0.2);
 }
 
-#downloadLink i,
-#shareButton i {
-  margin-right: 0.5rem;
-}
-
-/* Progress bar styling */
-#progressBar {
+/* Estilização para o progresso */
+.progress {
+  height: 10px;
+  border-radius: var(--border-radius);
   margin-top: 0.5rem;
-  height: 0.5rem;
-  border-radius: var(--border-radius-pill);
-  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .progress-bar {
   background-color: var(--primary-color);
-  height: 100%;
-  border-radius: var(--border-radius-pill);
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
 }
 
-/* Form controls styling */
-.form-range {
-  height: 1.5rem;
-  padding-top: 0.25rem;
+/* Área de prévia */
+.preview-container {
+  margin-top: 2rem;
 }
 
-.form-range::-webkit-slider-thumb {
-  background-color: var(--primary-color);
-}
-
-.form-range::-moz-range-thumb {
-  background-color: var(--primary-color);
-}
-
-.form-range::-webkit-slider-runnable-track {
-  border-radius: var(--border-radius-pill);
-}
-
-.form-range::-moz-range-track {
-  border-radius: var(--border-radius-pill);
-}
-
-.form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-/* Custom animations for this module */
-@keyframes scaleImage {
-  0% {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.image-loaded {
-  animation: scaleImage 0.3s ease forwards;
-}
-
-/* Compressor tab specific styles */
-#compressionResults .card {
-  height: 100%;
-  transition: var(--transition-base);
-}
-
-#compressionResults .card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
-}
-
-#compressionResults .card-header {
-  background-color: var(--primary-color);
-  color: white;
-  font-weight: var(--font-weight-medium);
+.preview-placeholder {
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.02);
   text-align: center;
-  border-top-left-radius: var(--border-radius-md);
-  border-top-right-radius: var(--border-radius-md);
 }
 
-/* Dark mode specific styles */
-body.dark-mode .drop-zone {
-  background-color: rgba(255, 255, 255, 0.03);
-  border-color: var(--dark-border-color);
-}
-
-body.dark-mode .drop-zone:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: var(--primary-color);
-}
-
-body.dark-mode .preview-container {
-  background-color: var(--dark-bg-tertiary);
-}
-
-body.dark-mode #formatOptions {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-body.dark-mode .action-buttons {
-  border-color: var(--dark-border-color);
-}
-
-body.dark-mode #originalPreview,
-body.dark-mode #convertedPreview {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-/* Share modal customization */
-#shareModal .modal-title {
-  color: var(--primary-color);
-  font-weight: var(--font-weight-semibold);
-}
-
-#shareModal .modal-body {
-  padding: 1.5rem;
-}
-
-#shareModal .social-share {
-  margin-top: 1.5rem;
-}
-
-#shareModal .share-btn {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-base);
-}
-
-#shareModal .share-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-}
-
-#shareLink {
-  font-size: 0.9rem;
-  background-color: var(--very-light-gray);
-}
-
-#copyLinkBtn {
-  transition: var(--transition-base);
-}
-
-#copyLinkBtn.copied {
-  background-color: var(--success-color);
-  color: white;
-}
-
-/* Image info styles */
-.small.text-muted {
-  font-size: 0.8rem;
+.img-thumbnail {
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  height: 250px;
+  object-fit: contain;
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-color);
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
-.small.text-muted span {
+.img-thumbnail img {
+  max-height: 230px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Info das imagens */
+.small.text-muted {
+  font-size: 0.85rem;
+  display: block;
+  line-height: 1.4;
+}
+
+/* Botões de ação */
+.action-buttons {
+  margin-top: 2rem;
+}
+
+#downloadLink {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 
-.small.text-muted i {
-  margin-right: 0.25rem;
+/* Estilizações adicionais para a conversão */
+#formatOptions .form-check {
+  margin-bottom: 0.5rem;
+}
+
+.aspect-ratio-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+}
+
+.aspect-ratio-lock i {
+  cursor: pointer;
+  padding: 8px;
   color: var(--primary-color);
 }
 
-/* Responsive styles for converter */
-@media (max-width: 768px) {
-  .drop-zone {
-    min-height: 150px;
-    padding: 1.5rem;
-  }
-
-  .drop-zone-prompt i {
-    font-size: 2rem;
-  }
-
-  #originalPreview,
-  #convertedPreview {
-    height: 150px;
-  }
-
-  .preview-container {
-    padding: 1rem;
-  }
-
-  #shareModal .share-btn {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
+/* Animações e efeitos */
+.slide-up {
+  animation: slideUp 0.5s ease-out;
 }
