@@ -1,10 +1,11 @@
 /* Configurações do modo escuro */
 
+/* Definições base para o tema escuro */
 [data-theme='dark'] {
   /* Cores principais */
   --bg-light: #1a1e23;
   --bg-white: #252a32;
-  --text-dark: #f8f9fa;
+  --text-dark: #f8f9fa; /* Texto principal claro no tema escuro */
   --text-muted: #adb5bd;
   --border-color: #495057;
   --primary-color: #5c7aff;
@@ -13,7 +14,41 @@
   color-scheme: dark;
 }
 
-/* Alterações específicas para o tema escuro */
+/* Correção para todos os textos no modo escuro */
+[data-theme='dark'] body,
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] p,
+[data-theme='dark'] label,
+[data-theme='dark'] .form-label,
+[data-theme='dark'] .card-title,
+[data-theme='dark'] .card-body,
+[data-theme='dark'] .text-dark {
+  color: var(--text-dark) !important;
+}
+
+/* Transições suaves ao trocar de tema */
+body,
+.card,
+.form-control,
+.form-select,
+.modal-content,
+.table,
+.nav-pills .nav-link,
+.drop-zone,
+.btn,
+.bg-light,
+.text-muted,
+.img-thumbnail {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilos específicos para elementos em modo escuro */
 [data-theme='dark'] .card {
   background-color: var(--bg-white);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
@@ -37,12 +72,134 @@
   color: var(--text-light);
 }
 
+/* Melhorias para placeholders nos campos de formulário */
+[data-theme='dark'] .form-control::placeholder {
+  color: rgba(173, 181, 189, 0.7);
+}
+
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder,
+[data-theme='dark'] select::placeholder {
+  color: rgba(173, 181, 189, 0.7) !important;
+}
+
+/* Tabelas no tema escuro - com foco no histórico */
 [data-theme='dark'] .table {
-  color: var(--text-light);
+  color: #e9ecef;
+}
+
+[data-theme='dark'] .table thead th {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #f8f9fa;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+[data-theme='dark'] .table tbody td {
+  color: #e9ecef;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] .table-hover tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Histórico e batch */
+[data-theme='dark'] #historyList td,
+[data-theme='dark'] #batchFileList td {
+  color: #1a1e23;
+}
+
+[data-theme='dark'] .batch-file-name,
+[data-theme='dark'] .history-file-name {
+  color: #f8f9fa !important;
+  font-weight: 500;
+}
+
+[data-theme='dark'] .batch-file-size,
+[data-theme='dark'] .history-file-size {
+  color: #d1d5db !important;
+  font-weight: 500;
+}
+
+As principais alterações são:
+
+Cor mais clara para os tamanhos de arquivo:
+Alterei a cor para #d1d5db, que é mais clara e visível que a anterior
+Adicionei um peso de fonte ligeiramente maior (font-weight: 500) para destacar melhor
+Seletores específicos para diferentes elementos:
+Regras para .batch-file-size e .history-file-size
+Regras para spans dentro de elementos informativos
+Regras específicas para a coluna de tamanho na tabela do histórico
+Para implementar esta correção, você pode adicionar estas regras no final do seu arquivo dark-mode.css. Elas têm especificidade suficiente para sobrescrever as regras anteriores.
+
+Se a estrutura HTML do seu histórico for diferente, pode ser necessário ajustar os seletores. Por exemplo, se a coluna de tamanho do arquivo estiver em uma posição diferente da tabela, você precisará ajustar o seletor #historyList td:nth-child(4) para corresponder à coluna correta.
+
+Estas mudanças garantirão que o tamanho dos arquivos seja bem visível no tema escuro, facilitando a leitura das informações no histórico.
+
+
+
+
+Retry
+Claude can make mistakes. Please double-check responses.
+
+
+
+Nenhum arquivo escolhido
+
+3.7 Sonnet
+
+Choose style
+
+Correção do tamanho dos arquivos no histórico
+
+/* Adicione estas regras específicas ao seu arquivo dark-mode.css */
+
+/* Tamanho dos arquivos no histórico - mais visíveis */
+[data-theme="dark"] .batch-file-size,
+[data-theme="dark"] .history-file-size {
+  color: #d1d5db !important; /* Cor mais clara e visível */
+  font-weight: 500; /* Ligeiramente mais grosso */
+}
+
+/* Para outros elementos que mostram tamanho de arquivo */
+[data-theme='dark'] .small.text-muted span,
+[data-theme='dark'] #originalInfo span,
+[data-theme='dark'] #convertedInfo span,
+[data-theme='dark'] #originalCompressInfo span,
+[data-theme='dark'] #compressedInfo span {
+  color: #d1d5db !important;
+  font-weight: 500;
+}
+
+/* Placeholders específicos */
+[data-theme='dark'] .preview-placeholder,
+[data-theme='dark'] #batchPlaceholder,
+[data-theme='dark'] #historyPlaceholder {
+  color: #adb5bd !important;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Badges de status no batch converter */
+[data-theme='dark'] .batch-status-pending {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+[data-theme='dark'] .batch-status-processing {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+[data-theme='dark'] .batch-status-completed {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+[data-theme='dark'] .batch-status-error {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
 }
 
 [data-theme='dark'] .nav-pills .nav-link:not(.active) {
@@ -54,6 +211,7 @@
   color: var(--text-light);
 }
 
+/* Estilização do Drop Zone no tema escuro */
 [data-theme='dark'] .drop-zone {
   border-color: rgba(255, 255, 255, 0.1);
   background-color: rgba(0, 0, 0, 0.2);
@@ -64,6 +222,12 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+/* Correção para texto interno do Drop Zone */
+[data-theme='dark'] .drop-zone-prompt p {
+  color: #adb5bd !important;
+}
+
+/* Ajustes para botões no tema escuro */
 [data-theme='dark'] .btn-outline-secondary {
   border-color: #6c757d;
   color: #adb5bd;
@@ -79,7 +243,7 @@
 }
 
 [data-theme='dark'] .text-muted {
-  color: var(--text-muted) !important;
+  color: #adb5bd !important;
 }
 
 [data-theme='dark'] .img-thumbnail {
@@ -87,45 +251,154 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Animação para a transição do tema */
-body,
-.card,
-.form-control,
-.form-select,
-.modal-content,
-.table,
-.nav-pills .nav-link,
-.drop-zone,
-.btn,
-.bg-light,
-.text-muted,
-.img-thumbnail {
-  transition: background-color var(--transition-speed)
-      var(--transition-function),
-    border-color var(--transition-speed) var(--transition-function),
-    color var(--transition-speed) var(--transition-function),
-    box-shadow var(--transition-speed) var(--transition-function);
+/* Informações sobre as imagens */
+[data-theme='dark'] .small.text-muted,
+[data-theme='dark'] #originalInfo,
+[data-theme='dark'] #convertedInfo,
+[data-theme='dark'] #originalCompressInfo,
+[data-theme='dark'] #compressedInfo {
+  color: #adb5bd !important;
 }
 
-/* Alteração do ícone do botão de tema */
-[data-theme='dark'] #themeToggle i.fa-moon {
-  display: none;
+/* Efeitos de elevação para elementos no tema escuro */
+[data-theme='dark'] .card.shadow:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3) !important;
 }
 
-[data-theme='dark'] #themeToggle i.fa-sun {
-  display: inline-block;
+/* Ajustes para o header no tema escuro */
+[data-theme='dark'] header.bg-dark {
+  background: linear-gradient(125deg, #151819 0%, #1a1e23 50%, #121417 100%);
 }
 
-#themeToggle i.fa-sun {
-  display: none;
+[data-theme='dark'] header .shape-1 {
+  background: radial-gradient(
+    circle,
+    rgba(92, 122, 255, 0.8) 0%,
+    rgba(92, 122, 255, 0) 70%
+  );
 }
 
-/* Estilização do botão de tema para o estado dark */
-[data-theme='dark'] #themeToggle {
-  border-color: rgba(255, 255, 255, 0.3);
-  background-color: rgba(255, 255, 255, 0.05);
+[data-theme='dark'] header .shape-2 {
+  background: radial-gradient(
+    circle,
+    rgba(115, 103, 240, 0.6) 0%,
+    rgba(115, 103, 240, 0) 70%
+  );
 }
 
-[data-theme='dark'] #themeToggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+/* Ajustes específicos para o botão de tema */
+[data-theme='dark'] .btn-theme i.fa-sun {
+  opacity: 1;
+  transform: scale(1);
+  color: #ffc107;
+}
+
+[data-theme='dark'] .btn-theme i.fa-moon {
+  opacity: 0;
+  transform: scale(0.5) rotate(45deg);
+}
+
+[data-theme='dark'] .btn-theme {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .btn-theme:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Modificações para scrollbar no tema escuro */
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estilização para elementos específicos do aplicativo em modo escuro */
+[data-theme='dark'] .batch-settings {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .editor-controls {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Correção para títulos do editor */
+[data-theme='dark'] .editor-controls h5 {
+  color: var(--text-dark) !important;
+}
+
+[data-theme='dark'] .canvas-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .filter-btn {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+}
+
+[data-theme='dark'] .filter-btn:hover {
+  background-color: rgba(92, 122, 255, 0.1);
+  border-color: var(--primary-color);
+}
+
+/* Ajustes para o footer em modo escuro */
+[data-theme='dark'] footer.footer {
+  background: linear-gradient(135deg, #151819, #1a1e23);
+}
+
+/* Estilização para notificações toast em modo escuro */
+[data-theme='dark'] .toastify {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Animação de transição do tema */
+@keyframes theme-transition-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.theme-transition {
+  animation: theme-transition-fade 0.5s ease;
+}
+
+/* Estilização para o efeito de ondulação (ripple) */
+@keyframes ripple {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3);
+  }
+}
+
+.theme-switching {
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
