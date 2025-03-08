@@ -39,6 +39,9 @@ export function initDarkMode() {
         )
       }
     })
+
+  // Adicionar estilos para animação de ripple
+  addRippleStyle()
 }
 
 // Função para alternar o tema
@@ -127,7 +130,9 @@ function showToast(message, type = 'info') {
       close: true,
       gravity: 'bottom',
       position: 'right',
-      backgroundColor: toastBg[type],
+      style: {
+        background: toastBg[type]
+      },
       stopOnFocus: true
     }).showToast()
   } else {
