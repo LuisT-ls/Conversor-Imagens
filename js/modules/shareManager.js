@@ -34,26 +34,40 @@ export function initShareManager() {
       return
     }
 
-    // Create a temporary URL for the image (normally this would be uploaded to a server)
-    // For this example, we'll use a data URL, but in a real application,
-    // you would upload the image to a server and get a shareable URL
-    const tempUrl = URL.createObjectURL(imageData.data)
+    // Em vez de usar URL.createObjectURL(), que cria URLs temporárias locais,
+    // vamos converter a imagem para um Data URL (Base64) que pode ser compartilhado
+    const reader = new FileReader()
 
-    // Set the link in the modal
-    shareLink.value = tempUrl
+    reader.onload = function (event) {
+      // O resultado é um Data URL que contém os dados da imagem codificados em Base64
+      const dataUrl = event.target.result
 
-    // Show the modal
-    const shareModalInstance = new bootstrap.Modal(shareModal)
-    shareModalInstance.show()
+      // Se o Data URL for muito grande, considere usar um serviço de hospedagem
+      if (dataUrl.length > 2000000) {
+        // ~2MB em Base64
+        showNotification(
+          'Imagem muito grande para compartilhar diretamente. Considere comprimi-la primeiro.',
+          'warning'
+        )
+      }
 
-    // Clean up the URL when the modal is hidden
-    shareModal.addEventListener(
-      'hidden.bs.modal',
-      () => {
-        URL.revokeObjectURL(tempUrl)
-      },
-      { once: true }
-    )
+      // Set the link in the modal
+      shareLink.value = dataUrl
+
+      // Show the modal
+      const shareModalInstance = new bootstrap.Modal(shareModal)
+      shareModalInstance.show()
+    }
+
+    reader.onerror = function () {
+      showNotification(
+        'Erro ao preparar a imagem para compartilhamento.',
+        'error'
+      )
+    }
+
+    // Converter o Blob para Data URL
+    reader.readAsDataURL(imageData.data)
   }
 
   // Copy link to clipboard
@@ -113,6 +127,8 @@ export function initShareManager() {
 
     switch (platform) {
       case 'facebook':
+        // Para Facebook, o ideal seria usar um serviço de hospedagem de imagens
+        // pois o Facebook não suporta bem Data URLs diretamente
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${link}`
         break
 
@@ -140,27 +156,74 @@ export function initShareManager() {
     window.open(shareUrl, '_blank', 'width=600,height=500')
   }
 
-  // Check if the Web Share API is available
-  function isWebShareSupported() {
-    return navigator.share !== undefined
+  // Implementação adicional: usar a Web Share API quando disponível
+  // Esta é uma abordagem moderna que funciona bem em dispositivos móveis
+  function useWebShareAPI(title, url, file) {
+    if (navigator.share) {
+      const shareData = {
+        title: title || 'Imagem Convertida',
+        text: 'Confira esta imagem que eu converti!'
+      }
+
+      // Adicionar URL ou arquivo conforme disponível
+      if (url) shareData.url = url
+      if (file) shareData.files = [file]
+
+      navigator
+        .share(shareData)
+        .then(() => {
+          showNotification('Compartilhado com sucesso!', 'success')
+        })
+        .catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error('Erro ao compartilhar:', error)
+            showNotification('Erro ao compartilhar.', 'error')
+          }
+        })
+    } else {
+      showNotification(
+        'Web Share API não suportada neste navegador.',
+        'warning'
+      )
+      return false
+    }
+    return true
   }
 
-  // Share using the Web Share API
-  function shareWithWebShareAPI(url, title) {
-    navigator
-      .share({
-        title: title || 'Imagem Convertida',
-        url: url
+  // Adicionar botão para compartilhamento nativo
+  const nativeShareBtn = document.createElement('button')
+  nativeShareBtn.className = 'btn btn-primary mb-3 w-100'
+  nativeShareBtn.innerHTML =
+    '<i class="fas fa-share-alt me-2"></i>Compartilhar usando ferramentas nativas'
+  nativeShareBtn.style.display = navigator.share ? 'block' : 'none'
+
+  // Inserir após o modal body
+  const modalBody = shareModal.querySelector('.modal-body')
+  if (modalBody) {
+    modalBody.appendChild(nativeShareBtn)
+
+    nativeShareBtn.addEventListener('click', async () => {
+      const imageData = getConvertedImageData()
+
+      if (!imageData || !imageData.data) {
+        showNotification('Nenhuma imagem para compartilhar.', 'error')
+        return
+      }
+
+      // Criar um arquivo para compartilhar
+      const fileName = 'imagem_convertida.' + imageData.type.split('/')[1]
+      const file = new File([imageData.data], fileName, {
+        type: imageData.type
       })
-      .then(() => {
-        showNotification('Compartilhamento concluído com sucesso!', 'success')
-      })
-      .catch(error => {
-        // Check if the user canceled the share
-        if (error.name !== 'AbortError') {
-          console.error('Error sharing:', error)
-          showNotification('Erro ao compartilhar.', 'error')
-        }
-      })
+
+      // Tentar compartilhar com a Web Share API
+      const shared = useWebShareAPI('Imagem Convertida', null, file)
+
+      // Fechar o modal se compartilhado com sucesso
+      if (shared) {
+        const modalInstance = bootstrap.Modal.getInstance(shareModal)
+        if (modalInstance) modalInstance.hide()
+      }
+    })
   }
 }
