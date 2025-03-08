@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Política de Privacidade - Conversor de Imagens Avançado</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Toastify JS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <header class="bg-dark text-white py-4">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-7">
+            <div class="header-content">
+              <h1>
+                <a href="index.html" class="text-white text-decoration-none">
+                  <i class="fas fa-image header-icon"></i>Conversor de Imagens
+                </a>
+              </h1>
+              <p class="lead">
+                Uma ferramenta completa para trabalhar com suas imagens
+              </p>
+              <div class="header-badges d-none d-md-flex">
+                <span class="badge-item"
+                  ><i class="fas fa-bolt"></i> Rápido</span
+                >
+                <span class="badge-item"
+                  ><i class="fas fa-shield-alt"></i> Seguro</span
+                >
+                <span class="badge-item"
+                  ><i class="fas fa-magic"></i> Versátil</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 text-md-end mt-4 mt-md-0">
+            <div class="header-actions">
+              <button
+                id="themeToggle"
+                class="btn-theme"
+                aria-label="Alternar tema"
+              >
+                <div class="theme-switch">
+                  <i class="fas fa-moon"></i>
+                  <i class="fas fa-sun"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+    </header>
+
+    <nav class="bg-light py-2">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Início</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="document.html">Documentação</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="faq.html">FAQ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="privacy.html"
+                >Política de Privacidade</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card shadow">
+            <div class="card-body p-4 p-lg-5">
+              <div class="d-flex align-items-center mb-4">
+                <i class="fas fa-shield-alt text-primary fa-3x me-3"></i>
+                <h1 class="mb-0">Política de Privacidade</h1>
+              </div>
+
+              <p class="lead mb-4">
+                Última atualização:
+                <time datetime="2025-01-15">15 de Janeiro de 2025</time>
+              </p>
+
+              <div class="alert alert-info mb-4">
+                <div class="d-flex">
+                  <i class="fas fa-info-circle fa-2x me-3 mt-1"></i>
+                  <div>
+                    <strong>Resumo da nossa política:</strong>
+                    <p class="mb-0">
+                      O Conversor de Imagens processa todas as imagens
+                      <strong>localmente</strong> no seu navegador. Suas imagens
+                      nunca são enviadas para nossos servidores, garantindo
+                      total privacidade dos seus dados. Não coletamos
+                      informações pessoais identificáveis e utilizamos cookies
+                      apenas para melhorar sua experiência.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <nav id="privacy-nav" class="mb-4">
+                <ul class="list-group">
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#introducao"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Introdução
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#informacoes-coletadas"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Informações que
+                      coletamos
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#uso-informacoes"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Como usamos suas
+                      informações
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#seguranca-imagens"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Segurança das suas
+                      imagens
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#cookies"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Cookies e
+                      tecnologias similares
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#direitos"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Seus direitos de
+                      privacidade
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#alteracoes"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Alterações nesta
+                      política
+                    </a>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center">
+                    <a
+                      href="#contato"
+                      class="text-decoration-none d-block w-100"
+                    >
+                      <i class="fas fa-angle-right me-2"></i> Entre em contato
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+
+              <section id="introducao" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">1. Introdução</h2>
+                <p>
+                  Bem-vindo à Política de Privacidade do Conversor de Imagens
+                  Avançado. Esta política descreve como coletamos, usamos e
+                  protegemos suas informações quando você utiliza nosso serviço
+                  online de conversão, edição e compressão de imagens.
+                </p>
+                <p>
+                  Nossa abordagem de privacidade é baseada em dois princípios
+                  fundamentais:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Processamento local:</strong> Todas as operações de
+                    imagem são realizadas diretamente no seu navegador,
+                    eliminando a necessidade de enviar seus arquivos para nossos
+                    servidores.
+                  </li>
+                  <li>
+                    <strong>Minimização de dados:</strong> Coletamos apenas o
+                    mínimo de informações necessárias para fornecer e melhorar
+                    nosso serviço.
+                  </li>
+                </ul>
+                <p>
+                  Ao utilizar nosso serviço, você concorda com a coleta e uso de
+                  informações de acordo com esta política.
+                </p>
+              </section>
+
+              <section id="informacoes-coletadas" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">
+                  2. Informações que coletamos
+                </h2>
+                <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <div class="card h-100 border-success">
+                      <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                          O que <strong>não</strong> coletamos
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                          <li>
+                            <i class="fas fa-check-circle text-success me-2"></i
+                            >Suas imagens ou arquivos
+                          </li>
+                          <li>
+                            <i class="fas fa-check-circle text-success me-2"></i
+                            >Informações pessoais identificáveis
+                          </li>
+                          <li>
+                            <i class="fas fa-check-circle text-success me-2"></i
+                            >Dados de pagamento
+                          </li>
+                          <li>
+                            <i class="fas fa-check-circle text-success me-2"></i
+                            >Informações de localização precisa
+                          </li>
+                          <li>
+                            <i class="fas fa-check-circle text-success me-2"></i
+                            >Conteúdo das edições de imagem
+                          </li>
+                          <li>
+                            <i class="fas fa-check-circle text-success me-2"></i
+                            >Histórico de conversões
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                      <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">O que coletamos</h5>
+                      </div>
+                      <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                          <li>
+                            <i class="fas fa-info-circle text-primary me-2"></i
+                            >Dados de uso anônimos (formatos mais utilizados)
+                          </li>
+                          <li>
+                            <i class="fas fa-info-circle text-primary me-2"></i
+                            >Métricas de desempenho do aplicativo
+                          </li>
+                          <li>
+                            <i class="fas fa-info-circle text-primary me-2"></i
+                            >Dados de erro para resolução de problemas
+                          </li>
+                          <li>
+                            <i class="fas fa-info-circle text-primary me-2"></i
+                            >Informações básicas do navegador e dispositivo
+                          </li>
+                          <li>
+                            <i class="fas fa-info-circle text-primary me-2"></i
+                            >Preferências de uso (via localStorage)
+                          </li>
+                          <li>
+                            <i class="fas fa-info-circle text-primary me-2"></i
+                            >Cookies para análise anônima de tráfego
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h4 class="mt-4">2.1. Informações coletadas automaticamente</h4>
+                <p>
+                  Coletamos certas informações automaticamente quando você
+                  visita nosso site, incluindo:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Informações de uso:</strong> Métricas anônimas sobre
+                    como você interage com a aplicação, como formatos de imagem
+                    mais utilizados, ferramentas de edição mais populares e
+                    taxas de conversão.
+                  </li>
+                  <li>
+                    <strong>Informações do dispositivo:</strong> Tipo e versão
+                    do navegador, sistema operacional, configurações de idioma e
+                    informações gerais do dispositivo para otimizar a
+                    experiência do usuário.
+                  </li>
+                  <li>
+                    <strong>Informações de desempenho:</strong> Métricas
+                    técnicas como tempo de carregamento, desempenho das
+                    conversões e ocorrência de erros para melhorar o serviço.
+                  </li>
+                </ul>
+
+                <h4 class="mt-4">2.2. Armazenamento local</h4>
+                <p>
+                  Utilizamos o armazenamento local do navegador (localStorage)
+                  para:
+                </p>
+                <ul>
+                  <li>Salvar suas preferências de tema (claro/escuro)</li>
+                  <li>Armazenar temporariamente o histórico de conversões</li>
+                  <li>
+                    Lembrar suas configurações preferidas para cada formato de
+                    conversão
+                  </li>
+                  <li>Manter o estado da sessão durante o uso do aplicativo</li>
+                </ul>
+                <p>
+                  Estes dados são armazenados exclusivamente no seu dispositivo
+                  e não são acessíveis por nós.
+                </p>
+              </section>
+
+              <section id="uso-informacoes" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">
+                  3. Como usamos suas informações
+                </h2>
+                <p>
+                  Utilizamos as informações coletadas para os seguintes
+                  propósitos:
+                </p>
+
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Tipo de informação</th>
+                        <th>Como utilizamos</th>
+                        <th>Base legal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Dados de uso anônimos</td>
+                        <td>
+                          <ul>
+                            <li>Analisar quais recursos são mais utilizados</li>
+                            <li>Identificar áreas para melhoria</li>
+                            <li>
+                              Desenvolver novos recursos baseados na demanda
+                            </li>
+                          </ul>
+                        </td>
+                        <td>Interesse legítimo em melhorar nossos serviços</td>
+                      </tr>
+                      <tr>
+                        <td>Informações do dispositivo</td>
+                        <td>
+                          <ul>
+                            <li>
+                              Otimizar a experiência para diferentes
+                              dispositivos
+                            </li>
+                            <li>Garantir compatibilidade entre navegadores</li>
+                            <li>
+                              Solucionar problemas específicos de plataforma
+                            </li>
+                          </ul>
+                        </td>
+                        <td>
+                          Interesse legítimo em fornecer serviços compatíveis
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Dados de desempenho</td>
+                        <td>
+                          <ul>
+                            <li>
+                              Identificar e corrigir gargalos de performance
+                            </li>
+                            <li>
+                              Otimizar algoritmos de processamento de imagem
+                            </li>
+                            <li>Monitorar estabilidade do aplicativo</li>
+                          </ul>
+                        </td>
+                        <td>
+                          Interesse legítimo em manter a qualidade do serviço
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Armazenamento local</td>
+                        <td>
+                          <ul>
+                            <li>Fornecer histórico de conversões</li>
+                            <li>Preservar preferências do usuário</li>
+                            <li>
+                              Melhorar usabilidade em sessões subsequentes
+                            </li>
+                          </ul>
+                        </td>
+                        <td>
+                          Consentimento (via configurações do navegador) e
+                          interesse legítimo
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p class="mt-3">Não utilizamos suas informações para:</p>
+                <ul>
+                  <li>Marketing direcionado ou personalizado</li>
+                  <li>
+                    Venda ou compartilhamento com terceiros para fins comerciais
+                  </li>
+                  <li>
+                    Criação de perfis de usuário ou segmentação comportamental
+                  </li>
+                </ul>
+              </section>
+
+              <section id="seguranca-imagens" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">
+                  4. Segurança das suas imagens
+                </h2>
+                <div class="alert alert-success">
+                  <div class="d-flex">
+                    <i class="fas fa-lock fa-2x me-3 mt-1"></i>
+                    <div>
+                      <strong>Processamento 100% local</strong>
+                      <p class="mb-0">
+                        Todas as operações de conversão, edição e compressão de
+                        imagens são realizadas exclusivamente no seu navegador,
+                        utilizando APIs modernas como WebAssembly e Canvas. Suas
+                        imagens nunca deixam o seu dispositivo durante o
+                        processo.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <h4 class="mt-4">4.1. Fluxo de trabalho da imagem</h4>
+                <ol>
+                  <li>
+                    <strong>Upload:</strong> Quando você seleciona uma imagem,
+                    ela é carregada na memória do seu navegador.
+                  </li>
+                  <li>
+                    <strong>Processamento:</strong> Todas as operações
+                    (conversão, edição, compressão) são executadas localmente,
+                    usando recursos do seu dispositivo.
+                  </li>
+                  <li>
+                    <strong>Visualização:</strong> A imagem processada é exibida
+                    na interface para sua revisão.
+                  </li>
+                  <li>
+                    <strong>Download:</strong> Ao clicar em "Baixar", a imagem
+                    processada é salva diretamente no seu dispositivo.
+                  </li>
+                  <li>
+                    <strong>Histórico:</strong> Se esta funcionalidade estiver
+                    ativada, uma miniatura da imagem é armazenada no
+                    localStorage do navegador (apenas no seu dispositivo).
+                  </li>
+                </ol>
+
+                <p>
+                  Em nenhum momento neste processo as imagens são enviadas para
+                  nossos servidores ou para servidores de terceiros.
+                </p>
+
+                <h4 class="mt-4">4.2. Limitações do processamento local</h4>
+                <p>
+                  O processamento local apresenta os seguintes benefícios e
+                  limitações:
+                </p>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                      <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Benefícios</h5>
+                      </div>
+                      <div class="card-body">
+                        <ul>
+                          <li>Suas imagens nunca saem do seu dispositivo</li>
+                          <li>
+                            Não há necessidade de esperar por uploads/downloads
+                          </li>
+                          <li>
+                            Funciona mesmo sem uma conexão estável com a
+                            internet
+                          </li>
+                          <li>
+                            Processamento mais rápido para a maioria das imagens
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                      <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Limitações</h5>
+                      </div>
+                      <div class="card-body">
+                        <ul>
+                          <li>
+                            Dispositivos com poucos recursos podem ter
+                            limitações de desempenho
+                          </li>
+                          <li>
+                            Imagens muito grandes podem consumir muita memória
+                          </li>
+                          <li>
+                            Alguns recursos avançados podem ser limitados pela
+                            capacidade do navegador
+                          </li>
+                          <li>
+                            O histórico é específico para cada dispositivo e
+                            navegador
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="cookies" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">
+                  5. Cookies e tecnologias similares
+                </h2>
+                <p>
+                  Utilizamos cookies e tecnologias similares para melhorar a
+                  experiência do usuário e coletar dados anônimos sobre o uso do
+                  nosso site.
+                </p>
+
+                <h4 class="mt-4">5.1. Tipos de cookies que utilizamos</h4>
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Tipo de cookie</th>
+                        <th>Finalidade</th>
+                        <th>Duração</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Cookies essenciais</td>
+                        <td>
+                          Necessários para o funcionamento básico do site, como
+                          manter sua sessão ativa
+                        </td>
+                        <td>Sessão</td>
+                      </tr>
+                      <tr>
+                        <td>Cookies de preferências</td>
+                        <td>
+                          Armazenam suas preferências, como o tema escolhido
+                          (claro/escuro)
+                        </td>
+                        <td>1 ano</td>
+                      </tr>
+                      <tr>
+                        <td>Cookies analíticos</td>
+                        <td>
+                          Coletam informações anônimas sobre como você utiliza o
+                          site
+                        </td>
+                        <td>2 anos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h4 class="mt-4">5.2. Controle de cookies</h4>
+                <p>
+                  Você pode gerenciar suas preferências de cookies através das
+                  configurações do seu navegador. Você pode configurar seu
+                  navegador para recusar todos os cookies ou para indicar quando
+                  um cookie está sendo enviado.
+                </p>
+                <div class="alert alert-warning">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  <strong>Nota:</strong> Bloquear todos os cookies pode afetar a
+                  funcionalidade do site. Algumas funcionalidades, como o
+                  armazenamento de preferências e histórico de conversões, não
+                  funcionarão corretamente se você desabilitar cookies.
+                </div>
+
+                <h4 class="mt-4">5.3. Serviços analíticos</h4>
+                <p>
+                  Utilizamos o Google Analytics para coletar dados anônimos
+                  sobre o uso do nosso site. Este serviço pode utilizar cookies
+                  para identificar seu navegador ou dispositivo de forma
+                  anônima. As informações geradas pelo cookie sobre sua
+                  utilização do site são transmitidas e armazenadas pelos
+                  servidores do Google.
+                </p>
+                <p>
+                  Você pode impedir a coleta de dados pelo Google Analytics
+                  instalando o
+                  <a
+                    href="https://tools.google.com/dlpage/gaoptout"
+                    target="_blank"
+                    >complemento de navegador para desativação do Google
+                    Analytics</a
+                  >.
+                </p>
+              </section>
+
+              <section id="direitos" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">
+                  6. Seus direitos de privacidade
+                </h2>
+                <p>
+                  Dependendo da sua localização, você pode ter determinados
+                  direitos em relação aos seus dados pessoais. Nos comprometemos
+                  a respeitar seus direitos e fornecer controle sobre suas
+                  informações:
+                </p>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <ul>
+                      <li>
+                        <strong>Direito de acesso:</strong> Você pode solicitar
+                        uma cópia dos dados limitados que coletamos sobre você.
+                      </li>
+                      <li>
+                        <strong>Direito de retificação:</strong> Você pode
+                        solicitar a correção de informações imprecisas.
+                      </li>
+                      <li>
+                        <strong>Direito ao esquecimento:</strong> Você pode
+                        solicitar a exclusão dos dados que temos sobre você.
+                      </li>
+                      <li>
+                        <strong>Direito à restrição de processamento:</strong>
+                        Você pode solicitar a limitação do uso dos seus dados.
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <ul>
+                      <li>
+                        <strong>Direito à portabilidade de dados:</strong> Você
+                        pode solicitar suas informações em formato estruturado.
+                      </li>
+                      <li>
+                        <strong>Direito de objeção:</strong> Você pode se opor
+                        ao processamento dos seus dados.
+                      </li>
+                      <li>
+                        <strong>Direito de retirar o consentimento:</strong>
+                        Você pode retirar qualquer consentimento previamente
+                        dado.
+                      </li>
+                      <li>
+                        <strong>Direito de reclamar:</strong> Você pode
+                        apresentar uma reclamação à autoridade de proteção de
+                        dados competente.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <p>
+                  Para exercer qualquer um desses direitos, entre em contato
+                  conosco através do endereço de e-mail:
+                  <a href="mailto:privacidade@conversorimagens.com"
+                    >privacidade@conversorimagens.com</a
+                  >
+                </p>
+
+                <div class="alert alert-info mt-3">
+                  <i class="fas fa-info-circle me-2"></i>
+                  <strong>Importante:</strong> Como processamos um mínimo de
+                  dados pessoais e não exigimos registro de contas, pode ser
+                  difícil identificar informações específicas relacionadas a um
+                  usuário individual. Faremos nosso melhor para atender às suas
+                  solicitações com base nas informações que você nos fornecer.
+                </div>
+              </section>
+
+              <section id="alteracoes" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">
+                  7. Alterações nesta política
+                </h2>
+                <p>
+                  Podemos atualizar nossa Política de Privacidade
+                  periodicamente. Notificaremos você sobre quaisquer alterações
+                  significativas publicando a nova Política de Privacidade nesta
+                  página e, se as alterações forem significativas, forneceremos
+                  um aviso mais proeminente.
+                </p>
+                <p>
+                  Recomendamos que você revise esta Política de Privacidade
+                  periodicamente para verificar se há alterações. Alterações
+                  nesta Política de Privacidade são efetivas quando publicadas
+                  nesta página.
+                </p>
+
+                <div class="card bg-light mt-4">
+                  <div class="card-body">
+                    <h5 class="card-title">Histórico de atualizações</h5>
+                    <ul class="list-unstyled">
+                      <li class="mb-2">
+                        <strong
+                          ><time datetime="2025-01-15"
+                            >15 de Janeiro de 2025</time
+                          >:</strong
+                        >
+                        Atualização para incluir mais detalhes sobre o
+                        processamento local de imagens.
+                      </li>
+                      <li class="mb-2">
+                        <strong
+                          ><time datetime="2024-10-12"
+                            >12 de Outubro de 2024</time
+                          >:</strong
+                        >
+                        Revisão geral e melhorias na clareza do texto.
+                      </li>
+                      <li>
+                        <strong
+                          ><time datetime="2024-08-05"
+                            >05 de Agosto de 2024</time
+                          >:</strong
+                        >
+                        Publicação inicial da política de privacidade.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section id="contato" class="mb-5">
+                <h2 class="border-bottom pb-2 mb-3">8. Entre em contato</h2>
+                <p>
+                  Se você tiver dúvidas ou preocupações sobre esta Política de
+                  Privacidade ou sobre nossas práticas de privacidade, entre em
+                  contato conosco:
+                </p>
+
+                <div class="card contact-card mt-4">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6 mb-3 mb-md-0">
+                        <h5>
+                          <i class="fas fa-envelope text-primary me-2"></i
+                          >E-mail
+                        </h5>
+                        <p class="mb-0">
+                          <a href="mailto:privacidade@conversorimagens.com"
+                            >privacidade@conversorimagens.com</a
+                          >
+                        </p>
+                      </div>
+                      <div class="col-md-6">
+                        <h5>
+                          <i class="fas fa-map-marker-alt text-primary me-2"></i
+                          >Endereço
+                        </h5>
+                        <p class="mb-0">
+                          Conversor de Imagens Pro<br />
+                          Av. Paulista, 1000 - Bela Vista<br />
+                          São Paulo, SP - 01310-100<br />
+                          Brasil
+                        </p>
+                      </div>
+                    </div>
+
+                    <hr class="my-3" />
+
+                    <div class="text-center">
+                      <p class="mb-3">
+                        Você também pode preencher nosso formulário de contato:
+                      </p>
+                      <a
+                        href="#"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#contactModal"
+                      >
+                        <i class="fas fa-paper-plane me-2"></i>Formulário de
+                        Contato
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal de Contato para Privacidade -->
+    <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Contato sobre Privacidade</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="privacyContactForm">
+              <div class="mb-3">
+                <label for="contactName" class="form-label">Nome</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contactName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="contactEmail" class="form-label">E-mail</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="contactEmail"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="contactSubject" class="form-label">Assunto</label>
+                <select class="form-select" id="contactSubject" required>
+                  <option value="">Selecione um assunto...</option>
+                  <option value="request">Solicitação de dados pessoais</option>
+                  <option value="delete">
+                    Solicitação de exclusão de dados
+                  </option>
+                  <option value="question">
+                    Dúvida sobre a política de privacidade
+                  </option>
+                  <option value="complaint">Reclamação</option>
+                  <option value="other">Outro assunto</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="contactMessage" class="form-label">Mensagem</label>
+                <textarea
+                  class="form-control"
+                  id="contactMessage"
+                  rows="5"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="privacyConsent"
+                  required
+                />
+                <label class="form-check-label" for="privacyConsent">
+                  Concordo com o processamento dos meus dados para responder a
+                  esta solicitação.
+                </label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" id="sendPrivacyForm">
+              Enviar Mensagem
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer bg-dark text-white py-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5>Sobre o Projeto</h5>
+            <p class="small">
+              Conversor de imagens online gratuito com recursos avançados de
+              edição, compressão e conversão em lote.
+            </p>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5>Links Rápidos</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="/" class="footer-link">Início</a>
+              </li>
+              <li>
+                <a href="document.html" class="footer-link">Documentação</a>
+              </li>
+              <li><a href="faq.html" class="footer-link">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>Redes Sociais</h5>
+            <div class="social-links">
+              <a
+                href="https://instagram.com/luis.tei"
+                target="_blank"
+                aria-label="Instagram"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a
+                href="https://linkedin.com/in/luis-tei"
+                target="_blank"
+                aria-label="LinkedIn"
+              >
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a
+                href="https://github.com/LuisT-ls"
+                target="_blank"
+                aria-label="GitHub"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <hr class="border-light" />
+        <p class="mb-0">
+          &copy; <time datetime="2025">2025</time> Conversor de Imagens Pro.
+          Todos os direitos reservados.
+        </p>
+        <p class="mb-0">
+          Desenvolvido com <i class="fas fa-heart text-danger"></i> por Luis Tei
+        </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS e dependências -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Toastify JS para notificações -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- JS Principal -->
+    <script src="js/app.js" type="module"></script>
+    <!-- Script específico para política de privacidade -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Rolagem suave para links internos
+        document.querySelectorAll('#privacy-nav a').forEach(link => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault()
+            const targetId = this.getAttribute('href')
+            const targetSection = document.querySelector(targetId)
+
+            if (targetSection) {
+              window.scrollTo({
+                top: targetSection.offsetTop - 80,
+                behavior: 'smooth'
+              })
+            }
+          })
+        })
+
+        // Manipulador para o envio do formulário de contato
+        const sendButton = document.getElementById('sendPrivacyForm')
+        if (sendButton) {
+          sendButton.addEventListener('click', function () {
+            const form = document.getElementById('privacyContactForm')
+
+            // Verificação básica de formulário
+            if (form.checkValidity()) {
+              // Em um caso real, aqui enviaria os dados do formulário via AJAX
+              // Esta é apenas uma simulação de envio bem-sucedido
+
+              // Fechar modal
+              bootstrap.Modal.getInstance(
+                document.getElementById('contactModal')
+              ).hide()
+
+              // Mostrar notificação de sucesso
+              Toastify({
+                text: 'Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.',
+                duration: 5000,
+                close: true,
+                gravity: 'top',
+                position: 'center',
+                backgroundColor: 'var(--bs-success)',
+                stopOnFocus: true
+              }).showToast()
+
+              // Limpar formulário
+              form.reset()
+            } else {
+              // Trigger validação nativa do navegador
+              form.reportValidity()
+            }
+          })
+        }
+      })
+    </script>
+  </body>
+</html>
