@@ -1,6 +1,16 @@
-// Módulo para o compressor de imagens
+// imageCompressor.js - Handle image compression functionality
+import { showNotification, formatFileSize, getMimeType } from '../app.js'
+
+// Global variables
+let originalImage = null
+let originalImageType = ''
+let originalImageName = ''
+let compressedImageData = null
+
 export function initImageCompressor() {
-  // Elementos do DOM
+  console.log('Initializing image compressor functionality...')
+
+  // DOM elements
   const compressorFileInput = document.getElementById('compressorFileInput')
   const compressionSettings = document.querySelector('.compression-settings')
   const compressionLevel = document.getElementById('compressionLevel')
@@ -21,56 +31,18 @@ export function initImageCompressor() {
     'downloadCompressedLink'
   )
 
-  // Variáveis para armazenar dados da imagem
-  let originalImage = null
-  let originalImageType = ''
-  let originalSize = 0
-  let currentFile = null
-
-  // Event Listeners
-  compressorFileInput.addEventListener('change', handleFileSelect)
-  compressionLevel.addEventListener('input', updateCompressionLabel)
+  // Initialize event listeners
+  compressorFileInput.addEventListener('change', handleFileSelection)
+  compressionLevel.addEventListener('input', updateCompressionValue)
   keepFormat.addEventListener('change', toggleFormatOptions)
   compressButton.addEventListener('click', compressImage)
-  targetSizeInput.addEventListener('input', validateTargetSize)
 
-  // Função para lidar com a seleção de arquivo
-  function handleFileSelect(e) {
-    const file = e.target.files[0]
-
-    if (!file || !file.type.startsWith('image/')) {
-      showError('Por favor, selecione um arquivo de imagem válido.')
-      return
-    }
-
-    currentFile = file
-    originalSize = file.size
-    originalImageType = file.type
-
-    // Mostrar configurações de compressão
-    compressionSettings.classList.remove('d-none')
-    compressButton.disabled = false
-
-    // Exibir preview da imagem original
-    const reader = new FileReader()
-    reader.onload = function (event) {
-      // Criar uma imagem para obter dimensões
-      originalImage = new Image()
-      originalImage.onload = function () {
-        // Exibir informações da imagem original
-        showOriginalImage(event.target.result, file)
-      }
-      originalImage.src = event.target.result
-    }
-    reader.readAsDataURL(file)
-  }
-
-  // Função para atualizar o valor do nível de compressão
-  function updateCompressionLabel() {
+  // Update compression value display
+  function updateCompressionValue() {
     compressionValue.textContent = `${compressionLevel.value}%`
   }
 
-  // Função para alternar opções de formato
+  // Toggle format options based on keep format checkbox
   function toggleFormatOptions() {
     if (keepFormat.checked) {
       compressionFormatOptions.classList.add('d-none')
@@ -79,206 +51,261 @@ export function initImageCompressor() {
     }
   }
 
-  // Função para validar o tamanho alvo
-  function validateTargetSize() {
-    if (
-      targetSizeInput.value &&
-      (isNaN(targetSizeInput.value) || targetSizeInput.value <= 0)
-    ) {
-      targetSizeInput.setCustomValidity(
-        'Por favor, insira um valor positivo em KB'
+  // Handle file selection
+  function handleFileSelection(event) {
+    const file = event.target.files[0]
+
+    if (!file) return
+
+    // Check if the file is an image
+    if (!file.type.startsWith('image/')) {
+      showNotification(
+        'Por favor, selecione um arquivo de imagem válido.',
+        'error'
       )
-    } else {
-      targetSizeInput.setCustomValidity('')
+      return
     }
-    targetSizeInput.reportValidity()
+
+    // Save original file info
+    originalImageType = file.type
+    originalImageName = file.name
+
+    // Read the file
+    const reader = new FileReader()
+
+    reader.onload = function (e) {
+      // Create an image element to get dimensions
+      const img = new Image()
+
+      img.onload = function () {
+        // Save the original image
+        originalImage = {
+          file: file,
+          src: e.target.result,
+          width: img.width,
+          height: img.height,
+          size: file.size
+        }
+
+        // Show compression settings
+        compressionSettings.classList.remove('d-none')
+
+        // Enable compress button
+        compressButton.disabled = false
+
+        // Hide results if previously shown
+        compressionResults.classList.add('d-none')
+      }
+
+      img.src = e.target.result
+    }
+
+    reader.readAsDataURL(file)
   }
 
-  // Função para exibir a imagem original
-  function showOriginalImage(src, file) {
-    // Criar elemento de imagem e adicionar ao container
-    originalCompressImage.innerHTML = ''
-    const img = document.createElement('img')
-    img.src = src
-    img.className = 'img-fluid'
-    img.alt = 'Imagem Original'
-    originalCompressImage.appendChild(img)
-
-    // Atualizar informações da imagem original
-    const sizeInKB = (file.size / 1024).toFixed(2)
-    originalCompressInfo.textContent = `${file.name} (${originalImage.width}x${originalImage.height}, ${sizeInKB} KB)`
-  }
-
-  // Função principal para comprimir a imagem
+  // Compress the image
   function compressImage() {
-    if (!currentFile) return
+    if (!originalImage) {
+      showNotification('Por favor, selecione uma imagem primeiro.', 'error')
+      return
+    }
 
-    const quality = parseInt(compressionLevel.value) / 100
+    // Get compression settings
+    const compressionQuality = parseInt(compressionLevel.value) / 100
     const targetSize = targetSizeInput.value
       ? parseInt(targetSizeInput.value) * 1024
-      : null
-    const outputFormat = keepFormat.checked
+      : null // Convert KB to bytes
+    const useOriginalFormat = keepFormat.checked
+    const format = useOriginalFormat
       ? originalImageType.split('/')[1]
       : compressionFormat.value
 
-    // Criar um canvas para a compressão
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
+    // Create an image element
+    const img = new Image()
 
-    // Definir dimensões do canvas
-    canvas.width = originalImage.width
-    canvas.height = originalImage.height
-
-    // Desenhar a imagem no canvas
-    ctx.drawImage(originalImage, 0, 0)
-
-    // Comprimir a imagem
-    compressWithCanvas(canvas, outputFormat, quality, targetSize)
-  }
-
-  // Função para comprimir usando canvas
-  function compressWithCanvas(canvas, format, quality, targetSize) {
-    let mimeType
-    let outputQuality = quality
-
-    // Definir o tipo MIME com base no formato
-    switch (format) {
-      case 'jpeg':
-      case 'jpg':
-        mimeType = 'image/jpeg'
-        break
-      case 'png':
-        mimeType = 'image/png'
-        break
-      case 'webp':
-        mimeType = 'image/webp'
-        break
-      default:
-        mimeType = originalImageType
-    }
-
-    // Se houver um tamanho alvo, fazer compressão adaptativa
-    if (targetSize) {
-      adaptiveCompression(canvas, mimeType, outputQuality, targetSize)
-    } else {
-      // Compressão simples baseada no nível selecionado
-      const dataUrl = canvas.toDataURL(mimeType, outputQuality)
-      displayCompressedImage(dataUrl, mimeType)
-    }
-  }
-
-  // Função para compressão adaptativa (tenta atingir o tamanho alvo)
-  function adaptiveCompression(canvas, mimeType, initialQuality, targetSize) {
-    let minQuality = 0.1
-    let maxQuality = 1.0
-    let currentQuality = initialQuality
-    let iterations = 0
-    const MAX_ITERATIONS = 10
-
-    // Função de compressão binária para encontrar a qualidade ideal
-    function compressStep() {
-      // Limitar o número de iterações para evitar loops infinitos
-      if (iterations > MAX_ITERATIONS) {
-        const finalDataUrl = canvas.toDataURL(mimeType, currentQuality)
-        displayCompressedImage(finalDataUrl, mimeType)
-        return
-      }
-
-      iterations++
-
-      const dataUrl = canvas.toDataURL(mimeType, currentQuality)
-      const size = dataURLtoBlob(dataUrl).size
-
-      // Verificar se chegamos perto o suficiente do tamanho alvo
-      const difference = Math.abs(size - targetSize)
-      if (difference <= targetSize * 0.05) {
-        // 5% de tolerância
-        displayCompressedImage(dataUrl, mimeType)
-        return
-      }
-
-      // Ajustar a qualidade com base no tamanho atual
-      if (size > targetSize) {
-        maxQuality = currentQuality
-        currentQuality = (minQuality + currentQuality) / 2
-      } else {
-        minQuality = currentQuality
-        currentQuality = (currentQuality + maxQuality) / 2
-      }
-
-      // Próxima iteração
-      compressStep()
-    }
-
-    // Iniciar processo de compressão adaptativa
-    compressStep()
-  }
-
-  // Converte DataURL para Blob
-  function dataURLtoBlob(dataURL) {
-    const parts = dataURL.split(';base64,')
-    const contentType = parts[0].split(':')[1]
-    const raw = window.atob(parts[1])
-    const rawLength = raw.length
-    const uInt8Array = new Uint8Array(rawLength)
-
-    for (let i = 0; i < rawLength; ++i) {
-      uInt8Array[i] = raw.charCodeAt(i)
-    }
-
-    return new Blob([uInt8Array], { type: contentType })
-  }
-
-  // Função para exibir a imagem comprimida
-  function displayCompressedImage(dataUrl, mimeType) {
-    // Converter DataURL para Blob para obter o tamanho
-    const blob = dataURLtoBlob(dataUrl)
-    const compressedSize = blob.size
-
-    // Criar uma imagem para exibir
-    const img = document.createElement('img')
-    img.className = 'img-fluid'
-    img.alt = 'Imagem Comprimida'
     img.onload = function () {
-      // Exibir resultados
-      compressionResults.classList.remove('d-none')
+      // Create a canvas to draw the image
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
 
-      // Atualizar informações da imagem comprimida
-      const reducedSize = (compressedSize / 1024).toFixed(2)
-      const reductionPercent = (
-        (1 - compressedSize / originalSize) *
-        100
-      ).toFixed(2)
-      compressedInfo.textContent = `${img.width}x${img.height}, ${reducedSize} KB (redução de ${reductionPercent}%)`
+      // Draw the image on the canvas
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
 
-      // Configurar link de download
-      const fileExtension = mimeType.split('/')[1]
-      const filename = `compressed_${Date.now()}.${fileExtension}`
-      downloadCompressedLink.href = dataUrl
-      downloadCompressedLink.download = filename
+      // If target size is specified, use binary search to find the best quality
+      if (targetSize) {
+        compressToTargetSize(canvas, format, targetSize)
+          .then(showResults)
+          .catch(error => {
+            console.error('Error compressing to target size:', error)
+            showNotification('Erro ao comprimir para o tamanho alvo.', 'error')
+          })
+      } else {
+        // Otherwise, use the specified quality
+        canvas.toBlob(
+          blob => {
+            if (!blob) {
+              showNotification('Erro ao comprimir a imagem.', 'error')
+              return
+            }
 
-      // Notificar o usuário
-      if (window.showNotification) {
-        window.showNotification(
-          'Compressão Concluída',
-          `Tamanho reduzido em ${reductionPercent}%`,
-          'success'
+            compressedImageData = blob
+            showResults(blob)
+          },
+          getMimeType(format),
+          compressionQuality
         )
       }
     }
 
-    // Definir a imagem e inserir na página
-    img.src = dataUrl
-    compressedImage.innerHTML = ''
-    compressedImage.appendChild(img)
+    img.src = originalImage.src
   }
 
-  // Função para mostrar erros
-  function showError(message) {
-    if (window.showNotification) {
-      window.showNotification('Erro', message, 'error')
-    } else {
-      alert(message)
+  // Compress to target size using binary search
+  function compressToTargetSize(canvas, format, targetSize) {
+    return new Promise((resolve, reject) => {
+      let min = 0.01 // Minimum quality
+      let max = 1.0 // Maximum quality
+      let current = 0.7 // Start with 0.7 quality
+      let bestBlob = null
+      let bestQuality = 0
+      let iterations = 0
+      const maxIterations = 10 // Limit iterations to prevent infinite loop
+
+      // Binary search for the best quality that fits the target size
+      function tryCompress() {
+        iterations++
+
+        // Convert using current quality
+        canvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error('Failed to compress image'))
+              return
+            }
+
+            // Check if the blob is smaller than the target size
+            if (blob.size <= targetSize) {
+              // This quality works, save it and try higher
+              bestBlob = blob
+              bestQuality = current
+              min = current
+              current = (min + max) / 2
+            } else {
+              // Too big, try lower quality
+              max = current
+              current = (min + max) / 2
+            }
+
+            // Check if we're done
+            if (iterations >= maxIterations || max - min < 0.01) {
+              // Use the best blob we found, or the current one if none
+              resolve(bestBlob || blob)
+            } else {
+              // Try again with new quality
+              tryCompress()
+            }
+          },
+          getMimeType(format),
+          current
+        )
+      }
+
+      // Start the binary search
+      tryCompress()
+    })
+  }
+
+  // Show compression results
+  function showResults(blob) {
+    // Save compressed image data
+    compressedImageData = blob
+
+    // Get the format extension
+    const formatExt = blob.type.split('/')[1]
+
+    // Create URLs for the images
+    const originalUrl = originalImage.src
+    const compressedUrl = URL.createObjectURL(blob)
+
+    // Calculate compression ratio and percentage saved
+    const compressionRatio = (originalImage.size / blob.size).toFixed(2)
+    const percentageSaved = (
+      (1 - blob.size / originalImage.size) *
+      100
+    ).toFixed(2)
+
+    // Display the original image
+    originalCompressImage.innerHTML = `<img src="${originalUrl}" class="img-fluid" alt="Imagem Original">`
+    originalCompressInfo.innerHTML = `
+            <div>Formato: ${originalImageType.split('/')[1].toUpperCase()}</div>
+            <div>Tamanho: ${formatFileSize(originalImage.size)}</div>
+            <div>Dimensões: ${originalImage.width} × ${
+      originalImage.height
+    }</div>
+        `
+
+    // Display the compressed image
+    compressedImage.innerHTML = `<img src="${compressedUrl}" class="img-fluid" alt="Imagem Comprimida">`
+    compressedInfo.innerHTML = `
+            <div>Formato: ${formatExt.toUpperCase()}</div>
+            <div>Tamanho: ${formatFileSize(blob.size)}</div>
+            <div>Economia: ${percentageSaved}% (${formatFileSize(
+      originalImage.size - blob.size
+    )})</div>
+            <div>Taxa de compressão: ${compressionRatio}:1</div>
+        `
+
+    // Set up download link
+    const newFilename =
+      originalImageName.split('.')[0] + '_comprimido.' + formatExt
+    downloadCompressedLink.href = compressedUrl
+    downloadCompressedLink.download = newFilename
+
+    // Show results
+    compressionResults.classList.remove('d-none')
+
+    // Add to history
+    addToHistory(blob, newFilename)
+
+    showNotification('Imagem comprimida com sucesso!', 'success')
+  }
+
+  // Add the compression to history
+  function addToHistory(blob, filename) {
+    // Create history entry
+    const historyEntry = {
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      originalName: originalImageName,
+      originalType: originalImageType,
+      originalSize: originalImage.size,
+      convertedName: filename,
+      convertedType: blob.type,
+      convertedSize: blob.size,
+      convertedBlob: blob
     }
+
+    // Dispatch custom event to be handled by the history manager
+    const event = new CustomEvent('conversion:completed', {
+      detail: historyEntry
+    })
+    document.dispatchEvent(event)
+  }
+}
+
+// Get the compressed image data
+export function getCompressedImageData() {
+  if (!compressedImageData) return null
+
+  return {
+    data: compressedImageData,
+    type: compressedImageData.type,
+    name: originalImageName
+      ? originalImageName.split('.')[0] +
+        '_comprimido.' +
+        compressedImageData.type.split('/')[1]
+      : 'compressed_image.' + compressedImageData.type.split('/')[1]
   }
 }

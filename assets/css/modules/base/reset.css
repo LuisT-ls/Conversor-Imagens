@@ -1,49 +1,123 @@
-/* Reset Básico */
-* {
+/* assets/css/modules/base/reset.css */
+
+/* Modern CSS Reset with customizations */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
+/* Set core body defaults */
 html {
-  font-size: 16px;
-}
-
-html,
-body {
+  scroll-behavior: smooth;
   height: 100%;
 }
 
 body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+  font-family: var(--font-family-base);
+  color: var(--dark);
+  background-color: var(--white);
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
 }
 
-.content {
-  flex: 1;
+/* Make footer stick to bottom */
+main {
+  flex: 1 0 auto;
 }
 
-body,
+footer {
+  flex-shrink: 0;
+}
+
+/* Remove default margin and padding */
 h1,
 h2,
 h3,
+h4,
+h5,
+h6,
 p,
 ul,
-li {
+ol,
+figure,
+blockquote,
+dl,
+dd {
   margin: 0;
   padding: 0;
 }
 
-ul {
+/* Remove list styles */
+ul,
+ol {
   list-style: none;
 }
 
+/* Remove default styling from links */
 a {
   text-decoration: none;
   color: inherit;
 }
 
-img {
+/* Set default image behavior */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
   max-width: 100%;
-  height: auto;
+}
+
+/* Make form elements easier to work with */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove animations for people who've turned them off */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--very-light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--light-gray);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--medium-gray);
+}
+
+/* Focus outline */
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }

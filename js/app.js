@@ -1,15 +1,17 @@
-// app.js
-import { initDarkMode } from './modules/darkMode.js'
+// app.js - Main entry point for the application
 import { initImageConverter } from './modules/imageConverter.js'
 import { initImageEditor } from './modules/imageEditor.js'
 import { initBatchConverter } from './modules/batchConverter.js'
 import { initImageCompressor } from './modules/imageCompressor.js'
 import { initHistoryManager } from './modules/historyManager.js'
+import { initDarkMode } from './modules/darkMode.js'
 import { initShareManager } from './modules/shareManager.js'
 
-// Função para inicializar todas as funcionalidades
+// Initialize all modules when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-  // Inicializar módulos
+  console.log('Initializing application...')
+
+  // Initialize all modules
   initDarkMode()
   initImageConverter()
   initImageEditor()
@@ -18,7 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initHistoryManager()
   initShareManager()
 
-  // Inicializar tooltips e popovers do Bootstrap
+  // Initialize Bootstrap components
+  initBootstrapComponents()
+
+  console.log('Application initialized successfully!')
+})
+
+// Initialize Bootstrap components like tooltips, popovers, etc.
+function initBootstrapComponents() {
+  // Initialize tooltips
   const tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
   )
@@ -26,54 +36,81 @@ document.addEventListener('DOMContentLoaded', () => {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 
-  // Criar notificação de boas-vindas
-  showNotification(
-    'Bem-vindo ao Conversor de Imagens Pro!',
-    'Arraste uma imagem ou clique para começar.'
+  // Initialize popovers
+  const popoverTriggerList = [].slice.call(
+    document.querySelectorAll('[data-bs-toggle="popover"]')
   )
+  popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+  })
+}
 
-  // Detectar e definir suporte para WebP
-  checkWebPSupport()
-})
-
-// Função para mostrar notificações toast
-function showNotification(title, message, type = 'info') {
-  const bgColors = {
-    success: 'linear-gradient(to right, #00b09b, #96c93d)',
-    error: 'linear-gradient(to right, #ff5f6d, #ffc371)',
-    info: 'linear-gradient(to right, #2193b0, #6dd5ed)',
-    warning: 'linear-gradient(to right, #f7b733, #fc4a1a)'
-  }
+// Display a notification toast
+export function showNotification(message, type = 'success', duration = 3000) {
+  const bgColor =
+    type === 'success'
+      ? '#28a745'
+      : type === 'error'
+      ? '#dc3545'
+      : type === 'warning'
+      ? '#ffc107'
+      : '#17a2b8'
 
   Toastify({
-    text: `<b>${title}</b><br>${message}`,
-    duration: 3000,
+    text: message,
+    duration: duration,
     close: true,
     gravity: 'top',
     position: 'right',
-    style: {
-      background: bgColors[type]
-    },
-    className: 'info',
-    escapeMarkup: false
+    backgroundColor: bgColor,
+    stopOnFocus: true
   }).showToast()
 }
 
-// Função para verificar suporte a WebP
-function checkWebPSupport() {
-  const webpImg = new Image()
-  webpImg.onload = function () {
-    const hasWebP = webpImg.width > 0 && webpImg.height > 0
-    localStorage.setItem('webpSupport', hasWebP)
-    console.log('WebP Support:', hasWebP)
-  }
-  webpImg.onerror = function () {
-    localStorage.setItem('webpSupport', false)
-    console.log('WebP Support: false')
-  }
-  webpImg.src =
-    'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA=='
+// Helper to calculate file size in human-readable format
+export function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-// Exportar funções utilitárias para serem usadas em outros módulos
-export { showNotification }
+// Get file extension from filename
+export function getFileExtension(filename) {
+  return filename
+    .slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2)
+    .toLowerCase()
+}
+
+// Get mime type based on format
+export function getMimeType(format) {
+  const mimeTypes = {
+    jpeg: 'image/jpeg',
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp',
+    gif: 'image/gif',
+    svg: 'image/svg+xml',
+    ico: 'image/x-icon'
+  }
+  return mimeTypes[format.toLowerCase()] || 'image/jpeg'
+}
+
+// Create a Blob URL from binary data
+export function createBlobUrl(data, type) {
+  const blob = new Blob([data], { type })
+  return URL.createObjectURL(blob)
+}
+
+// Create a download link for a file
+export function createDownloadLink(data, filename, type) {
+  const blob = new Blob([data], { type })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+
+  return { link, url }
+}

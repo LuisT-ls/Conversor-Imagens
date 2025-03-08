@@ -1,0 +1,226 @@
+/* assets/css/modules/features/image-editor.css */
+
+/* Canvas container styling */
+.editor-area {
+  margin-top: 1.5rem;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-base);
+}
+
+.canvas-container:hover {
+  box-shadow: var(--shadow-md);
+}
+
+#editorCanvas {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Editor controls styling */
+.editor-controls {
+  background-color: var(--very-light-gray);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-md);
+  height: 100%;
+}
+
+.editor-controls h5 {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 1rem;
+  color: var(--dark);
+  position: relative;
+}
+
+.editor-controls h5::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.5rem;
+  height: 2px;
+  width: 30px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-pill);
+}
+
+/* Range controls styling */
+.editor-controls .form-range {
+  margin-top: 0.5rem;
+}
+
+/* Filter buttons styling */
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.filter-btn {
+  padding: 0.5rem;
+  border: 1px solid var(--light-gray);
+  background-color: var(--white);
+  border-radius: var(--border-radius-md);
+  font-size: 0.875rem;
+  transition: var(--transition-base);
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  background-color: var(--very-light-gray);
+}
+
+.filter-btn.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+}
+
+/* Tools styling */
+.btn-group {
+  margin-top: 1rem;
+}
+
+#resetEditor {
+  margin-top: 1rem;
+}
+
+/* Text tool modal styling */
+#textToolModal .form-control-color {
+  width: 100%;
+  height: 40px;
+}
+
+/* Editor actions styling */
+.editor-actions {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--very-light-gray);
+}
+
+/* Canvas loading state */
+.canvas-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.canvas-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--light-gray);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Canvas overlay for crop */
+.canvas-crop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.crop-rect {
+  position: absolute;
+  border: 2px dashed white;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  pointer-events: all;
+  cursor: move;
+}
+
+.crop-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border: 1px solid var(--primary-color);
+  z-index: 6;
+}
+
+.crop-handle-nw {
+  top: -5px;
+  left: -5px;
+  cursor: nw-resize;
+}
+.crop-handle-ne {
+  top: -5px;
+  right: -5px;
+  cursor: ne-resize;
+}
+.crop-handle-sw {
+  bottom: -5px;
+  left: -5px;
+  cursor: sw-resize;
+}
+.crop-handle-se {
+  bottom: -5px;
+  right: -5px;
+  cursor: se-resize;
+}
+
+/* Dark mode specific styles */
+body.dark-mode .canvas-container {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+body.dark-mode .editor-controls {
+  background-color: var(--dark-bg-tertiary);
+}
+
+body.dark-mode .editor-controls h5 {
+  color: var(--dark-text-primary);
+}
+
+body.dark-mode .filter-btn {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-color);
+  color: var(--dark-text-primary);
+}
+
+body.dark-mode .filter-btn:hover {
+  background-color: var(--dark-bg-secondary);
+}
+
+body.dark-mode .filter-btn.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+body.dark-mode .editor-actions {
+  border-color: var(--dark-border-color);
+}
+
+body.dark-mode .canvas-loading {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .canvas-loading-spinner {
+  border-color: var(--dark-border-color);
+  border-top-color: var(--primary-color);
+}

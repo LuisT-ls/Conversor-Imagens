@@ -1,87 +1,111 @@
-/* Estilos para o modo escuro */
-[data-theme='dark'] {
-  background-color: var(--body-bg);
-  color: var(--body-color);
+/* dark-mode.css - Styles for the dark mode feature */
+
+/* Dark Theme Toggle Button Animation */
+.dark-theme-toggle {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-[data-theme='dark'] .card {
-  background-color: var(--card-bg);
-  border-color: var(--card-border);
+.dark-theme-toggle .toggle-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
-[data-theme='dark'] .form-control,
-[data-theme='dark'] .form-select {
-  background-color: var(--input-bg);
-  border-color: var(--input-border);
-  color: var(--body-color);
+body.dark-theme .dark-theme-toggle .toggle-icon.moon {
+  transform: translateX(-20px) scale(0);
+  opacity: 0;
 }
 
-[data-theme='dark'] .table {
-  color: var(--body-color);
+body.dark-theme .dark-theme-toggle .toggle-icon.sun {
+  transform: translateX(0) scale(1);
+  opacity: 1;
 }
 
-[data-theme='dark'] .table-hover tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.075);
+.dark-theme-toggle .toggle-icon.sun {
+  transform: translateX(20px) scale(0);
+  opacity: 0;
 }
 
-[data-theme='dark'] .dropdown-menu {
-  background-color: var(--card-bg);
-  border-color: var(--card-border);
+/* Custom Dark Theme Styles for Specific Components */
+
+/* Canvas in Editor */
+body.dark-theme .canvas-container {
+  background-color: #2c2c2c;
+  border-color: #444;
 }
 
-[data-theme='dark'] .dropdown-item {
-  color: var(--body-color);
+/* Filter Buttons */
+body.dark-theme .filter-btn {
+  background-color: #333;
+  border-color: #444;
+  color: #e1e1e1;
 }
 
-[data-theme='dark'] .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.075);
+body.dark-theme .filter-btn:hover {
+  background-color: #444;
 }
 
-[data-theme='dark'] .modal-content {
-  background-color: var(--card-bg);
-  border-color: var(--card-border);
-}
-
-[data-theme='dark'] .close {
-  color: var(--body-color);
-}
-
-[data-theme='dark'] .drop-zone {
-  border-color: var(--card-border);
-  color: var(--body-color);
-}
-
-[data-theme='dark'] .drop-zone:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-[data-theme='dark'] .preview-container {
-  background-color: var(--card-bg);
-  border-color: var(--card-border);
-}
-
-[data-theme='dark'] .filter-btn {
-  background-color: var(--input-bg);
-  border-color: var(--input-border);
-  color: var(--body-color);
-}
-
-[data-theme='dark'] .filter-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme='dark'] .filter-btn.active {
-  background-color: var(--primary-color);
-}
-
-[data-theme='dark'] .nav-pills .nav-link {
-  color: var(--body-color);
-}
-
-[data-theme='dark'] .nav-pills .nav-link.active {
+body.dark-theme .filter-btn.active {
+  background-color: #0d6efd;
   color: white;
 }
 
-[data-theme='dark'] hr {
-  border-color: var(--card-border);
+/* Drop Zone */
+body.dark-theme .drop-zone {
+  border-color: #444;
+  color: #e1e1e1;
+}
+
+body.dark-theme .drop-zone-active {
+  border-color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* Modal Dialogs */
+body.dark-theme .modal-header {
+  border-bottom-color: #444;
+}
+
+body.dark-theme .modal-footer {
+  border-top-color: #444;
+}
+
+/* Progress Bars */
+body.dark-theme .progress {
+  background-color: #333;
+}
+
+/* Tooltips */
+body.dark-theme .tooltip .tooltip-inner {
+  background-color: #2c2c2c;
+  color: #e1e1e1;
+  border: 1px solid #444;
+}
+
+body.dark-theme .tooltip .tooltip-arrow::before {
+  border-top-color: #444;
+}
+
+/* Links */
+body.dark-theme a:not(.btn) {
+  color: #6ea8fe;
+}
+
+body.dark-theme a:not(.btn):hover {
+  color: #8bb9fe;
+}
+
+/* Table Styles */
+body.dark-theme .table-hover tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme .table td,
+body.dark-theme .table th {
+  border-color: #444;
 }

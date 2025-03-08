@@ -1,464 +1,410 @@
-// modules/batchConverter.js
-import { showNotification } from '../app.js'
+// batchConverter.js - Handle batch image conversion functionality
+import { showNotification, formatFileSize, getMimeType } from '../app.js'
+
+// Array to store batch conversion files
+let batchFiles = []
 
 export function initBatchConverter() {
-  // Elementos da interface
+  console.log('Initializing batch conversion functionality...')
+
+  // DOM elements
   const batchFileInput = document.getElementById('batchFileInput')
+  const batchFormatSelect = document.getElementById('batchFormatSelect')
+  const batchQualityRange = document.getElementById('batchQualityRange')
+  const batchQualityValue = document.getElementById('batchQualityValue')
+  const batchResizeSelect = document.getElementById('batchResizeSelect')
   const batchFileList = document.getElementById('batchFileList')
   const batchPlaceholder = document.getElementById('batchPlaceholder')
   const batchFileListContainer = document.querySelector('.batch-file-list')
   const convertBatchButton = document.getElementById('convertBatchButton')
   const batchDownload = document.getElementById('batchDownload')
   const downloadAllButton = document.getElementById('downloadAllButton')
-  const batchQualityRange = document.getElementById('batchQualityRange')
-  const batchQualityValue = document.getElementById('batchQualityValue')
-  const batchFormatSelect = document.getElementById('batchFormatSelect')
-  const batchResizeSelect = document.getElementById('batchResizeSelect')
 
-  // Arrays para armazenar arquivos e imagens processadas
-  let batchFiles = []
-  let processedImages = []
+  // Initialize event listeners
+  batchFileInput.addEventListener('change', handleBatchFiles)
+  batchQualityRange.addEventListener('input', updateQualityDisplay)
+  convertBatchButton.addEventListener('click', convertAllFiles)
+  downloadAllButton.addEventListener('click', downloadAllFiles)
 
-  // Inicializa os event listeners
-  function initEventListeners() {
-    // Listener para seleção de arquivos
-    batchFileInput.addEventListener('change', handleFileSelection)
-
-    // Listener para atualização do valor de qualidade
-    batchQualityRange.addEventListener('input', () => {
-      batchQualityValue.textContent = `${batchQualityRange.value}%`
-    })
-
-    // Listener para o botão de conversão em lote
-    convertBatchButton.addEventListener('click', convertAllImages)
-
-    // Listener para o botão de download de todas as imagens
-    downloadAllButton.addEventListener('click', downloadAllImages)
+  // Update quality display
+  function updateQualityDisplay() {
+    batchQualityValue.textContent = `${batchQualityRange.value}%`
   }
 
-  // Manipula a seleção de arquivos
-  function handleFileSelection(e) {
-    const files = Array.from(e.target.files)
+  // Handle batch file selection
+  function handleBatchFiles(event) {
+    const files = event.target.files
 
-    if (files.length === 0) return
-
-    // Limpa a lista anterior se houver
-    if (batchFiles.length > 0) {
-      batchFiles = []
-      batchFileList.innerHTML = ''
-      processedImages = []
-      batchDownload.classList.add('d-none')
+    if (!files || files.length === 0) {
+      return
     }
 
-    // Adiciona os arquivos à lista
-    files.forEach(file => {
-      // Verifica se é um tipo de imagem válido
-      if (!file.type.match('image.*')) {
+    // Reset batch files
+    batchFiles = []
+    batchFileList.innerHTML = ''
+
+    // Process each file
+    Array.from(files).forEach((file, index) => {
+      // Skip non-image files
+      if (!file.type.startsWith('image/')) {
         showNotification(
-          'Arquivo Inválido',
-          `${file.name} não é uma imagem válida.`,
-          'error'
+          `"${file.name}" não é uma imagem válida e será ignorada.`,
+          'warning'
         )
         return
       }
 
-      // Adiciona ao array de arquivos
-      batchFiles.push({
-        file: file,
-        id: `batch-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        status: 'pendente',
-        processedImage: null
-      })
-    })
+      // Create a file reader to get image dimensions
+      const reader = new FileReader()
 
-    // Atualiza a UI
-    updateBatchFileList()
+      reader.onload = function (e) {
+        const img = new Image()
 
-    // Mostra o botão de conversão se houver arquivos
-    if (batchFiles.length > 0) {
-      convertBatchButton.disabled = false
-      batchPlaceholder.classList.add('d-none')
-      batchFileListContainer.classList.remove('d-none')
-    }
-  }
+        img.onload = function () {
+          // Add file to batch files array
+          batchFiles.push({
+            id: index,
+            file: file,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            width: img.width,
+            height: img.height,
+            src: e.target.result,
+            status: 'pending',
+            converted: null
+          })
 
-  // Atualiza a lista de arquivos na interface
-  function updateBatchFileList() {
-    batchFileList.innerHTML = ''
+          // Add file to the list
+          addFileToList(batchFiles[batchFiles.length - 1])
 
-    batchFiles.forEach(fileObj => {
-      const file = fileObj.file
-      const row = document.createElement('tr')
-      row.id = fileObj.id
+          // Enable convert button if there are files
+          if (batchFiles.length > 0) {
+            convertBatchButton.disabled = false
 
-      // Formata o tamanho do arquivo
-      const fileSize = formatFileSize(file.size)
+            // Show the file list and hide the placeholder
+            batchFileListContainer.classList.remove('d-none')
+            batchPlaceholder.classList.add('d-none')
+          }
+        }
 
-      // Status da conversão
-      let statusBadge = `<span class="badge bg-secondary">Pendente</span>`
-      if (fileObj.status === 'processando') {
-        statusBadge = `<span class="badge bg-primary">Processando</span>`
-      } else if (fileObj.status === 'concluído') {
-        statusBadge = `<span class="badge bg-success">Concluído</span>`
-      } else if (fileObj.status === 'erro') {
-        statusBadge = `<span class="badge bg-danger">Erro</span>`
+        img.src = e.target.result
       }
 
-      // Botões de ação
-      let actionButtons = `
-        <button class="btn btn-sm btn-outline-danger remove-file" data-id="${fileObj.id}">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-      `
+      reader.readAsDataURL(file)
+    })
+  }
 
-      if (fileObj.status === 'concluído') {
-        actionButtons += `
-          <button class="btn btn-sm btn-outline-primary ms-1 download-file" data-id="${fileObj.id}">
-            <i class="fas fa-download"></i>
-          </button>
+  // Add a file to the list
+  function addFileToList(fileObj) {
+    const row = document.createElement('tr')
+    row.id = `batch-file-${fileObj.id}`
+
+    row.innerHTML = `
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="batch-file-thumb me-2" style="background-image: url('${
+                      fileObj.src
+                    }')"></div>
+                    <div>
+                        <div class="fw-bold">${fileObj.name}</div>
+                        <small class="text-muted">${fileObj.width} × ${
+      fileObj.height
+    }</small>
+                    </div>
+                </div>
+            </td>
+            <td>${formatFileSize(fileObj.size)}</td>
+            <td>
+                <span class="badge bg-secondary">Pendente</span>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-danger remove-file" data-id="${
+                  fileObj.id
+                }">
+                    <i class="fas fa-times"></i>
+                </button>
+            </td>
         `
-      }
 
-      // Define o conteúdo da linha
-      row.innerHTML = `
-        <td class="align-middle">
-          <div class="d-flex align-items-center">
-            <div class="file-icon me-2">
-              <i class="fas fa-file-image text-primary"></i>
-            </div>
-            <div class="file-info">
-              <div class="file-name">${file.name}</div>
-              <div class="file-type text-muted small">${file.type}</div>
-            </div>
-          </div>
-        </td>
-        <td class="align-middle">${fileSize}</td>
-        <td class="align-middle">${statusBadge}</td>
-        <td class="align-middle">${actionButtons}</td>
-      `
-
-      batchFileList.appendChild(row)
+    // Add event listener to remove button
+    row.querySelector('.remove-file').addEventListener('click', function () {
+      const id = parseInt(this.dataset.id)
+      removeFile(id)
     })
 
-    // Adiciona event listeners para os botões de ação
-    document.querySelectorAll('.remove-file').forEach(button => {
-      button.addEventListener('click', removeFile)
-    })
-
-    document.querySelectorAll('.download-file').forEach(button => {
-      button.addEventListener('click', downloadSingleFile)
-    })
+    batchFileList.appendChild(row)
   }
 
-  // Remove um arquivo da lista
-  function removeFile(e) {
-    const fileId = e.currentTarget.getAttribute('data-id')
-    const fileIndex = batchFiles.findIndex(file => file.id === fileId)
+  // Remove a file from the list
+  function removeFile(id) {
+    // Remove from the array
+    batchFiles = batchFiles.filter(file => file.id !== id)
 
-    if (fileIndex !== -1) {
-      batchFiles.splice(fileIndex, 1)
-      updateBatchFileList()
+    // Remove from the DOM
+    const row = document.getElementById(`batch-file-${id}`)
+    if (row) {
+      row.remove()
+    }
 
-      // Se não houver mais arquivos, resetar a interface
-      if (batchFiles.length === 0) {
-        batchPlaceholder.classList.remove('d-none')
-        batchFileListContainer.classList.add('d-none')
-        convertBatchButton.disabled = true
-        batchDownload.classList.add('d-none')
-      }
+    // Disable convert button if there are no files
+    if (batchFiles.length === 0) {
+      convertBatchButton.disabled = true
 
-      // Se todas as imagens processadas foram removidas, esconde o botão de download
-      const hasProcessedImages = batchFiles.some(
-        file => file.status === 'concluído'
-      )
-      if (!hasProcessedImages) {
-        batchDownload.classList.add('d-none')
-      }
+      // Show the placeholder and hide the file list
+      batchFileListContainer.classList.add('d-none')
+      batchPlaceholder.classList.remove('d-none')
     }
   }
 
-  // Converte todas as imagens selecionadas
-  async function convertAllImages() {
-    if (batchFiles.length === 0) return
+  // Convert all files
+  async function convertAllFiles() {
+    if (batchFiles.length === 0) {
+      showNotification('Não há arquivos para converter.', 'warning')
+      return
+    }
 
-    // Desabilita o botão durante a conversão
+    // Disable convert button during conversion
     convertBatchButton.disabled = true
-    convertBatchButton.innerHTML =
-      '<i class="fas fa-spinner fa-spin me-2"></i>Processando...'
 
-    // Obtém as configurações selecionadas
-    const outputFormat = batchFormatSelect.value
+    // Get conversion settings
+    const format = batchFormatSelect.value
     const quality = parseInt(batchQualityRange.value) / 100
     const resizeOption = batchResizeSelect.value
 
-    // Limpa imagens processadas anteriormente
-    processedImages = []
-
-    // Converte cada imagem
-    for (let i = 0; i < batchFiles.length; i++) {
-      const fileObj = batchFiles[i]
-      fileObj.status = 'processando'
-      updateBatchFileList()
+    // Convert each file
+    for (const fileObj of batchFiles) {
+      // Update status to processing
+      updateFileStatus(fileObj.id, 'processing')
 
       try {
-        // Carrega a imagem
-        const loadedImage = await loadImage(fileObj.file)
-
-        // Converte a imagem
-        const processedImage = await convertImage(
-          loadedImage,
-          outputFormat,
+        // Convert the file
+        const convertedBlob = await convertFile(
+          fileObj,
+          format,
           quality,
           resizeOption
         )
 
-        // Atualiza o status
-        fileObj.status = 'concluído'
-        fileObj.processedImage = processedImage
-        processedImages.push(processedImage)
-
-        updateBatchFileList()
-      } catch (error) {
-        console.error('Erro ao processar a imagem:', error)
-        fileObj.status = 'erro'
-        updateBatchFileList()
-        showNotification(
-          'Erro de Conversão',
-          `Falha ao processar ${fileObj.file.name}`,
-          'error'
-        )
-      }
-    }
-
-    // Restaura o botão
-    convertBatchButton.disabled = false
-    convertBatchButton.innerHTML =
-      '<i class="fas fa-sync-alt me-2"></i>Converter Todos'
-
-    // Mostra o botão de download se houver imagens processadas
-    if (processedImages.length > 0) {
-      batchDownload.classList.remove('d-none')
-      showNotification(
-        'Conversão Concluída',
-        `${processedImages.length} imagens processadas com sucesso!`,
-        'success'
-      )
-    }
-  }
-
-  // Carrega uma imagem a partir de um arquivo
-  function loadImage(file) {
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      const url = URL.createObjectURL(file)
-
-      img.onload = () => {
-        URL.revokeObjectURL(url)
-        resolve({
-          element: img,
-          filename: file.name,
-          width: img.width,
-          height: img.height
-        })
-      }
-
-      img.onerror = () => {
-        URL.revokeObjectURL(url)
-        reject(new Error('Falha ao carregar a imagem'))
-      }
-
-      img.src = url
-    })
-  }
-
-  // Converte uma imagem com as configurações especificadas
-  function convertImage(loadedImage, format, quality, resizeOption) {
-    return new Promise((resolve, reject) => {
-      try {
-        // Cria o canvas para desenhar a imagem
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-
-        // Define as dimensões do canvas
-        let width = loadedImage.width
-        let height = loadedImage.height
-
-        // Aplica o redimensionamento se necessário
-        if (resizeOption !== 'original') {
-          const [targetWidth, targetHeight] = resizeOption
-            .split('x')
-            .map(Number)
-          const aspectRatio = width / height
-
-          if (width > targetWidth || height > targetHeight) {
-            if (aspectRatio > 1) {
-              // Imagem é mais larga do que alta
-              width = targetWidth
-              height = Math.round(width / aspectRatio)
-            } else {
-              // Imagem é mais alta do que larga
-              height = targetHeight
-              width = Math.round(height * aspectRatio)
-            }
-          }
+        // Update file object with converted data
+        fileObj.converted = {
+          blob: convertedBlob,
+          size: convertedBlob.size,
+          type: convertedBlob.type,
+          name: fileObj.name.split('.')[0] + '.' + format
         }
 
-        // Define as dimensões do canvas
+        // Update status to completed
+        updateFileStatus(fileObj.id, 'completed', fileObj.converted)
+
+        // Add to history
+        addToHistory(fileObj)
+      } catch (error) {
+        console.error('Error converting file:', error)
+        updateFileStatus(fileObj.id, 'error')
+      }
+    }
+
+    // Re-enable convert button
+    convertBatchButton.disabled = false
+
+    // Show download all button
+    batchDownload.classList.remove('d-none')
+
+    showNotification('Conversão em lote concluída!', 'success')
+  }
+
+  // Convert a single file
+  function convertFile(fileObj, format, quality, resizeOption) {
+    return new Promise((resolve, reject) => {
+      // Create an image element
+      const img = new Image()
+
+      img.onload = function () {
+        // Calculate dimensions based on resize option
+        let width = img.width
+        let height = img.height
+
+        if (resizeOption !== 'original') {
+          const dimensions = resizeOption.split('x')
+          width = parseInt(dimensions[0])
+          height = parseInt(dimensions[1])
+        }
+
+        // Create a canvas to draw the image
+        const canvas = document.createElement('canvas')
         canvas.width = width
         canvas.height = height
 
-        // Desenha a imagem no canvas
-        ctx.drawImage(loadedImage.element, 0, 0, width, height)
+        // Draw the image on the canvas
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
 
-        // Obtém o formato MIME
-        let mimeType
-        switch (format) {
-          case 'jpeg':
-            mimeType = 'image/jpeg'
-            break
-          case 'png':
-            mimeType = 'image/png'
-            break
-          case 'webp':
-            mimeType = 'image/webp'
-            break
-          default:
-            mimeType = 'image/jpeg'
-        }
-
-        // Converte o canvas para o formato desejado
+        // Convert to the target format
         canvas.toBlob(
           blob => {
             if (!blob) {
-              reject(new Error('Falha ao converter a imagem'))
+              reject(new Error('Failed to convert image'))
               return
             }
 
-            // Obtém o nome do arquivo original e altera a extensão
-            const originalName = loadedImage.filename
-            const baseName =
-              originalName.substring(0, originalName.lastIndexOf('.')) ||
-              originalName
-            const newFilename = `${baseName}.${format}`
-
-            // Cria URL para o blob
-            const blobUrl = URL.createObjectURL(blob)
-
-            resolve({
-              blob: blob,
-              url: blobUrl,
-              name: newFilename,
-              size: blob.size,
-              originalWidth: loadedImage.width,
-              originalHeight: loadedImage.height,
-              newWidth: width,
-              newHeight: height,
-              format: format,
-              mimeType: mimeType
-            })
+            resolve(blob)
           },
-          mimeType,
-          quality
+          getMimeType(format),
+          { quality }
         )
-      } catch (error) {
-        reject(error)
       }
+
+      img.onerror = function () {
+        reject(new Error('Failed to load image'))
+      }
+
+      img.src = fileObj.src
     })
   }
 
-  // Download de um único arquivo
-  function downloadSingleFile(e) {
-    const fileId = e.currentTarget.getAttribute('data-id')
-    const fileObj = batchFiles.find(file => file.id === fileId)
+  // Update file status in the list
+  function updateFileStatus(id, status, convertedData = null) {
+    const row = document.getElementById(`batch-file-${id}`)
 
-    if (fileObj && fileObj.processedImage) {
-      const downloadLink = document.createElement('a')
-      downloadLink.href = fileObj.processedImage.url
-      downloadLink.download = fileObj.processedImage.name
-      document.body.appendChild(downloadLink)
-      downloadLink.click()
-      document.body.removeChild(downloadLink)
+    if (!row) {
+      return
+    }
+
+    const statusCell = row.querySelector('td:nth-child(3)')
+    const actionsCell = row.querySelector('td:nth-child(4)')
+
+    // Update status badge
+    let badgeClass = 'bg-secondary'
+    let statusText = 'Pendente'
+
+    if (status === 'processing') {
+      badgeClass = 'bg-primary'
+      statusText = 'Processando...'
+    } else if (status === 'completed') {
+      badgeClass = 'bg-success'
+      statusText = 'Concluído'
+    } else if (status === 'error') {
+      badgeClass = 'bg-danger'
+      statusText = 'Erro'
+    }
+
+    statusCell.innerHTML = `<span class="badge ${badgeClass}">${statusText}</span>`
+
+    // If completed, add download button and show converted size
+    if (status === 'completed' && convertedData) {
+      statusCell.innerHTML += `<br><small class="text-muted">${formatFileSize(
+        convertedData.size
+      )}</small>`
+
+      actionsCell.innerHTML = `
+                <button class="btn btn-sm btn-outline-danger remove-file me-1" data-id="${id}">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-success download-file" data-id="${id}">
+                    <i class="fas fa-download"></i>
+                </button>
+            `
+
+      // Add event listeners
+      actionsCell
+        .querySelector('.remove-file')
+        .addEventListener('click', function () {
+          removeFile(parseInt(this.dataset.id))
+        })
+
+      actionsCell
+        .querySelector('.download-file')
+        .addEventListener('click', function () {
+          const fileId = parseInt(this.dataset.id)
+          downloadFile(fileId)
+        })
     }
   }
 
-  // Download de todas as imagens em um arquivo ZIP
-  async function downloadAllImages() {
-    if (processedImages.length === 0) return
+  // Download a single converted file
+  function downloadFile(id) {
+    const fileObj = batchFiles.find(file => file.id === id)
 
-    try {
-      // Altera o botão para indicar o progresso
-      downloadAllButton.disabled = true
-      downloadAllButton.innerHTML =
-        '<i class="fas fa-spinner fa-spin me-2"></i>Criando ZIP...'
-
-      // Cria um novo arquivo ZIP
-      const zip = new JSZip()
-
-      // Adiciona cada imagem processada ao ZIP
-      for (const image of processedImages) {
-        zip.file(image.name, image.blob)
-      }
-
-      // Gera o arquivo ZIP
-      const zipBlob = await zip.generateAsync({ type: 'blob' })
-
-      // Cria um link de download para o arquivo ZIP
-      const zipUrl = URL.createObjectURL(zipBlob)
-      const downloadLink = document.createElement('a')
-      downloadLink.href = zipUrl
-      downloadLink.download = `imagens_convertidas_${new Date()
-        .toISOString()
-        .slice(0, 10)}.zip`
-      document.body.appendChild(downloadLink)
-      downloadLink.click()
-      document.body.removeChild(downloadLink)
-
-      // Limpa o URL do blob
-      URL.revokeObjectURL(zipUrl)
-
-      // Restaura o botão
-      downloadAllButton.disabled = false
-      downloadAllButton.innerHTML =
-        '<i class="fas fa-download me-2"></i>Baixar Todas as Imagens (ZIP)'
-
-      showNotification(
-        'Download Concluído',
-        'Arquivo ZIP criado com sucesso!',
-        'success'
-      )
-    } catch (error) {
-      console.error('Erro ao criar o arquivo ZIP:', error)
-      downloadAllButton.disabled = false
-      downloadAllButton.innerHTML =
-        '<i class="fas fa-download me-2"></i>Baixar Todas as Imagens (ZIP)'
-      showNotification(
-        'Erro no Download',
-        'Falha ao criar o arquivo ZIP',
-        'error'
-      )
+    if (!fileObj || !fileObj.converted) {
+      showNotification('Arquivo não encontrado ou não convertido.', 'error')
+      return
     }
+
+    // Create a URL for the blob
+    const url = URL.createObjectURL(fileObj.converted.blob)
+
+    // Create a download link
+    const link = document.createElement('a')
+    link.href = url
+    link.download = fileObj.converted.name
+    link.click()
+
+    // Clean up
+    setTimeout(() => URL.revokeObjectURL(url), 100)
   }
 
-  // Formata o tamanho do arquivo para exibição
-  function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes'
+  // Download all converted files as a zip
+  function downloadAllFiles() {
+    // Check if there are any converted files
+    const convertedFiles = batchFiles.filter(file => file.converted)
 
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    if (convertedFiles.length === 0) {
+      showNotification('Não há arquivos convertidos para baixar.', 'warning')
+      return
+    }
 
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    // Create a new JSZip instance
+    const zip = new JSZip()
+
+    // Add each converted file to the zip
+    convertedFiles.forEach(file => {
+      zip.file(file.converted.name, file.converted.blob)
+    })
+
+    // Generate the zip file
+    zip
+      .generateAsync({ type: 'blob' })
+      .then(function (content) {
+        // Create a URL for the blob
+        const url = URL.createObjectURL(content)
+
+        // Create a download link
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'imagens_convertidas.zip'
+        link.click()
+
+        // Clean up
+        setTimeout(() => URL.revokeObjectURL(url), 100)
+
+        showNotification('Download iniciado!', 'success')
+      })
+      .catch(function (error) {
+        console.error('Error creating zip file:', error)
+        showNotification('Erro ao criar arquivo ZIP.', 'error')
+      })
   }
 
-  // Inicializa o módulo
-  initEventListeners()
-
-  // Retorna métodos públicos, caso necessário para integração com outros módulos
-  return {
-    addFiles: files => {
-      batchFileInput.files = files
-      const event = new Event('change')
-      batchFileInput.dispatchEvent(event)
+  // Add the conversion to history
+  function addToHistory(fileObj) {
+    // Create history entry
+    const historyEntry = {
+      id: Date.now().toString() + '-' + fileObj.id,
+      date: new Date().toISOString(),
+      originalName: fileObj.name,
+      originalType: fileObj.type,
+      originalSize: fileObj.size,
+      convertedName: fileObj.converted.name,
+      convertedType: fileObj.converted.blob.type,
+      convertedSize: fileObj.converted.size,
+      convertedBlob: fileObj.converted.blob
     }
+
+    // Dispatch custom event to be handled by the history manager
+    const event = new CustomEvent('conversion:completed', {
+      detail: historyEntry
+    })
+    document.dispatchEvent(event)
   }
 }
