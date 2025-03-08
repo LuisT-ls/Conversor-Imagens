@@ -17,7 +17,7 @@ export function initDarkMode() {
   // Definir tema inicial
   if (savedTheme === 'dark' || (!savedTheme && prefersDarkMode)) {
     document.documentElement.setAttribute('data-theme', 'dark')
-    showToast('Modo escuro ativado', 'info')
+    // Notificação removida
   }
 
   // Adicionar event listener para o botão de toggle
@@ -31,12 +31,7 @@ export function initDarkMode() {
       // Apenas mudar automaticamente se o usuário não tiver definido uma preferência manualmente
       if (!localStorage.getItem('theme')) {
         setTheme(newTheme)
-        showToast(
-          `Modo ${
-            newTheme === 'dark' ? 'escuro' : 'claro'
-          } aplicado conforme preferência do sistema`,
-          'info'
-        )
+        // Notificação removida
       }
     })
 
@@ -52,11 +47,7 @@ function toggleTheme() {
   setTheme(newTheme)
   animateThemeSwitch()
 
-  // Mostrar notificação
-  showToast(
-    `Modo ${newTheme === 'dark' ? 'escuro' : 'claro'} ativado`,
-    'success'
-  )
+  // Notificação removida
 }
 
 // Função para definir o tema
@@ -113,7 +104,7 @@ function createRippleEffect(button) {
   }, 600)
 }
 
-// Mostrar notificação usando Toastify
+// Mostrar notificação usando Toastify - Função mantida para outros possíveis usos
 function showToast(message, type = 'info') {
   // Verificar se Toastify está disponível
   if (typeof Toastify === 'function') {
