@@ -21,7 +21,7 @@
       href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
     />
     <!-- CSS Principal -->
-    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
   </head>
   <body>
     <header class="bg-dark text-white py-4">
@@ -30,7 +30,7 @@
           <div class="col-md-7">
             <div class="header-content">
               <h1>
-                <a href="index.html" class="text-white text-decoration-none">
+                <a href="/" class="text-white text-decoration-none">
                   <i class="fas fa-image header-icon"></i>Conversor de Imagens
                 </a>
               </h1>
@@ -78,7 +78,7 @@
         <div class="d-flex justify-content-between align-items-center">
           <ul class="nav nav-pills">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Início</a>
+              <a class="nav-link" href="/">Início</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" href="documentation.html"
@@ -89,7 +89,7 @@
               <a class="nav-link" href="faq.html">FAQ</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="privacy-policy.html"
+              <a class="nav-link" href="privacy.html"
                 >Política de Privacidade</a
               >
             </li>
@@ -569,7 +569,13 @@ converter.convert(imageFile, config)
                 <p>
                   A documentação completa da API, incluindo todas as opções e
                   métodos disponíveis, pode ser encontrada em nosso
-                  <a href="#" class="text-decoration-none">GitHub</a>.
+                  <a
+                    href="https://github.com/LuisT-ls/Conversor-Imagens"
+                    class="text-decoration-none"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >GitHub</a
+                  >.
                 </p>
               </section>
 
@@ -821,7 +827,7 @@ converter.convert(imageFile, config)
     <!-- Toastify JS para notificações -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <!-- JS Principal -->
-    <script src="js/app.js" type="module"></script>
+    <script src="../js/app.js" type="module"></script>
     <!-- Script para a documentação -->
     <script>
       // Ativar todos os tooltips
