@@ -37,6 +37,19 @@ header h1 {
   color: var(--primary-color);
 }
 
+.header-logo {
+  height: 2rem;
+  width: auto;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);
+  transition: all 0.2s ease;
+}
+
+.header-logo:hover {
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
 header p.lead {
   font-size: 1rem;
   font-weight: 400;
@@ -102,6 +115,16 @@ header p.lead {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
   color: white;
+}
+
+/* Correção para centralização dos ícones */
+.btn-theme .theme-switch {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-theme:active .theme-switch {
@@ -200,5 +223,10 @@ nav .nav-pills .nav-link.active {
   .btn-theme {
     width: 45px;
     height: 45px;
+  }
+
+  .header-logo {
+    height: 1.5rem;
+    margin-right: 0.5rem;
   }
 }
