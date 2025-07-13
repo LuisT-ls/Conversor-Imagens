@@ -239,15 +239,110 @@ Correção do tamanho dos arquivos no histórico
   color: white;
 }
 
+[data-theme='dark'] .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-success:hover {
+  background-color: #1e7e34;
+  border-color: #1e7e34;
+  color: white;
+}
+
+[data-theme='dark'] .btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-info:hover {
+  background-color: #138496;
+  border-color: #138496;
+  color: white;
+}
+
+[data-theme='dark'] .btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #e0a800;
+  color: #212529;
+}
+
+[data-theme='dark'] .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+  color: white;
+}
+
+/* Garantir contraste adequado para botões importantes no tema escuro */
+[data-theme='dark'] #convertButton,
+[data-theme='dark'] #saveEdits,
+[data-theme='dark'] #exportEdits {
+  background: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme='dark'] #convertButton:hover,
+[data-theme='dark'] #saveEdits:hover,
+[data-theme='dark'] #exportEdits:hover {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4) !important;
+}
+
+[data-theme='dark'] #convertButton:focus,
+[data-theme='dark'] #saveEdits:focus,
+[data-theme='dark'] #exportEdits:focus {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.35) !important;
+}
+
 [data-theme='dark'] .btn-primary {
   background-color: #0d6efd;
   border-color: #0d6efd;
   color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme='dark'] .btn-primary:hover {
   background-color: #0b5ed7;
   border-color: #0b5ed7;
+  color: white;
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4);
+}
+
+[data-theme='dark'] .btn-primary:focus {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+  color: white;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.3);
 }
 
 [data-theme='dark'] .bg-light {
