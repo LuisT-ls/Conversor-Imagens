@@ -203,12 +203,12 @@ Correção do tamanho dos arquivos no histórico
 }
 
 [data-theme='dark'] .nav-pills .nav-link:not(.active) {
-  color: var(--text-muted);
+  color: #e9ecef;
 }
 
 [data-theme='dark'] .nav-pills .nav-link:hover:not(.active) {
-  background-color: rgba(92, 122, 255, 0.1);
-  color: var(--text-light);
+  background-color: rgba(92, 122, 255, 0.15);
+  color: #ffffff;
 }
 
 /* Estilização do Drop Zone no tema escuro */
@@ -224,18 +224,30 @@ Correção do tamanho dos arquivos no histórico
 
 /* Correção para texto interno do Drop Zone */
 [data-theme='dark'] .drop-zone-prompt p {
-  color: #adb5bd !important;
+  color: #e9ecef !important;
+  font-weight: 500;
 }
 
 /* Ajustes para botões no tema escuro */
 [data-theme='dark'] .btn-outline-secondary {
   border-color: #6c757d;
-  color: #adb5bd;
+  color: #e9ecef;
 }
 
 [data-theme='dark'] .btn-outline-secondary:hover {
   background-color: #6c757d;
   color: white;
+}
+
+[data-theme='dark'] .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+[data-theme='dark'] .btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
 }
 
 [data-theme='dark'] .bg-light {

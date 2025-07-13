@@ -154,8 +154,8 @@ nav .nav-pills::-webkit-scrollbar {
 
 nav .nav-pills .nav-link {
   border-radius: 8px;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: #495057;
   padding: 0.5rem 1rem;
   white-space: nowrap;
   transition: all 0.2s ease;
@@ -163,14 +163,14 @@ nav .nav-pills .nav-link {
 }
 
 nav .nav-pills .nav-link:hover:not(.active) {
-  color: var(--primary-color);
-  background-color: rgba(74, 107, 255, 0.05);
+  color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.1);
 }
 
 nav .nav-pills .nav-link.active {
-  background: var(--primary-color);
+  background: #0d6efd;
   color: white;
-  border-color: var(--primary-color);
+  border-color: #0d6efd;
 }
 
 /* Adaptações para o tema escuro */
