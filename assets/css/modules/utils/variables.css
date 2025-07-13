@@ -21,13 +21,13 @@
   --text-light: #f8f9fa;
 
   /* Bordas e sombras */
-  --border-radius: 0.5rem;
-  --border-radius-lg: 0.75rem;
-  --border-radius-sm: 0.25rem;
-  --border-color: #dee2e6;
-  --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  --box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-sm: 4px;
+  --border-color: #e9ecef;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --box-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --box-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
 
   /* Espaçamento */
   --spacing-xs: 0.25rem;
@@ -37,8 +37,8 @@
   --spacing-xl: 3rem;
 
   /* Animações */
-  --transition-speed: 0.3s;
-  --transition-function: ease-in-out;
+  --transition-speed: 0.2s;
+  --transition-function: ease;
 
   /* Fontes */
   --font-family-sans: 'Montserrat', -apple-system, BlinkMacSystemFont,
