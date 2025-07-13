@@ -198,6 +198,76 @@ main {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* Estilos para o guia de instalação do favicon */
+.favicon-installation-guide {
+  border-left: 4px solid var(--primary-color);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+[data-theme='dark'] .favicon-installation-guide {
+  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  border-left-color: var(--primary-color);
+}
+
+.favicon-installation-guide h5 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.favicon-installation-guide h6 {
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme='dark'] .favicon-installation-guide h6 {
+  color: var(--text-light);
+}
+
+.favicon-installation-guide ul li {
+  padding: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.favicon-installation-guide ul li i {
+  width: 16px;
+  text-align: center;
+}
+
+.favicon-installation-guide .bg-dark {
+  position: relative;
+  overflow: hidden;
+}
+
+.favicon-installation-guide .bg-dark pre {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.favicon-installation-guide .btn-outline-light {
+  border-width: 1px;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.favicon-installation-guide .btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.favicon-installation-guide .alert {
+  border: none;
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--text-dark);
+}
+
+[data-theme='dark'] .favicon-installation-guide .alert {
+  background: rgba(var(--primary-rgb), 0.2);
+  color: var(--text-light);
+}
+
 [data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }

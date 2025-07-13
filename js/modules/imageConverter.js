@@ -286,6 +286,17 @@ export function initImageConverter() {
               <label class="form-check-label" for="icoTransparent">Preservar transparência</label>
             </div>
           </div>
+          <div class="col-12 mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="icoAllFormats">
+              <label class="form-check-label" for="icoAllFormats">
+                <strong>Criar todos os formatos de favicon</strong> (inclui PNG, ICO e Web Manifest)
+              </label>
+              <small class="form-text text-muted d-block">
+                Gera uma pasta "favicon" com todos os arquivos necessários para um site completo
+              </small>
+            </div>
+          </div>
         `
         break
     }
@@ -446,11 +457,20 @@ export function initImageConverter() {
           )
           const transparent =
             document.getElementById('icoTransparent')?.checked || true
+          const createAllFormats =
+            document.getElementById('icoAllFormats')?.checked || false
 
-          result = await convertToICO(canvas, {
-            sizes: sizes.length ? sizes : [16, 32, 48],
-            transparent
-          })
+          if (createAllFormats) {
+            result = await createAllFaviconFormats(canvas, {
+              sizes: sizes.length ? sizes : [16, 32, 48],
+              transparent
+            })
+          } else {
+            result = await convertToICO(canvas, {
+              sizes: sizes.length ? sizes : [16, 32, 48],
+              transparent
+            })
+          }
           break
         }
 
@@ -552,16 +572,36 @@ export function initImageConverter() {
       convertedPreview.appendChild(convertedImg)
     }
 
-    // Update converted image info
-    convertedInfo.textContent = `${convertedImage.width}x${
-      convertedImage.height
-    } - ${formatFileSize(convertedImage.data.size)}`
+    // Handle favicon package specially
+    if (convertedImage.isFaviconPackage) {
+      // Update converted image info for favicon package
+      convertedInfo.textContent = `Pacote de Favicon - ${formatFileSize(
+        convertedImage.data.size
+      )}`
 
-    // Set up the download link
-    const format = formatSelect.value
-    const fileName = generateFileName(originalFileInfo.name, format)
-    downloadLink.href = URL.createObjectURL(convertedImage.data)
-    downloadLink.download = fileName
+      // Set up the download link for ZIP file
+      const baseName =
+        originalFileInfo.name.substring(
+          0,
+          originalFileInfo.name.lastIndexOf('.')
+        ) || originalFileInfo.name
+      downloadLink.href = URL.createObjectURL(convertedImage.data)
+      downloadLink.download = `${baseName}-favicon-package.zip`
+
+      // Add favicon installation guide
+      addFaviconInstallationGuide()
+    } else {
+      // Update converted image info
+      convertedInfo.textContent = `${convertedImage.width}x${
+        convertedImage.height
+      } - ${formatFileSize(convertedImage.data.size)}`
+
+      // Set up the download link
+      const format = formatSelect.value
+      const fileName = generateFileName(originalFileInfo.name, format)
+      downloadLink.href = URL.createObjectURL(convertedImage.data)
+      downloadLink.download = fileName
+    }
 
     // Show action buttons
     actionButtons.classList.remove('d-none')
@@ -715,6 +755,119 @@ export function initImageConverter() {
     }
   }
 
+  // Create all favicon formats (PNG, ICO, Web Manifest)
+  async function createAllFaviconFormats(canvas, options = {}) {
+    const sizes = options.sizes || [16, 32, 48]
+    const transparent = options.transparent !== false
+
+    // Create different sized canvases for each favicon format
+    const faviconSizes = [
+      { name: 'favicon-16x16.png', size: 16 },
+      { name: 'favicon-32x32.png', size: 32 },
+      { name: 'android-chrome-192x192.png', size: 192 },
+      { name: 'android-chrome-512x512.png', size: 512 },
+      { name: 'apple-touch-icon.png', size: 180 }
+    ]
+
+    // Create PNG files for each size
+    const pngFiles = []
+    for (const favicon of faviconSizes) {
+      const iconCanvas = document.createElement('canvas')
+      iconCanvas.width = favicon.size
+      iconCanvas.height = favicon.size
+
+      const ctx = iconCanvas.getContext('2d')
+
+      // Clear canvas with transparent background if needed
+      if (transparent) {
+        ctx.clearRect(0, 0, favicon.size, favicon.size)
+      } else {
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, favicon.size, favicon.size)
+      }
+
+      // Draw the image
+      ctx.drawImage(canvas, 0, 0, favicon.size, favicon.size)
+
+      // Convert to PNG blob
+      const pngBlob = await new Promise(resolve => {
+        iconCanvas.toBlob(resolve, 'image/png')
+      })
+
+      pngFiles.push({
+        name: favicon.name,
+        data: pngBlob
+      })
+    }
+
+    // Create ICO file
+    const icoResult = await convertToICO(canvas, {
+      sizes: [16, 32, 48],
+      transparent
+    })
+
+    // Create Web Manifest
+    const webManifest = {
+      name: 'Meu Site',
+      short_name: 'Site',
+      icons: [
+        {
+          src: '/android-chrome-192x192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/android-chrome-512x512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ],
+      theme_color: '#ffffff',
+      background_color: '#ffffff',
+      display: 'standalone'
+    }
+
+    const manifestBlob = new Blob([JSON.stringify(webManifest, null, 2)], {
+      type: 'application/json'
+    })
+
+    // Create ZIP file with all favicon files
+    const JSZip = window.JSZip
+    if (!JSZip) {
+      throw new Error(
+        'JSZip library not loaded. Please include JSZip in your HTML.'
+      )
+    }
+
+    const zip = new JSZip()
+    const faviconFolder = zip.folder('favicon')
+
+    // Add all PNG files
+    for (const pngFile of pngFiles) {
+      faviconFolder.file(pngFile.name, pngFile.data)
+    }
+
+    // Add ICO file
+    faviconFolder.file('favicon.ico', icoResult.data)
+
+    // Add Web Manifest
+    faviconFolder.file('site.webmanifest', manifestBlob)
+
+    // Generate ZIP file
+    const zipBlob = await zip.generateAsync({ type: 'blob' })
+
+    return {
+      data: zipBlob,
+      type: 'application/zip',
+      width: canvas.width,
+      height: canvas.height,
+      isFaviconPackage: true,
+      faviconFiles: pngFiles,
+      icoFile: icoResult,
+      webManifest: webManifest
+    }
+  }
+
   // Convert canvas to ICO format
   async function convertToICO(canvas, options = {}) {
     // Tamanhos de ícones a serem gerados
@@ -834,6 +987,79 @@ export function initImageConverter() {
       width: canvas.width,
       height: canvas.height
     }
+  }
+
+  // Add favicon installation guide to the preview area
+  function addFaviconInstallationGuide() {
+    // Create installation guide container
+    const guideContainer = document.createElement('div')
+    guideContainer.className = 'favicon-installation-guide mt-4 p-3 bg-light rounded'
+    guideContainer.innerHTML = `
+      <h5 class="mb-3">
+        <i class="fas fa-info-circle text-primary"></i>
+        Guia de Instalação do Favicon
+      </h5>
+      
+      <div class="mb-3">
+        <h6>1. Download dos Arquivos</h6>
+        <p>Use o botão de download acima para baixar o pacote ZIP. Extraia os arquivos e coloque-os no diretório raiz do seu site:</p>
+        <ul class="list-unstyled">
+          <li><i class="fas fa-file-image text-success"></i> android-chrome-192x192.png</li>
+          <li><i class="fas fa-file-image text-success"></i> android-chrome-512x512.png</li>
+          <li><i class="fas fa-file-image text-success"></i> apple-touch-icon.png</li>
+          <li><i class="fas fa-file-image text-success"></i> favicon-16x16.png</li>
+          <li><i class="fas fa-file-image text-success"></i> favicon-32x32.png</li>
+          <li><i class="fas fa-file-image text-success"></i> favicon.ico</li>
+          <li><i class="fas fa-file-code text-info"></i> site.webmanifest</li>
+        </ul>
+      </div>
+      
+      <div class="mb-3">
+        <h6>2. Adicionar Tags HTML</h6>
+        <p>Copie as seguintes tags e cole-as no <code>&lt;head&gt;</code> do seu HTML:</p>
+        <div class="bg-dark text-light p-3 rounded position-relative">
+          <button class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2" onclick="copyHtmlTags()">
+            <i class="fas fa-copy"></i> Copiar
+          </button>
+          <pre class="mb-0"><code>&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;</code></pre>
+        </div>
+      </div>
+      
+      <div class="alert alert-info">
+        <i class="fas fa-lightbulb"></i>
+        <strong>Dica:</strong> Estes arquivos são compatíveis com todos os navegadores modernos e dispositivos móveis.
+      </div>
+    `
+
+    // Add the guide to the preview area
+    const previewArea = document.querySelector('.preview-container')
+    if (previewArea) {
+      // Remove any existing guide
+      const existingGuide = previewArea.querySelector('.favicon-installation-guide')
+      if (existingGuide) {
+        existingGuide.remove()
+      }
+      
+      // Add new guide
+      previewArea.appendChild(guideContainer)
+    }
+  }
+
+  // Function to copy HTML tags to clipboard
+  window.copyHtmlTags = function() {
+    const htmlTags = `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">`
+    
+    navigator.clipboard.writeText(htmlTags).then(() => {
+      showNotification('Tags HTML copiadas para a área de transferência!', 'success')
+    }).catch(() => {
+      showNotification('Erro ao copiar tags HTML', 'error')
+    })
   }
 
   // Generate a filename for the converted image

@@ -7,6 +7,11 @@ Um aplicativo web completo para conversão, edição, compressão e processament
 ### Conversor de Imagens
 
 - Converte imagens para diferentes formatos (WebP, JPEG, PNG, ICO, SVG)
+- **Nova funcionalidade: Criação de pacotes de favicon completos**
+  - Gera todos os formatos necessários para um site (PNG, ICO, Web Manifest)
+  - Inclui tamanhos específicos para diferentes dispositivos (16x16, 32x32, 192x192, 512x512, 180x180)
+  - Cria um arquivo ZIP com pasta "favicon" contendo todos os arquivos
+  - Guia de instalação integrado com tags HTML prontas para copiar
 - Ajuste de qualidade e configurações específicas por formato
 - Redimensionamento de imagens com preservação de proporção
 - Visualização comparativa de antes e depois
@@ -120,6 +125,38 @@ O projeto segue uma arquitetura modular, onde cada funcionalidade é implementad
 - **Armazenamento Local**: Histórico salvo no navegador usando localStorage
 - **Web Share API**: Integração com APIs modernas de compartilhamento (quando disponível)
 - **Processamento Client-Side**: Todas as operações são realizadas localmente, sem envio de dados
+
+## 🎯 Funcionalidade de Favicon
+
+### Como Usar
+
+1. **Selecione uma imagem** - Qualquer formato de imagem pode ser usado como base
+2. **Escolha o formato ICO** - No conversor, selecione "ICO" como formato de saída
+3. **Marque a opção "Criar todos os formatos de favicon"** - Esta opção aparecerá quando ICO for selecionado
+4. **Clique em "Converter"** - O sistema irá gerar todos os arquivos necessários
+5. **Baixe o pacote ZIP** - Contém todos os arquivos organizados em uma pasta "favicon"
+
+### Arquivos Gerados
+
+O pacote inclui todos os arquivos necessários para um favicon completo:
+
+- `android-chrome-192x192.png` - Para dispositivos Android
+- `android-chrome-512x512.png` - Para dispositivos Android de alta resolução
+- `apple-touch-icon.png` - Para dispositivos iOS
+- `favicon-16x16.png` - Favicon padrão para navegadores
+- `favicon-32x32.png` - Favicon de alta resolução
+- `favicon.ico` - Favicon tradicional para compatibilidade
+- `site.webmanifest` - Manifesto web para PWA
+
+### Instalação
+
+Após baixar e extrair o ZIP:
+
+1. **Coloque os arquivos** no diretório raiz do seu site
+2. **Copie as tags HTML** fornecidas no guia de instalação
+3. **Cole as tags** no `<head>` do seu HTML
+
+O guia de instalação é exibido automaticamente após a conversão, com um botão para copiar as tags HTML diretamente para a área de transferência.
 
 ## 🔒 Privacidade
 
