@@ -6,6 +6,12 @@
 export function initDarkMode() {
   const themeToggleBtn = document.getElementById('themeToggle')
 
+  // Verificar se o botão existe
+  if (!themeToggleBtn) {
+    console.warn('Botão de tema não encontrado')
+    return
+  }
+
   // Verificar se há uma preferência salva no localStorage
   const savedTheme = localStorage.getItem('theme')
 
@@ -15,10 +21,8 @@ export function initDarkMode() {
     window.matchMedia('(prefers-color-scheme: dark)').matches
 
   // Definir tema inicial
-  if (savedTheme === 'dark' || (!savedTheme && prefersDarkMode)) {
-    document.documentElement.setAttribute('data-theme', 'dark')
-    // Notificação removida
-  }
+  const initialTheme = savedTheme || (prefersDarkMode ? 'dark' : 'light')
+  setTheme(initialTheme)
 
   // Adicionar event listener para o botão de toggle
   themeToggleBtn.addEventListener('click', toggleTheme)
@@ -31,7 +35,6 @@ export function initDarkMode() {
       // Apenas mudar automaticamente se o usuário não tiver definido uma preferência manualmente
       if (!localStorage.getItem('theme')) {
         setTheme(newTheme)
-        // Notificação removida
       }
     })
 
@@ -41,33 +44,40 @@ export function initDarkMode() {
 
 // Função para alternar o tema
 function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme')
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light'
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
 
   setTheme(newTheme)
   animateThemeSwitch()
-
-  // Notificação removida
 }
 
 // Função para definir o tema
 function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme)
-  localStorage.setItem('theme', theme)
+  // Garantir que o tema seja 'dark' ou 'light'
+  const validTheme = theme === 'dark' ? 'dark' : 'light'
+  
+  document.documentElement.setAttribute('data-theme', validTheme)
+  localStorage.setItem('theme', validTheme)
 
   // Atualizar metadados para browsers móveis que mudam a cor da barra de status
   const metaThemeColor = document.querySelector('meta[name="theme-color"]')
   if (metaThemeColor) {
     metaThemeColor.setAttribute(
       'content',
-      theme === 'dark' ? '#212529' : '#ffffff'
+      validTheme === 'dark' ? '#212529' : '#ffffff'
     )
   }
+  
+  // O CSS já gerencia a visibilidade dos ícones baseado no data-theme
+  // Forçar reflow para garantir que o CSS seja aplicado
+  void document.documentElement.offsetHeight
 }
+
 
 // Animação para a troca de tema
 function animateThemeSwitch() {
   const themeBtn = document.getElementById('themeToggle')
+  if (!themeBtn) return
 
   // Adicionar classe para animação
   themeBtn.classList.add('theme-switching')

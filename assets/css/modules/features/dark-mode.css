@@ -396,13 +396,13 @@ Correção do tamanho dos arquivos no histórico
 /* Ajustes específicos para o botão de tema */
 [data-theme='dark'] .btn-theme i.fa-sun {
   opacity: 1;
-  transform: scale(1);
+  transform: translate(-50%, -50%) scale(1);
   color: #ffc107;
 }
 
 [data-theme='dark'] .btn-theme i.fa-moon {
   opacity: 0;
-  transform: scale(0.5) rotate(45deg);
+  transform: translate(-50%, -50%) scale(0.5) rotate(45deg);
 }
 
 [data-theme='dark'] .btn-theme {
