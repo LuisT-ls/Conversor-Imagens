@@ -130,10 +130,24 @@ export function initImageConverter() {
 
   // Initialize drag and drop functionality
   function initDragAndDrop() {
-    // Prevent default drag behaviors
+    // Prevent default drag behaviors function
+    function preventDefaults(e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    
+    // Prevent default drag behaviors only on the drop zone
     ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
       dropZone.addEventListener(eventName, preventDefaults, false)
-      document.body.addEventListener(eventName, preventDefaults, false)
+      // Only prevent on body for drop events to allow file drops, but not on navigation
+      if (eventName === 'drop') {
+        document.body.addEventListener(eventName, function(e) {
+          // Don't prevent if clicking on navigation links
+          if (!e.target.closest('nav') && !e.target.closest('a[data-bs-toggle="tab"]')) {
+            preventDefaults(e)
+          }
+        }, false)
+      }
     })
 
     // Highlight drop zone when a file is dragged over it
@@ -148,11 +162,6 @@ export function initImageConverter() {
 
     // Handle dropped files
     dropZone.addEventListener('drop', handleDrop, false)
-
-    function preventDefaults(e) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
 
     function highlight() {
       dropZone.classList.add('drop-zone-active')

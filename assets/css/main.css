@@ -50,14 +50,30 @@ main {
 }
 
 .tab-pane {
+  display: none;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.tab-pane.active {
+.tab-pane.active,
+.tab-pane.show.active {
+  display: block !important;
   opacity: 1;
   transform: translateY(0);
+}
+
+.tab-pane.fade {
+  transition: opacity 0.15s linear;
+}
+
+.tab-pane.fade:not(.show) {
+  opacity: 0;
+}
+
+.tab-pane.fade.show {
+  opacity: 1;
+  display: block !important;
 }
 
 /* Cards com design minimalista */

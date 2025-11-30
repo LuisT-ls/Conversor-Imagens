@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('Application initialized successfully!')
 })
 
-// Initialize Bootstrap components like tooltips, popovers, etc.
+// Initialize Bootstrap components like tooltips, popovers, tabs, etc.
 function initBootstrapComponents() {
   // Initialize tooltips
   const tooltipTriggerList = [].slice.call(
@@ -43,6 +43,88 @@ function initBootstrapComponents() {
   popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl)
   })
+
+  // Initialize tabs and handle tab switching
+  initTabs()
+}
+
+// Initialize Bootstrap tabs
+function initTabs() {
+  // Get all tab links
+  const tabLinks = document.querySelectorAll('a[data-bs-toggle="tab"]')
+  
+  console.log('Initializing tabs, found', tabLinks.length, 'tab links')
+  
+  if (tabLinks.length === 0) {
+    console.warn('No tab links found!')
+    return
+  }
+  
+  // Function to switch tabs
+  function switchTab(clickedLink) {
+    const targetId = clickedLink.getAttribute('href')
+    
+    if (!targetId || !targetId.startsWith('#')) {
+      return
+    }
+    
+    const targetTab = document.querySelector(targetId)
+    if (!targetTab) {
+      console.error('Tab target not found:', targetId)
+      return
+    }
+    
+    // Remove active class from all nav links
+    document.querySelectorAll('.nav-link[data-bs-toggle="tab"]').forEach(link => {
+      link.classList.remove('active')
+    })
+    
+    // Remove active/show from all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.classList.remove('show', 'active')
+    })
+    
+    // Add active class to clicked link
+    clickedLink.classList.add('active')
+    
+    // Show target tab pane
+    targetTab.classList.add('show', 'active')
+    
+    console.log('Tab switched to:', targetId)
+  }
+  
+  tabLinks.forEach(function (tabLink) {
+    // Add explicit click handler to ensure tabs work
+    tabLink.addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+      
+      switchTab(this)
+      
+      // Also trigger Bootstrap tab if available
+      if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+        try {
+          const tab = new bootstrap.Tab(this)
+          tab.show()
+        } catch (error) {
+          // Bootstrap failed, but we already switched manually
+          console.warn('Bootstrap Tab API failed, using manual toggle')
+        }
+      }
+      
+      return false
+    })
+    
+    // Handle Bootstrap tab shown event to sync states (if Bootstrap is available)
+    if (typeof bootstrap !== 'undefined') {
+      tabLink.addEventListener('shown.bs.tab', function (e) {
+        switchTab(this)
+      })
+    }
+  })
+  
+  console.log('Tabs initialized successfully')
 }
 
 // Display a notification toast
