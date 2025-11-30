@@ -1,85 +1,297 @@
-/* Rodapé */
-footer.footer {
-  background: var(--bg-dark);
-  color: var(--text-light);
-  padding: 2rem 0 1rem;
-  position: relative;
-  margin-top: 3rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
+/* Rodapé - Design Moderno e Organizado */
 
-/* Efeitos decorativos removidos para design minimalista */
+footer.footer {
+  background: linear-gradient(135deg, #1a1e23 0%, #252a32 100%);
+  color: var(--text-light);
+  padding: 3.5rem 0 1.5rem;
+  position: relative;
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
 
 footer .container {
   position: relative;
   z-index: 1;
 }
 
-footer h5 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  color: white;
+/* Conteúdo Principal do Footer */
+.footer-content {
+  margin-bottom: 2.5rem;
 }
 
-footer p {
+/* Branding e Logo */
+.footer-brand {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.footer-logo-img {
+  height: 2rem;
+  width: auto;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease;
+}
+
+.footer-logo:hover .footer-logo-img {
+  transform: scale(1.05);
+}
+
+.footer-brand-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+.footer-description {
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 90%;
+}
+
+/* Títulos das Seções */
+.footer-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: white;
+  letter-spacing: -0.01em;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 2.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+  border-radius: 2px;
+}
+
+/* Links do Footer */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0;
+  position: relative;
+}
+
+.footer-link i {
+  font-size: 0.875rem;
+  width: 1.25rem;
+  text-align: center;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+.footer-link:hover {
+  color: white;
+  transform: translateX(4px);
+}
+
+.footer-link:hover i {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* Features (Recursos) */
+.footer-feature {
   color: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+}
+
+.footer-feature i {
+  font-size: 0.875rem;
+  width: 1.25rem;
+  text-align: center;
+  color: var(--primary-color);
+  opacity: 0.9;
+}
+
+/* Redes Sociais */
+.footer-social-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.social-link:hover::before {
+  left: 100%;
+}
+
+.social-link i {
+  font-size: 1.1rem;
+  width: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.social-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateX(4px);
+}
+
+.social-link:hover i {
+  transform: scale(1.15);
+}
+
+.social-link-text {
+  font-weight: 500;
+}
+
+/* Instagram */
+.social-link[aria-label='Instagram']:hover {
+  background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+  border-color: transparent;
+}
+
+/* LinkedIn */
+.social-link[aria-label='LinkedIn']:hover {
+  background: #0077b5;
+  border-color: transparent;
+}
+
+/* GitHub */
+.social-link[aria-label='GitHub']:hover {
+  background: #24292e;
+  border-color: transparent;
+}
+
+/* Divider */
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  margin: 2.5rem 0 1.5rem;
+}
+
+/* Footer Bottom (Copyright) */
+.footer-bottom {
+  padding-top: 1.5rem;
+}
+
+.footer-copyright {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
   line-height: 1.6;
 }
 
-footer .small {
-  font-size: 0.9rem;
+.footer-copyright strong {
+  color: white;
+  font-weight: 600;
 }
 
-/* Links rápidos minimalistas */
-footer ul.list-unstyled li {
-  margin-bottom: 0.5rem;
-}
-
-footer ul.list-unstyled a {
+.footer-credits {
   color: rgba(255, 255, 255, 0.7);
-  transition: color 0.2s ease;
-  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
-footer ul.list-unstyled a:hover {
+.footer-credits-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.footer-credits-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.footer-credits-link:hover {
   color: white;
 }
 
-/* Ícones de redes sociais minimalistas */
-footer .social-links {
-  display: flex;
-  gap: 12px;
+.footer-credits-link:hover::after {
+  width: 100%;
 }
 
-footer .social-links a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  transition: background 0.2s ease;
-  text-decoration: none;
-  color: white;
-}
-
-footer .social-links a:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-footer .social-links a i {
-  font-size: 1rem;
-}
-
-footer hr.border-light {
-  opacity: 0.1;
-  margin: 2rem 0;
-}
-
-footer .fa-heart {
+.footer .fa-heart {
   animation: pulse 1.5s infinite;
+  color: #e74c3c;
 }
 
 @keyframes pulse {
@@ -94,23 +306,141 @@ footer .fa-heart {
   }
 }
 
-/* Responsividade do footer */
-@media (max-width: 767.98px) {
-  footer {
-    text-align: center;
+/* Adaptações para Tema Escuro */
+[data-theme='dark'] footer.footer {
+  background: linear-gradient(135deg, #151819 0%, #1a1e23 100%);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .footer-divider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+}
+
+/* Responsividade */
+@media (max-width: 991.98px) {
+  footer.footer {
+    padding: 2.5rem 0 1.25rem;
   }
 
-  footer h5::after {
+  .footer-content {
+    margin-bottom: 2rem;
+  }
+
+  .footer-description {
+    max-width: 100%;
+  }
+
+  .footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 767.98px) {
+  footer.footer {
+    padding: 2rem 0 1rem;
+    margin-top: 3rem;
+  }
+
+  .footer-content {
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-logo {
+    justify-content: center;
+  }
+
+  .footer-brand-name {
+    font-size: 1.1rem;
+  }
+
+  .footer-description {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .footer-title {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .footer-title::after {
     left: 50%;
     transform: translateX(-50%);
   }
 
-  footer .social-links {
+  .footer-links {
+    text-align: center;
+  }
+
+  .footer-link {
     justify-content: center;
   }
 
-  /* Ajuste para mobile - remover transformação X para evitar ultrapassar container */
-  footer ul.list-unstyled a:hover {
+  .footer-link:hover {
     transform: none;
+  }
+
+  .footer-feature {
+    justify-content: center;
+  }
+
+  .footer-social-description {
+    text-align: center;
+  }
+
+  .social-links {
+    align-items: stretch;
+  }
+
+  .social-link {
+    justify-content: center;
+  }
+
+  .social-link:hover {
+    transform: none;
+  }
+
+  .footer-bottom {
+    text-align: center;
+  }
+
+  .footer-copyright,
+  .footer-credits {
+    text-align: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .footer-logo {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-brand-name {
+    font-size: 1rem;
+  }
+
+  .footer-description {
+    font-size: 0.875rem;
+  }
+
+  .footer-title {
+    font-size: 1rem;
+  }
+
+  .footer-link,
+  .footer-feature {
+    font-size: 0.875rem;
+  }
+
+  .social-link {
+    font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
   }
 }

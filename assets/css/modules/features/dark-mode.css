@@ -458,10 +458,7 @@ Correção do tamanho dos arquivos no histórico
   border-color: var(--primary-color);
 }
 
-/* Ajustes para o footer em modo escuro */
-[data-theme='dark'] footer.footer {
-  background: linear-gradient(135deg, #151819, #1a1e23);
-}
+/* Ajustes para o footer em modo escuro - Gerenciado em footer.css */
 
 /* Estilização para notificações toast em modo escuro */
 [data-theme='dark'] .toastify {
