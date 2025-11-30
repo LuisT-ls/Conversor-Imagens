@@ -372,46 +372,7 @@ Correção do tamanho dos arquivos no histórico
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Ajustes para o header no tema escuro */
-[data-theme='dark'] header.bg-dark {
-  background: linear-gradient(125deg, #151819 0%, #1a1e23 50%, #121417 100%);
-}
-
-[data-theme='dark'] header .shape-1 {
-  background: radial-gradient(
-    circle,
-    rgba(92, 122, 255, 0.8) 0%,
-    rgba(92, 122, 255, 0) 70%
-  );
-}
-
-[data-theme='dark'] header .shape-2 {
-  background: radial-gradient(
-    circle,
-    rgba(115, 103, 240, 0.6) 0%,
-    rgba(115, 103, 240, 0) 70%
-  );
-}
-
-/* Ajustes específicos para o botão de tema */
-[data-theme='dark'] .btn-theme i.fa-sun {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-  color: #ffc107;
-}
-
-[data-theme='dark'] .btn-theme i.fa-moon {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.5) rotate(45deg);
-}
-
-[data-theme='dark'] .btn-theme {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-[data-theme='dark'] .btn-theme:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+/* Ajustes para o header e navegação no tema escuro - Gerenciado em header.css */
 
 /* Modificações para scrollbar no tema escuro */
 [data-theme='dark'] ::-webkit-scrollbar-track {

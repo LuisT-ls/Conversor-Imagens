@@ -109,69 +109,105 @@
     <link rel="stylesheet" href="assets/css/main.css" />
   </head>
   <body>
-    <header class="bg-dark text-white py-4">
+    <header class="header-main bg-dark text-white">
       <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-7">
-            <div class="header-content">
-              <h1>
-                <img
-                  src="assets/img/image_converter_logo.svg"
-                  alt="Conversor de Imagens"
-                  class="header-logo"
-                />
-                Conversor de Imagens
-              </h1>
-              <p class="lead">
+        <div class="header-wrapper">
+          <!-- Brand Section -->
+          <div class="header-brand">
+            <div class="brand-logo-wrapper">
+              <img
+                src="assets/img/image_converter_logo.svg"
+                alt="Conversor de Imagens"
+                class="brand-logo"
+              />
+            </div>
+            <div class="brand-content">
+              <h1 class="brand-title">Conversor de Imagens</h1>
+              <p class="brand-subtitle">
                 Uma ferramenta completa para trabalhar com suas imagens
               </p>
             </div>
           </div>
-          <div class="col-md-5 text-md-end mt-4 mt-md-0">
-            <div class="header-actions">
-              <button
-                id="themeToggle"
-                class="btn-theme"
-                aria-label="Alternar tema"
-              >
-                <div class="theme-switch">
-                  <i class="fas fa-moon"></i>
-                  <i class="fas fa-sun"></i>
-                </div>
-              </button>
-            </div>
+
+          <!-- Actions Section -->
+          <div class="header-actions">
+            <button
+              id="themeToggle"
+              class="btn-theme"
+              aria-label="Alternar tema"
+              title="Alternar tema claro/escuro"
+            >
+              <div class="theme-switch">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+              </div>
+            </button>
           </div>
         </div>
       </div>
     </header>
 
-    <nav class="bg-light py-2">
+    <nav class="nav-main bg-light">
       <div class="container">
-        <ul class="nav nav-pills">
-          <li class="nav-item">
-            <a class="nav-link active" href="#converterTab" data-bs-toggle="tab"
-              >Conversor</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#editorTab" data-bs-toggle="tab"
-              >Editor</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#batchTab" data-bs-toggle="tab">Lote</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#compressorTab" data-bs-toggle="tab"
-              >Compressor</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#historyTab" data-bs-toggle="tab"
-              >Histórico</a
-            >
-          </li>
-        </ul>
+        <div class="nav-wrapper">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="#converterTab"
+                data-bs-toggle="tab"
+                aria-label="Conversor de imagens"
+              >
+                <i class="nav-icon fas fa-sync-alt"></i>
+                <span class="nav-text">Conversor</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#editorTab"
+                data-bs-toggle="tab"
+                aria-label="Editor de imagens"
+              >
+                <i class="nav-icon fas fa-edit"></i>
+                <span class="nav-text">Editor</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#batchTab"
+                data-bs-toggle="tab"
+                aria-label="Conversão em lote"
+              >
+                <i class="nav-icon fas fa-layer-group"></i>
+                <span class="nav-text">Lote</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#compressorTab"
+                data-bs-toggle="tab"
+                aria-label="Compressor de imagens"
+              >
+                <i class="nav-icon fas fa-compress-alt"></i>
+                <span class="nav-text">Compressor</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#historyTab"
+                data-bs-toggle="tab"
+                aria-label="Histórico de conversões"
+              >
+                <i class="nav-icon fas fa-history"></i>
+                <span class="nav-text">Histórico</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
