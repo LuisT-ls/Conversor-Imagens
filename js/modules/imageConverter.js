@@ -60,18 +60,68 @@ export function initImageConverter() {
   // Function to handle file selection
   function handleFileSelect(event) {
     const file = event.target.files[0]
-    if (file && file.type.match('image.*')) {
-      processSelectedFile(file)
-    } else {
+    if (!file) {
       showNotification(
         'Por favor, selecione um arquivo de imagem válido.',
         'error'
       )
+      return
     }
+    
+    // Validate file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024 // 50MB
+    if (file.size > maxSize) {
+      showNotification(
+        'Arquivo muito grande. O tamanho máximo é 50MB.',
+        'error'
+      )
+      return
+    }
+    
+    processSelectedFile(file)
+  }
+
+  // Validate if file format is supported
+  function isSupportedFormat(file) {
+    const supportedTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'image/bmp',
+      'image/svg+xml',
+      'image/x-icon',
+      'image/vnd.microsoft.icon',
+      'image/tiff',
+      'image/x-tiff'
+    ]
+    
+    // Check by MIME type
+    if (file.type && supportedTypes.includes(file.type.toLowerCase())) {
+      return true
+    }
+    
+    // Check by file extension as fallback
+    const extension = file.name.split('.').pop().toLowerCase()
+    const supportedExtensions = [
+      'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'ico', 'tiff', 'tif'
+    ]
+    
+    return supportedExtensions.includes(extension)
   }
 
   // Process the selected file
   function processSelectedFile(file) {
+    // Validate file format
+    if (!isSupportedFormat(file)) {
+      showNotification(
+        'Formato de arquivo não suportado. Use JPEG, PNG, GIF, WebP, BMP, SVG, ICO ou TIFF.',
+        'error'
+      )
+      return
+    }
+    
     // Store original file info
     originalFileInfo = {
       name: file.name,
@@ -175,10 +225,28 @@ export function initImageConverter() {
       const dt = e.dataTransfer
       const file = dt.files[0]
 
-      if (file && file.type.match('image.*')) {
+      if (!file) {
+        showNotification('Por favor, solte um arquivo de imagem válido.', 'error')
+        return
+      }
+      
+      // Validate file size (max 50MB)
+      const maxSize = 50 * 1024 * 1024 // 50MB
+      if (file.size > maxSize) {
+        showNotification(
+          'Arquivo muito grande. O tamanho máximo é 50MB.',
+          'error'
+        )
+        return
+      }
+      
+      if (isSupportedFormat(file)) {
         processSelectedFile(file)
       } else {
-        showNotification('Por favor, solte apenas arquivos de imagem.', 'error')
+        showNotification(
+          'Formato de arquivo não suportado. Use JPEG, PNG, GIF, WebP, BMP, SVG, ICO ou TIFF.',
+          'error'
+        )
       }
     }
   }
@@ -396,10 +464,37 @@ export function initImageConverter() {
 
       // Wait for the image to load
       await imageLoaded
+      
+      // Validate image dimensions
+      if (img.width === 0 || img.height === 0) {
+        throw new Error('Imagem inválida: dimensões zero')
+      }
+      
+      // Validate and adjust dimensions
+      if (width <= 0 || height <= 0) {
+        width = img.width
+        height = img.height
+      }
+      
+      // Limit maximum dimensions to prevent memory issues
+      const maxDimension = 10000
+      if (width > maxDimension || height > maxDimension) {
+        const scale = Math.min(maxDimension / width, maxDimension / height)
+        width = Math.floor(width * scale)
+        height = Math.floor(height * scale)
+        showNotification(
+          `Imagem redimensionada para ${width}x${height} para evitar problemas de memória.`,
+          'warning'
+        )
+      }
 
       // Set canvas dimensions
       canvas.width = width
       canvas.height = height
+      
+      // Use high-quality image rendering
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
 
       // Draw the image on the canvas with the specified dimensions
       ctx.drawImage(img, 0, 0, width, height)
@@ -618,149 +713,229 @@ export function initImageConverter() {
 
   // Convert canvas to WebP format
   async function convertToWebP(canvas, options = {}) {
-    return new Promise(resolve => {
-      canvas.toBlob(
-        blob => {
-          resolve({
-            data: blob,
-            type: 'image/webp',
-            width: canvas.width,
-            height: canvas.height
-          })
-        },
-        'image/webp',
-        options.quality
-      )
+    return new Promise((resolve, reject) => {
+      try {
+        // WebP quality: 0-1, where 1 is best quality
+        const quality = options.lossless ? 1 : (options.quality || 0.92)
+        
+        // Check if WebP is supported
+        if (!canvas.toBlob) {
+          reject(new Error('WebP conversion not supported in this browser'))
+          return
+        }
+
+        canvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error('Failed to convert image to WebP'))
+              return
+            }
+            
+            resolve({
+              data: blob,
+              type: 'image/webp',
+              width: canvas.width,
+              height: canvas.height
+            })
+          },
+          'image/webp',
+          quality
+        )
+      } catch (error) {
+        reject(new Error(`WebP conversion error: ${error.message}`))
+      }
     })
   }
 
   // Convert canvas to JPEG format
   async function convertToJPEG(canvas, options = {}) {
-    return new Promise(resolve => {
-      // Draw white background for JPEG (because JPEG doesn't support transparency)
-      if (options.fillBackground !== false) {
-        const ctx = canvas.getContext('2d')
-        const oldData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        ctx.fillStyle = '#FFFFFF'
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        ctx.putImageData(oldData, 0, 0)
+    return new Promise((resolve, reject) => {
+      try {
+        // Create a new canvas to handle transparency properly
+        const jpegCanvas = document.createElement('canvas')
+        jpegCanvas.width = canvas.width
+        jpegCanvas.height = canvas.height
+        const jpegCtx = jpegCanvas.getContext('2d')
+        
+        // Fill with white background first (JPEG doesn't support transparency)
+        jpegCtx.fillStyle = '#FFFFFF'
+        jpegCtx.fillRect(0, 0, jpegCanvas.width, jpegCanvas.height)
+        
+        // Draw the original image on top
+        jpegCtx.drawImage(canvas, 0, 0)
+        
+        // Convert to JPEG with quality (0-1)
+        const quality = options.quality || 0.92
+        
+        jpegCanvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error('Failed to convert image to JPEG'))
+              return
+            }
+            
+            resolve({
+              data: blob,
+              type: 'image/jpeg',
+              width: canvas.width,
+              height: canvas.height
+            })
+          },
+          'image/jpeg',
+          quality
+        )
+      } catch (error) {
+        reject(new Error(`JPEG conversion error: ${error.message}`))
       }
-
-      canvas.toBlob(
-        blob => {
-          resolve({
-            data: blob,
-            type: 'image/jpeg',
-            width: canvas.width,
-            height: canvas.height
-          })
-        },
-        'image/jpeg',
-        options.quality
-      )
     })
   }
 
   // Convert canvas to PNG format
   async function convertToPNG(canvas, options = {}) {
-    return new Promise(resolve => {
-      canvas.toBlob(blob => {
-        resolve({
-          data: blob,
-          type: 'image/png',
-          width: canvas.width,
-          height: canvas.height
-        })
-      }, 'image/png')
+    return new Promise((resolve, reject) => {
+      try {
+        // Create a new canvas if we need to handle transparency
+        let pngCanvas = canvas
+        let pngCtx = canvas.getContext('2d')
+        
+        // If alpha is false, fill with white background
+        if (options.alpha === false) {
+          pngCanvas = document.createElement('canvas')
+          pngCanvas.width = canvas.width
+          pngCanvas.height = canvas.height
+          pngCtx = pngCanvas.getContext('2d')
+          
+          // Fill with white background
+          pngCtx.fillStyle = '#FFFFFF'
+          pngCtx.fillRect(0, 0, pngCanvas.width, pngCanvas.height)
+          
+          // Draw the original image
+          pngCtx.drawImage(canvas, 0, 0)
+        }
+        
+        // Note: PNG compression level is not directly supported by canvas.toBlob
+        // The browser handles compression automatically
+        // The compressionLevel option is kept for UI consistency but doesn't affect output
+        
+        pngCanvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error('Failed to convert image to PNG'))
+              return
+            }
+            
+            resolve({
+              data: blob,
+              type: 'image/png',
+              width: canvas.width,
+              height: canvas.height
+            })
+          },
+          'image/png'
+        )
+      } catch (error) {
+        reject(new Error(`PNG conversion error: ${error.message}`))
+      }
     })
   }
 
   // Convert canvas to SVG format
   async function convertToSVG(canvas, options = {}) {
-    // Obter os dados da imagem do canvas
-    const ctx = canvas.getContext('2d')
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    const pixelData = imageData.data
-
-    // Determinar a precisão (quantos pixels pular)
-    const precision = options.precision || 5
-
-    // Iniciar o SVG com um elemento de fundo branco
-    let svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvas.width} ${canvas.height}" width="${canvas.width}" height="${canvas.height}">`
-
-    // Adicionar um retângulo de fundo branco
-    svgString += `<rect width="${canvas.width}" height="${canvas.height}" fill="white"/>`
-
-    // Agrupar pixels semelhantes para reduzir o tamanho do SVG
-    const regions = []
-
-    // Percorrer a imagem com a precisão especificada
-    for (let y = 0; y < canvas.height; y += precision) {
-      let currentRegion = null
-
-      for (let x = 0; x < canvas.width; x += precision) {
-        const index = (y * canvas.width + x) * 4
-        const r = pixelData[index]
-        const g = pixelData[index + 1]
-        const b = pixelData[index + 2]
-        const a = pixelData[index + 3]
-
-        // Ignorar pixels totalmente transparentes
-        if (a < 10) {
+    try {
+      // For better quality, embed the image as base64 in SVG
+      // This is more reliable than pixel-by-pixel conversion for complex images
+      const precision = options.precision || 5
+      const optimize = options.optimize !== false
+      
+      // Convert canvas to data URL
+      const dataUrl = canvas.toDataURL('image/png')
+      
+      // Create SVG with embedded image
+      let svgString = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${canvas.width} ${canvas.height}" width="${canvas.width}" height="${canvas.height}">`
+      
+      if (optimize && precision > 1) {
+        // Use pixel-based approach for optimization (smaller file size)
+        const ctx = canvas.getContext('2d')
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const pixelData = imageData.data
+        
+        // Add white background
+        svgString += `<rect width="${canvas.width}" height="${canvas.height}" fill="white"/>`
+        
+        // Group similar pixels to reduce SVG size
+        const regions = []
+        
+        for (let y = 0; y < canvas.height; y += precision) {
+          let currentRegion = null
+          
+          for (let x = 0; x < canvas.width; x += precision) {
+            const index = (y * canvas.width + x) * 4
+            const r = pixelData[index]
+            const g = pixelData[index + 1]
+            const b = pixelData[index + 2]
+            const a = pixelData[index + 3]
+            
+            // Ignore fully transparent pixels
+            if (a < 10) {
+              if (currentRegion) {
+                regions.push(currentRegion)
+                currentRegion = null
+              }
+              continue
+            }
+            
+            // Handle semi-transparent pixels
+            const opacity = a / 255
+            const color = opacity < 1 
+              ? `rgba(${r},${g},${b},${opacity.toFixed(2)})`
+              : `rgb(${r},${g},${b})`
+            
+            if (!currentRegion || currentRegion.color !== color) {
+              if (currentRegion) {
+                regions.push(currentRegion)
+              }
+              
+              currentRegion = {
+                color: color,
+                y: y,
+                startX: x,
+                endX: x + precision
+              }
+            } else {
+              currentRegion.endX = x + precision
+            }
+          }
+          
           if (currentRegion) {
             regions.push(currentRegion)
-            currentRegion = null
           }
-          continue
         }
-
-        const color = `rgb(${r},${g},${b})`
-
-        // Se não há região atual ou a cor é diferente, criar uma nova região
-        if (!currentRegion || currentRegion.color !== color) {
-          if (currentRegion) {
-            regions.push(currentRegion)
-          }
-
-          currentRegion = {
-            color: color,
-            y: y,
-            startX: x,
-            endX: x + precision
-          }
-        } else {
-          // Estender a região atual
-          currentRegion.endX = x + precision
+        
+        // Add rectangles for each region
+        for (const region of regions) {
+          const width = region.endX - region.startX
+          if (width < precision) continue
+          
+          svgString += `<rect x="${region.startX}" y="${region.y}" width="${width}" height="${precision}" fill="${region.color}" />`
         }
+      } else {
+        // Use embedded image for better quality (larger file size)
+        svgString += `<image width="${canvas.width}" height="${canvas.height}" xlink:href="${dataUrl}"/>`
       }
-
-      // Adicionar a última região da linha
-      if (currentRegion) {
-        regions.push(currentRegion)
+      
+      svgString += '</svg>'
+      
+      // Create Blob with SVG
+      const blob = new Blob([svgString], { type: 'image/svg+xml' })
+      
+      return {
+        data: blob,
+        type: 'image/svg+xml',
+        width: canvas.width,
+        height: canvas.height
       }
-    }
-
-    // Adicionar retângulos para cada região
-    for (const region of regions) {
-      const width = region.endX - region.startX
-
-      // Ignorar regiões muito pequenas
-      if (width < precision) continue
-
-      svgString += `<rect x="${region.startX}" y="${region.y}" width="${width}" height="${precision}" fill="${region.color}" />`
-    }
-
-    // Fechar a tag SVG
-    svgString += '</svg>'
-
-    // Criar um Blob com o SVG
-    const blob = new Blob([svgString], { type: 'image/svg+xml' })
-
-    return {
-      data: blob,
-      type: 'image/svg+xml',
-      width: canvas.width,
-      height: canvas.height
+    } catch (error) {
+      throw new Error(`SVG conversion error: ${error.message}`)
     }
   }
 
@@ -879,60 +1054,86 @@ export function initImageConverter() {
 
   // Convert canvas to ICO format
   async function convertToICO(canvas, options = {}) {
-    // Tamanhos de ícones a serem gerados
-    const sizes = options.sizes || [16, 32, 48]
-
-    // Criar um canvas para cada tamanho de ícone
-    const iconCanvases = sizes.map(size => {
-      const iconCanvas = document.createElement('canvas')
-      iconCanvas.width = size
-      iconCanvas.height = size
-
-      // Desenhar a imagem redimensionada no canvas
-      const ctx = iconCanvas.getContext('2d')
-      ctx.drawImage(canvas, 0, 0, size, size)
-
-      return { size, canvas: iconCanvas }
-    })
-
-    // Criar um arquivo ICO manualmente
-    // Estrutura do arquivo ICO: https://en.wikipedia.org/wiki/ICO_(file_format)
-
-    // 1. Cabeçalho do arquivo ICO (6 bytes)
-    const header = new Uint8Array(6)
-    // Reservado (deve ser 0)
-    header[0] = 0
-    header[1] = 0
-    // Tipo (1 = ICO)
-    header[2] = 1
-    header[3] = 0
-    // Número de imagens
-    header[4] = iconCanvases.length
-    header[5] = 0
-
-    // 2. Diretório de imagens (16 bytes por imagem)
-    const directory = new Uint8Array(16 * iconCanvases.length)
-
-    // 3. Converter cada canvas para PNG
-    const pngPromises = iconCanvases.map(({ canvas }) => {
-      return new Promise(resolve => {
-        canvas.toBlob(blob => resolve(blob), 'image/png')
+    try {
+      // Tamanhos de ícones a serem gerados
+      const sizes = options.sizes || [16, 32, 48]
+      
+      // Validate sizes
+      if (!Array.isArray(sizes) || sizes.length === 0) {
+        throw new Error('Tamanhos de ICO inválidos')
+      }
+      
+      // Validate and filter each size
+      const validSizes = sizes.filter(size => {
+        return Number.isInteger(size) && size > 0 && size <= 256
       })
-    })
+      
+      if (validSizes.length === 0) {
+        throw new Error('Nenhum tamanho válido para ICO')
+      }
 
-    // Aguardar todas as conversões PNG
-    const pngBlobs = await Promise.all(pngPromises)
+      // Criar um canvas para cada tamanho de ícone
+      const iconCanvases = validSizes.map(size => {
+        const iconCanvas = document.createElement('canvas')
+        iconCanvas.width = size
+        iconCanvas.height = size
 
-    // Converter Blobs em ArrayBuffers
-    const pngArrayBuffers = await Promise.all(
-      pngBlobs.map(blob => blob.arrayBuffer())
-    )
+        // Desenhar a imagem redimensionada no canvas com alta qualidade
+        const ctx = iconCanvas.getContext('2d')
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
+        ctx.drawImage(canvas, 0, 0, size, size)
 
-    // Calcular o deslocamento para os dados da imagem
-    let imageDataOffset = 6 + 16 * iconCanvases.length // Cabeçalho + diretório
+        return { size, canvas: iconCanvas }
+      })
 
-    // Preencher o diretório e preparar os buffers de imagem
-    for (let i = 0; i < iconCanvases.length; i++) {
+      // Criar um arquivo ICO manualmente
+      // Estrutura do arquivo ICO: https://en.wikipedia.org/wiki/ICO_(file_format)
+
+      // 1. Cabeçalho do arquivo ICO (6 bytes)
+      const header = new Uint8Array(6)
+      // Reservado (deve ser 0)
+      header[0] = 0
+      header[1] = 0
+      // Tipo (1 = ICO)
+      header[2] = 1
+      header[3] = 0
+      // Número de imagens
+      header[4] = iconCanvases.length
+      header[5] = 0
+
+      // 2. Diretório de imagens (16 bytes por imagem)
+      const directory = new Uint8Array(16 * iconCanvases.length)
+
+      // 3. Converter cada canvas para PNG
+      const pngPromises = iconCanvases.map(({ canvas }) => {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(
+          blob => {
+            if (!blob) {
+              reject(new Error('Falha ao converter canvas para PNG'))
+              return
+            }
+            resolve(blob)
+          },
+          'image/png'
+        )
+      })
+      })
+
+      // Aguardar todas as conversões PNG
+      const pngBlobs = await Promise.all(pngPromises)
+
+      // Converter Blobs em ArrayBuffers
+      const pngArrayBuffers = await Promise.all(
+        pngBlobs.map(blob => blob.arrayBuffer())
+      )
+
+      // Calcular o deslocamento para os dados da imagem
+      let imageDataOffset = 6 + 16 * iconCanvases.length // Cabeçalho + diretório
+
+      // Preencher o diretório e preparar os buffers de imagem
+      for (let i = 0; i < iconCanvases.length; i++) {
       const { size } = iconCanvases[i]
       const pngArrayBuffer = pngArrayBuffers[i]
       const pngData = new Uint8Array(pngArrayBuffer)
@@ -962,39 +1163,46 @@ export function initImageConverter() {
       directory[i * 16 + 14] = (imageDataOffset >> 16) & 0xff
       directory[i * 16 + 15] = (imageDataOffset >> 24) & 0xff
 
-      // Atualizar o offset para a próxima imagem
-      imageDataOffset += pngData.length
-    }
+        // Atualizar o offset para a próxima imagem
+        imageDataOffset += pngData.length
+      }
 
-    // Combinar todos os buffers
-    const totalLength =
-      6 +
-      16 * iconCanvases.length +
-      pngArrayBuffers.reduce((sum, buffer) => sum + buffer.byteLength, 0)
-    const icoBuffer = new Uint8Array(totalLength)
+      // Combinar todos os buffers
+      const totalLength =
+        6 +
+        16 * iconCanvases.length +
+        pngArrayBuffers.reduce((sum, buffer) => sum + buffer.byteLength, 0)
+      const icoBuffer = new Uint8Array(totalLength)
 
-    // Copiar o cabeçalho
-    icoBuffer.set(header, 0)
+      // Copiar o cabeçalho
+      icoBuffer.set(header, 0)
 
-    // Copiar o diretório
-    icoBuffer.set(directory, 6)
+      // Copiar o diretório
+      icoBuffer.set(directory, 6)
 
-    // Copiar os dados das imagens
-    let currentOffset = 6 + 16 * iconCanvases.length
-    for (let i = 0; i < pngArrayBuffers.length; i++) {
-      const pngData = new Uint8Array(pngArrayBuffers[i])
-      icoBuffer.set(pngData, currentOffset)
-      currentOffset += pngData.length
-    }
+      // Copiar os dados das imagens
+      let currentOffset = 6 + 16 * iconCanvases.length
+      for (let i = 0; i < pngArrayBuffers.length; i++) {
+        const pngData = new Uint8Array(pngArrayBuffers[i])
+        icoBuffer.set(pngData, currentOffset)
+        currentOffset += pngData.length
+      }
 
-    // Criar Blob a partir do buffer combinado
-    const blob = new Blob([icoBuffer], { type: 'image/x-icon' })
+      // Criar Blob a partir do buffer combinado
+      const blob = new Blob([icoBuffer], { type: 'image/x-icon' })
+      
+      if (blob.size === 0) {
+        throw new Error('Falha ao criar arquivo ICO: blob vazio')
+      }
 
-    return {
-      data: blob,
-      type: 'image/x-icon',
-      width: canvas.width,
-      height: canvas.height
+      return {
+        data: blob,
+        type: 'image/x-icon',
+        width: canvas.width,
+        height: canvas.height
+      }
+    } catch (error) {
+      throw new Error(`Erro ao converter para ICO: ${error.message}`)
     }
   }
 

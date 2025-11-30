@@ -86,28 +86,62 @@ body,
 /* Tabelas no tema escuro - com foco no histórico */
 [data-theme='dark'] .table {
   color: #e9ecef;
+  background-color: transparent;
 }
 
 [data-theme='dark'] .table thead th {
-  background-color: rgba(0, 0, 0, 0.2);
-  color: #f8f9fa;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: #f8f9fa !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
   font-weight: 600;
 }
 
+[data-theme='dark'] .table tbody {
+  background-color: transparent;
+}
+
 [data-theme='dark'] .table tbody td {
-  color: #e9ecef;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e9ecef !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] .table tbody tr {
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 [data-theme='dark'] .table-hover tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Histórico e batch */
+/* Histórico e batch - estilos específicos */
+[data-theme='dark'] #historyList tr,
+[data-theme='dark'] #batchFileList tr {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme='dark'] #historyList tr:hover,
+[data-theme='dark'] #batchFileList tr:hover {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+}
+
 [data-theme='dark'] #historyList td,
 [data-theme='dark'] #batchFileList td {
-  color: #1a1e23;
+  color: #e9ecef !important;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #historyList td .fw-bold,
+[data-theme='dark'] #batchFileList td .fw-bold {
+  color: #f8f9fa !important;
+  font-weight: 600;
+}
+
+[data-theme='dark'] #historyList td .text-muted,
+[data-theme='dark'] #batchFileList td .text-muted {
+  color: #adb5bd !important;
 }
 
 [data-theme='dark'] .batch-file-name,
@@ -118,24 +152,32 @@ body,
 
 [data-theme='dark'] .batch-file-size,
 [data-theme='dark'] .history-file-size {
-  color: #d1d5db !important;
+  color: #adb5bd !important;
   font-weight: 500;
 }
 
-As principais alterações são:
+/* Badge de compressão no histórico */
+[data-theme='dark'] #historyList .badge.bg-success {
+  background-color: rgba(40, 167, 69, 0.2) !important;
+  color: #28a745 !important;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  font-weight: 600;
+}
 
-Cor mais clara para os tamanhos de arquivo:
-Alterei a cor para #d1d5db, que é mais clara e visível que a anterior
-Adicionei um peso de fonte ligeiramente maior (font-weight: 500) para destacar melhor
-Seletores específicos para diferentes elementos:
-Regras para .batch-file-size e .history-file-size
-Regras para spans dentro de elementos informativos
-Regras específicas para a coluna de tamanho na tabela do histórico
-Para implementar esta correção, você pode adicionar estas regras no final do seu arquivo dark-mode.css. Elas têm especificidade suficiente para sobrescrever as regras anteriores.
+/* Container do histórico - garantir fundo escuro */
+[data-theme='dark'] #conversionHistory,
+[data-theme='dark'] #conversionHistory .table-responsive {
+  background-color: transparent;
+}
 
-Se a estrutura HTML do seu histórico for diferente, pode ser necessário ajustar os seletores. Por exemplo, se a coluna de tamanho do arquivo estiver em uma posição diferente da tabela, você precisará ajustar o seletor #historyList td:nth-child(4) para corresponder à coluna correta.
+[data-theme='dark'] #historyTab .card,
+[data-theme='dark'] #historyTab .card-body {
+  background-color: var(--bg-white) !important;
+}
 
-Estas mudanças garantirão que o tamanho dos arquivos seja bem visível no tema escuro, facilitando a leitura das informações no histórico.
+[data-theme='dark'] #historyTab .table {
+  background-color: transparent !important;
+}
 
 
 
