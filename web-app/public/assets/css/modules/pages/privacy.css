@@ -1,0 +1,284 @@
+/* assets/css/modules/pages/privacy.css */
+
+/* Estilos base para a página de Política de Privacidade */
+.contact-card {
+  transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow);
+}
+
+/* Estilo para links de navegação interna */
+#privacy-nav {
+  position: sticky;
+  top: 20px;
+}
+
+#privacy-nav .list-group-item {
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+#privacy-nav .list-group-item:hover {
+  background-color: rgba(74, 107, 255, 0.1);
+  border-left-color: var(--primary-color);
+}
+
+#privacy-nav .list-group-item a {
+  color: var(--text-dark);
+  display: block;
+  text-decoration: none;
+}
+
+#privacy-nav .list-group-item:hover a {
+  color: var(--primary-color);
+}
+
+#privacy-nav .fas {
+  transition: transform 0.3s ease;
+}
+
+#privacy-nav .list-group-item:hover .fas {
+  transform: translateX(5px);
+}
+
+/* Estilos para seções */
+section {
+  scroll-margin-top: 80px;
+}
+
+section h2 {
+  color: var(--primary-color);
+  font-family: var(--font-family-headings);
+}
+
+section h4 {
+  color: var(--text-dark);
+  font-family: var(--font-family-sans);
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
+
+/* Estilos específicos para listas */
+ul,
+ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+ul li,
+ol li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+.table-responsive li {
+  color: var(--dark-bg-white) !important;
+}
+
+.list-unstyled {
+  padding-left: 0;
+}
+
+/* Estilos para cards e alertas */
+.card {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.alert {
+  border-radius: var(--border-radius);
+  border-left-width: 4px;
+}
+
+/* Estilos para tabelas */
+.table {
+  margin-bottom: 1.5rem;
+}
+
+.table th {
+  font-weight: 600;
+}
+
+/* Estilos para o formulário do modal */
+.modal-content {
+  border-radius: var(--border-radius);
+}
+
+.form-control,
+.form-select {
+  border-radius: var(--border-radius-sm);
+  padding: 0.5rem 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(74, 107, 255, 0.25);
+}
+
+/* Dark mode para a página de privacidade */
+[data-theme='dark'] {
+  /* Ajustes para texto */
+  section h2,
+  section h4,
+  p,
+  li,
+  ul,
+  ol,
+  td,
+  th,
+  .card-title,
+  .card-text,
+  .form-label,
+  .form-check-label {
+    color: var(--dark-text-dark);
+  }
+
+  /* Ajustes para links de navegação */
+  #privacy-nav .list-group-item {
+    background-color: var(--dark-bg-white);
+    border-color: var(--dark-border-color);
+  }
+
+  #privacy-nav .list-group-item a {
+    color: var(--dark-text-dark);
+  }
+
+  #privacy-nav .list-group-item:hover {
+    background-color: rgba(92, 122, 255, 0.15);
+  }
+
+  #privacy-nav .list-group-item:hover a {
+    color: var(--dark-primary-color);
+  }
+
+  /* Ajustes para elementos específicos */
+  .card {
+    background-color: var(--dark-bg-white);
+    border-color: var(--dark-border-color);
+  }
+
+  .card-header:not(.bg-primary):not(.bg-success):not(.bg-secondary) {
+    background-color: var(--dark-bg-light);
+    color: var(--dark-text-dark);
+    border-color: var(--dark-border-color);
+  }
+
+  .bg-light {
+    background-color: var(--dark-bg-light) !important;
+  }
+
+  /* Ajustes para tabelas */
+  .table {
+    color: var(--dark-text-dark);
+  }
+
+  .table-bordered th,
+  .table-bordered td {
+    border-color: var(--dark-border-color);
+  }
+
+  .table-light,
+  .table-light > th,
+  .table-light > td {
+    background-color: #343a40 !important;
+    color: var(--dark-text-dark) !important;
+  }
+
+  /* Ajustes para formulários no modal */
+  .modal-content {
+    background-color: var(--dark-bg-white);
+    border-color: var(--dark-border-color);
+  }
+
+  .modal-header,
+  .modal-footer {
+    border-color: var(--dark-border-color);
+  }
+
+  .form-control,
+  .form-select {
+    background-color: var(--dark-bg-light);
+    color: var(--dark-text-dark);
+    border-color: var(--dark-border-color);
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    background-color: var(--dark-bg-light);
+    color: var(--dark-text-dark);
+  }
+
+  /* Ajustes específicos para listas */
+  ul li,
+  ol li {
+    color: var(--dark-text-dark);
+  }
+
+  .list-group-item {
+    background-color: var(--dark-bg-white);
+    color: var(--dark-text-dark);
+    border-color: var(--dark-border-color);
+  }
+
+  /* Ajustes para alertas */
+  .alert-info {
+    background-color: rgba(23, 162, 184, 0.15);
+    color: #9fcdff;
+    border-color: #17a2b8;
+  }
+
+  .alert-warning {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #fff3cd;
+    border-color: #ffc107;
+  }
+
+  .alert-success {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #c3e6cb;
+    border-color: #28a745;
+  }
+
+  /* Ajuste para bordas */
+  .border-bottom {
+    border-color: var(--dark-border-color) !important;
+  }
+
+  hr {
+    border-color: var(--dark-border-color);
+  }
+}
+
+/* Estilos para rolagem suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animação para links e botões */
+a,
+button {
+  transition: all 0.3s ease;
+}
+
+/* Responsividade */
+@media (max-width: 767.98px) {
+  #privacy-nav {
+    position: static;
+    margin-bottom: 2rem;
+  }
+
+  .card-group {
+    display: block;
+  }
+
+  .card-group .card {
+    margin-bottom: 1rem;
+  }
+}

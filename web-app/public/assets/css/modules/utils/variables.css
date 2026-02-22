@@ -1,0 +1,77 @@
+:root {
+  /* Palette de cores principal */
+  --primary-color: #0d6efd;
+  --primary-light: #0b5ed7;
+  --primary-dark: #0a58ca;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --info-color: #17a2b8;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+
+  /* Cores de fundo */
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+  --bg-dark: #212529;
+  --bg-gradient: linear-gradient(135deg, var(--primary-color), #6d5dfc);
+
+  /* Cores de texto */
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --text-light: #f8f9fa;
+
+  /* Bordas e sombras */
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-sm: 4px;
+  --border-color: #e9ecef;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --box-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --box-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* Espaçamento */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 3rem;
+
+  /* Animações */
+  --transition-speed: 0.2s;
+  --transition-function: ease;
+
+  /* Fontes */
+  --font-family-sans: 'Montserrat', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-headings: 'Poppins', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.25rem;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+
+  /* Z-index */
+  --z-dropdown: 1000;
+  --z-modal: 1050;
+  --z-tooltip: 1070;
+
+  /* Tema escuro - variáveis serão redefinidas no modo escuro */
+  --dark-primary-color: #5c7aff;
+  --dark-bg-light: #2c3035;
+  --dark-bg-white: #343a40;
+  --dark-text-dark: #f8f9fa;
+  --dark-text-muted: #adb5bd;
+  --dark-border-color: #495057;
+}
+
+/* Pré-configuração para dark mode - será ativada via JavaScript */
+[data-theme='dark'] {
+  --bg-light: var(--dark-bg-light);
+  --bg-white: var(--dark-bg-white);
+  --text-dark: var(--dark-text-dark);
+  --text-muted: var(--dark-text-muted);
+  --border-color: var(--dark-border-color);
+  --primary-color: var(--dark-primary-color);
+}

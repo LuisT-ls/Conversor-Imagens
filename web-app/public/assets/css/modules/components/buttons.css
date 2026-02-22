@@ -1,0 +1,197 @@
+/* Botões e controles */
+
+/* Estilização básica de botões */
+.btn {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Efeito de ondulação - Removido para design minimalista */
+
+/* Variantes de botões */
+.btn-primary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+.btn-primary:focus {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: white;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Garantir contraste adequado para botões importantes */
+#convertButton,
+#saveEdits,
+#exportEdits {
+  background: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+#convertButton:hover,
+#saveEdits:hover,
+#exportEdits:hover {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3) !important;
+}
+
+#convertButton:focus,
+#saveEdits:focus,
+#exportEdits:focus {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.3) !important;
+}
+
+.btn-success {
+  background: var(--success-color);
+  border-color: var(--success-color);
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-success:hover {
+  background: #1e7e34;
+  border-color: #1e7e34;
+  color: white;
+}
+
+.btn-info {
+  background: var(--info-color);
+  border-color: var(--info-color);
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-info:hover {
+  background: #138496;
+  border-color: #138496;
+  color: white;
+}
+
+.btn-warning {
+  background: var(--warning-color);
+  border-color: var(--warning-color);
+  color: #212529;
+  font-weight: 600;
+}
+
+.btn-warning:hover {
+  background: #e0a800;
+  border-color: #e0a800;
+  color: #212529;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  border-color: var(--danger-color);
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger:hover {
+  background: #c82333;
+  border-color: #c82333;
+  color: white;
+}
+
+/* Botão com ícone */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon i,
+.btn-icon svg {
+  margin-right: 0.5rem;
+}
+
+/* Botão flutuante */
+.btn-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--box-shadow);
+  z-index: 100;
+}
+
+.btn-float i,
+.btn-float svg {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+/* Botão gradiente */
+.btn-gradient {
+  background: var(--bg-gradient);
+  border: none;
+  color: white;
+}
+
+.btn-gradient:hover {
+  background-size: 150% 150%;
+  background-position: right center;
+}
+
+/* Botão com borda */
+.btn-outline-primary {
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Botão com efeito de vidro */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

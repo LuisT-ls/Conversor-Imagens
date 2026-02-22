@@ -1,0 +1,511 @@
+/* Configurações do modo escuro */
+
+/* Definições base para o tema escuro */
+[data-theme='dark'] {
+  /* Cores principais */
+  --bg-light: #1a1e23;
+  --bg-white: #252a32;
+  --text-dark: #f8f9fa; /* Texto principal claro no tema escuro */
+  --text-muted: #adb5bd;
+  --border-color: #495057;
+  --primary-color: #5c7aff;
+
+  /* Overrides para elementos específicos */
+  color-scheme: dark;
+}
+
+/* Correção para todos os textos no modo escuro */
+[data-theme='dark'] body,
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] p,
+[data-theme='dark'] label,
+[data-theme='dark'] .form-label,
+[data-theme='dark'] .card-title,
+[data-theme='dark'] .card-body,
+[data-theme='dark'] .text-dark {
+  color: var(--text-dark) !important;
+}
+
+/* Transições suaves ao trocar de tema */
+body,
+.card,
+.form-control,
+.form-select,
+.modal-content,
+.table,
+.nav-pills .nav-link,
+.drop-zone,
+.btn,
+.bg-light,
+.text-muted,
+.img-thumbnail {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilos específicos para elementos em modo escuro */
+[data-theme='dark'] .card {
+  background-color: var(--bg-white);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .form-control,
+[data-theme='dark'] .form-select {
+  background-color: #2c3035;
+  border-color: #495057;
+  color: var(--text-light);
+}
+
+[data-theme='dark'] .form-control:focus,
+[data-theme='dark'] .form-select:focus {
+  border-color: var(--primary-light);
+  background-color: #2c3035;
+}
+
+[data-theme='dark'] .modal-content {
+  background-color: var(--bg-white);
+  color: var(--text-light);
+}
+
+/* Melhorias para placeholders nos campos de formulário */
+[data-theme='dark'] .form-control::placeholder {
+  color: rgba(173, 181, 189, 0.7);
+}
+
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder,
+[data-theme='dark'] select::placeholder {
+  color: rgba(173, 181, 189, 0.7) !important;
+}
+
+/* Tabelas no tema escuro - com foco no histórico */
+[data-theme='dark'] .table {
+  color: #e9ecef;
+  background-color: transparent;
+}
+
+[data-theme='dark'] .table thead th {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: #f8f9fa !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .table tbody {
+  background-color: transparent;
+}
+
+[data-theme='dark'] .table tbody td {
+  color: #e9ecef !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] .table tbody tr {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme='dark'] .table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Histórico e batch - estilos específicos */
+[data-theme='dark'] #historyList tr,
+[data-theme='dark'] #batchFileList tr {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme='dark'] #historyList tr:hover,
+[data-theme='dark'] #batchFileList tr:hover {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme='dark'] #historyList td,
+[data-theme='dark'] #batchFileList td {
+  color: #e9ecef !important;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme='dark'] #historyList td .fw-bold,
+[data-theme='dark'] #batchFileList td .fw-bold {
+  color: #f8f9fa !important;
+  font-weight: 600;
+}
+
+[data-theme='dark'] #historyList td .text-muted,
+[data-theme='dark'] #batchFileList td .text-muted {
+  color: #adb5bd !important;
+}
+
+[data-theme='dark'] .batch-file-name,
+[data-theme='dark'] .history-file-name {
+  color: #f8f9fa !important;
+  font-weight: 500;
+}
+
+[data-theme='dark'] .batch-file-size,
+[data-theme='dark'] .history-file-size {
+  color: #adb5bd !important;
+  font-weight: 500;
+}
+
+/* Badge de compressão no histórico */
+[data-theme='dark'] #historyList .badge.bg-success {
+  background-color: rgba(40, 167, 69, 0.2) !important;
+  color: #28a745 !important;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  font-weight: 600;
+}
+
+/* Container do histórico - garantir fundo escuro */
+[data-theme='dark'] #conversionHistory,
+[data-theme='dark'] #conversionHistory .table-responsive {
+  background-color: transparent;
+}
+
+[data-theme='dark'] #historyTab .card,
+[data-theme='dark'] #historyTab .card-body {
+  background-color: var(--bg-white) !important;
+}
+
+[data-theme='dark'] #historyTab .table {
+  background-color: transparent !important;
+}
+
+
+
+
+Retry
+Claude can make mistakes. Please double-check responses.
+
+
+
+Nenhum arquivo escolhido
+
+3.7 Sonnet
+
+Choose style
+
+Correção do tamanho dos arquivos no histórico
+
+/* Adicione estas regras específicas ao seu arquivo dark-mode.css */
+
+/* Tamanho dos arquivos no histórico - mais visíveis */
+[data-theme="dark"] .batch-file-size,
+[data-theme="dark"] .history-file-size {
+  color: #d1d5db !important; /* Cor mais clara e visível */
+  font-weight: 500; /* Ligeiramente mais grosso */
+}
+
+/* Para outros elementos que mostram tamanho de arquivo */
+[data-theme='dark'] .small.text-muted span,
+[data-theme='dark'] #originalInfo span,
+[data-theme='dark'] #convertedInfo span,
+[data-theme='dark'] #originalCompressInfo span,
+[data-theme='dark'] #compressedInfo span {
+  color: #d1d5db !important;
+  font-weight: 500;
+}
+
+/* Placeholders específicos */
+[data-theme='dark'] .preview-placeholder,
+[data-theme='dark'] #batchPlaceholder,
+[data-theme='dark'] #historyPlaceholder {
+  color: #adb5bd !important;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Badges de status no batch converter */
+[data-theme='dark'] .batch-status-pending {
+  background-color: rgba(108, 117, 125, 0.2);
+  color: #adb5bd;
+}
+
+[data-theme='dark'] .batch-status-processing {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+[data-theme='dark'] .batch-status-completed {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+[data-theme='dark'] .batch-status-error {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+}
+
+[data-theme='dark'] .nav-pills .nav-link:not(.active) {
+  color: #e9ecef;
+}
+
+[data-theme='dark'] .nav-pills .nav-link:hover:not(.active) {
+  background-color: rgba(92, 122, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Estilização do Drop Zone no tema escuro */
+[data-theme='dark'] .drop-zone {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .drop-zone:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Correção para texto interno do Drop Zone */
+[data-theme='dark'] .drop-zone-prompt p {
+  color: #e9ecef !important;
+  font-weight: 500;
+}
+
+/* Ajustes para botões no tema escuro */
+[data-theme='dark'] .btn-outline-secondary {
+  border-color: #6c757d;
+  color: #e9ecef;
+}
+
+[data-theme='dark'] .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+[data-theme='dark'] .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-success:hover {
+  background-color: #1e7e34;
+  border-color: #1e7e34;
+  color: white;
+}
+
+[data-theme='dark'] .btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-info:hover {
+  background-color: #138496;
+  border-color: #138496;
+  color: white;
+}
+
+[data-theme='dark'] .btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #e0a800;
+  color: #212529;
+}
+
+[data-theme='dark'] .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+  color: white;
+}
+
+/* Garantir contraste adequado para botões importantes no tema escuro */
+[data-theme='dark'] #convertButton,
+[data-theme='dark'] #saveEdits,
+[data-theme='dark'] #exportEdits {
+  background: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme='dark'] #convertButton:hover,
+[data-theme='dark'] #saveEdits:hover,
+[data-theme='dark'] #exportEdits:hover {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4) !important;
+}
+
+[data-theme='dark'] #convertButton:focus,
+[data-theme='dark'] #saveEdits:focus,
+[data-theme='dark'] #exportEdits:focus {
+  background: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.35) !important;
+}
+
+[data-theme='dark'] .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+  color: white;
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4);
+}
+
+[data-theme='dark'] .btn-primary:focus {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+  color: white;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.3);
+}
+
+[data-theme='dark'] .bg-light {
+  background-color: var(--bg-light) !important;
+}
+
+[data-theme='dark'] .text-muted {
+  color: #adb5bd !important;
+}
+
+[data-theme='dark'] .img-thumbnail {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Informações sobre as imagens */
+[data-theme='dark'] .small.text-muted,
+[data-theme='dark'] #originalInfo,
+[data-theme='dark'] #convertedInfo,
+[data-theme='dark'] #originalCompressInfo,
+[data-theme='dark'] #compressedInfo {
+  color: #adb5bd !important;
+}
+
+/* Efeitos de elevação para elementos no tema escuro */
+[data-theme='dark'] .card.shadow:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Ajustes para o header e navegação no tema escuro - Gerenciado em header.css */
+
+/* Modificações para scrollbar no tema escuro */
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estilização para elementos específicos do aplicativo em modo escuro */
+[data-theme='dark'] .batch-settings {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .editor-controls {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Correção para títulos do editor */
+[data-theme='dark'] .editor-controls h5 {
+  color: var(--text-dark) !important;
+}
+
+[data-theme='dark'] .canvas-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .filter-btn {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+}
+
+[data-theme='dark'] .filter-btn:hover {
+  background-color: rgba(92, 122, 255, 0.1);
+  border-color: var(--primary-color);
+}
+
+/* Ajustes para o footer em modo escuro - Gerenciado em footer.css */
+
+/* Estilização para notificações toast em modo escuro */
+[data-theme='dark'] .toastify {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Animação de transição do tema */
+@keyframes theme-transition-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.theme-transition {
+  animation: theme-transition-fade 0.5s ease;
+}
+
+/* Estilização para o efeito de ondulação (ripple) */
+@keyframes ripple {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3);
+  }
+}
+
+.theme-switching {
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

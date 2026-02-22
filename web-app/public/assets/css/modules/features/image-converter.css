@@ -1,0 +1,192 @@
+/* Estilos para o conversor de imagens */
+
+/* Drop Zone */
+.drop-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 160px;
+}
+
+.drop-zone:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(74, 107, 255, 0.02);
+}
+
+.drop-zone-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.drop-zone-prompt i {
+  color: var(--primary-color);
+  transition: transform 0.2s ease;
+}
+
+.drop-zone:hover .drop-zone-prompt i {
+  transform: scale(1.05);
+}
+
+.drop-zone-prompt p {
+  margin-top: 1rem;
+  color: #495057;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 500;
+}
+
+.drop-zone-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+}
+
+.drop-zone-thumb::after {
+  content: 'Clique para alterar';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.drop-zone-thumb:hover::after {
+  opacity: 1;
+}
+
+/* Área de configurações de conversão */
+.form-range::-webkit-slider-thumb {
+  background: var(--primary-color);
+}
+
+.form-range::-webkit-slider-runnable-track {
+  background-color: rgba(74, 107, 255, 0.2);
+}
+
+.form-range::-moz-range-thumb {
+  background: var(--primary-color);
+}
+
+.form-range::-moz-range-track {
+  background-color: rgba(74, 107, 255, 0.2);
+}
+
+/* Estilização para o progresso */
+.progress {
+  height: 10px;
+  border-radius: var(--border-radius);
+  margin-top: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  background-color: var(--primary-color);
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+}
+
+/* Área de prévia */
+.preview-container {
+  margin-top: 2rem;
+}
+
+.preview-placeholder {
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.02);
+  text-align: center;
+}
+
+.img-thumbnail {
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  height: 250px;
+  object-fit: contain;
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.img-thumbnail img {
+  max-height: 230px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Info das imagens */
+.small.text-muted {
+  font-size: 0.85rem;
+  display: block;
+  line-height: 1.4;
+}
+
+/* Botões de ação */
+.action-buttons {
+  margin-top: 2rem;
+}
+
+#downloadLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilizações adicionais para a conversão */
+#formatOptions .form-check {
+  margin-bottom: 0.5rem;
+}
+
+.aspect-ratio-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+}
+
+.aspect-ratio-lock i {
+  cursor: pointer;
+  padding: 8px;
+  color: var(--primary-color);
+}
+
+/* Animações e efeitos */
+.slide-up {
+  animation: slideUp 0.5s ease-out;
+}

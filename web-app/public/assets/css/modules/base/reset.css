@@ -1,0 +1,102 @@
+/* Reset e base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  line-height: var(--line-height-base);
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+  overflow-x: hidden;
+  transition: background-color var(--transition-speed)
+      var(--transition-function),
+    color var(--transition-speed) var(--transition-function);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-headings);
+  margin-bottom: 0.5rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed) var(--transition-function);
+}
+
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Bootstrap overrides */
+.btn {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) var(--transition-function);
+  box-shadow: var(--box-shadow-sm);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.form-control {
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: border-color var(--transition-speed) var(--transition-function),
+    box-shadow var(--transition-speed) var(--transition-function);
+}
+
+.form-control:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(74, 107, 255, 0.25);
+}
+
+.card {
+  border-radius: var(--border-radius-lg);
+  border: none;
+  overflow: hidden;
+  transition: all var(--transition-speed) var(--transition-function);
+}
+
+.modal-content {
+  border-radius: var(--border-radius-lg);
+  border: none;
+}
