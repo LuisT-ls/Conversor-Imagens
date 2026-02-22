@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { JsonLd } from "@/components/json-ld";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -59,24 +60,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "ImageStudio",
-              "operatingSystem": "Any",
-              "applicationCategory": "MultimediaApplication",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "BRL"
-              },
-              "description": "Ferramenta 100% gratuita, privada e client-side para conversão, compressão e edição offline de dezenas de formatos de imagem como WebP, AVIF, JPEG e SVG no seu navegador.",
-            }),
-          }}
-        />
+        <JsonLd />
       </head>
       <body className={inter.className}>
         <ThemeProvider
