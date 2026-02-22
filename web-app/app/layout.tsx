@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://conversor-imagens.vercel.app"),
   title: {
     template: "%s | ImageStudio",
     default: "ImageStudio | Ferramentas Gratuitas de Imagem",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://imagestudio.example.com",
+    url: "https://conversor-imagens.vercel.app",
     title: "ImageStudio | Conversor de Imagens Grátis",
     description: "Converta, comprima e edite suas imagens de forma rápida e segura. Ferramenta gratuita, 100% offline e com total foco na privacidade dos dados.",
     siteName: "ImageStudio",

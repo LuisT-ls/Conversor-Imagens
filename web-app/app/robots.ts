@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: "/",
             disallow: "/historico",
         },
-        sitemap: "https://imagestudio.example.com/sitemap.xml",
+        sitemap: "https://conversor-imagens.vercel.app/sitemap.xml",
     };
 }
