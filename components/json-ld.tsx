@@ -22,7 +22,7 @@ const webAppSchema = {
         "Funciona offline como PWA",
         "Sem upload de dados para servidores externos",
     ],
-    screenshot: `${BASE_URL}/assets/img/image_converter_logo.svg`,
+    screenshot: `${BASE_URL}/image_converter_logo.svg`,
     offers: {
         "@type": "Offer",
         price: "0",
