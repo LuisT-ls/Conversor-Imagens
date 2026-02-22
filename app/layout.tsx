@@ -26,11 +26,27 @@ export const metadata: Metadata = {
     title: "ImageStudio | Conversor de Imagens Grátis",
     description: "Converta, comprima e edite suas imagens de forma rápida e segura. Ferramenta gratuita, 100% offline e com total foco na privacidade dos dados.",
     siteName: "ImageStudio",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Dashboard do ImageStudio mostrando ferramentas de conversão, edição e compressão de imagens",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ImageStudio | Ferramentas Gratuitas",
     description: "Converta, comprima e edite suas imagens de forma rápida e segura. Ferramenta gratuita, 100% offline e com total foco na privacidade dos dados.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Dashboard do ImageStudio mostrando ferramentas de conversão, edição e compressão de imagens",
+      },
+    ],
   },
   alternates: {
     canonical: "/",
