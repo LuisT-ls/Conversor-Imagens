@@ -5,7 +5,10 @@ import { CompressorFeature } from "@/components/features/compressor/compressor-f
 export const metadata: Metadata = {
     title: "Compressor de Imagens",
     description: "Reduza o tamanho das suas imagens mantendo a qualidade. Compressão inteligente 100% no navegador.",
-    alternates: { canonical: "/compressor" },
+    alternates: {
+        canonical: "/compressor",
+        languages: { "pt-BR": "/compressor", "x-default": "/compressor" },
+    },
 };
 
 export default function CompressorPage() {

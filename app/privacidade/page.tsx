@@ -6,7 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 export const metadata: Metadata = {
     title: "Política de Privacidade",
     description: "Saiba como o ImageStudio protege seus dados. Processamento 100% local, sem servidores e sem rastreio.",
-    alternates: { canonical: "/privacidade" },
+    alternates: {
+        canonical: "/privacidade",
+        languages: { "pt-BR": "/privacidade", "x-default": "/privacidade" },
+    },
 };
 
 export default function PrivacidadePage() {

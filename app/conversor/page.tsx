@@ -5,7 +5,10 @@ import { ConversorFeature } from "@/components/features/conversor/conversor-feat
 export const metadata: Metadata = {
     title: "Conversor de Formatos",
     description: "Converta imagens para WebP, PNG, JPEG, SVG ou gere pacotes de Favicons. Processamento 100% local e privado.",
-    alternates: { canonical: "/conversor" },
+    alternates: {
+        canonical: "/conversor",
+        languages: { "pt-BR": "/conversor", "x-default": "/conversor" },
+    },
 };
 
 export default function ConversorPage() {

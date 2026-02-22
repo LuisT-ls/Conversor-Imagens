@@ -5,7 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export const metadata: Metadata = {
     title: "Perguntas Frequentes (FAQ)",
     description: "Tire suas dúvidas sobre o ImageStudio: privacidade, formatos suportados, conversão em lote e mais.",
-    alternates: { canonical: "/faq" },
+    alternates: {
+        canonical: "/faq",
+        languages: { "pt-BR": "/faq", "x-default": "/faq" },
+    },
 };
 
 export default function FAQPage() {

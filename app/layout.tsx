@@ -33,6 +33,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/",
+    languages: {
+      "pt-BR": "/",
+      "x-default": "/",
+    },
   },
 };
 
