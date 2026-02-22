@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { UiShell } from "@/components/ui-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+    title: "Perguntas Frequentes (FAQ)",
+    description: "Tire suas dúvidas sobre o ImageStudio: privacidade, formatos suportados, conversão em lote e mais.",
+    alternates: { canonical: "/faq" },
+};
 
 export default function FAQPage() {
     const faqs = [

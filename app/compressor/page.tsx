@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { UiShell } from "@/components/ui-shell";
 import { CompressorFeature } from "@/components/features/compressor/compressor-feature";
+
+export const metadata: Metadata = {
+    title: "Compressor de Imagens",
+    description: "Reduza o tamanho das suas imagens mantendo a qualidade. Compressão inteligente 100% no navegador.",
+    alternates: { canonical: "/compressor" },
+};
 
 export default function CompressorPage() {
     return (

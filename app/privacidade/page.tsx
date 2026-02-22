@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { UiShell } from "@/components/ui-shell";
 import { ShieldAlert, Fingerprint, Lock, ServerOff } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+    title: "Política de Privacidade",
+    description: "Saiba como o ImageStudio protege seus dados. Processamento 100% local, sem servidores e sem rastreio.",
+    alternates: { canonical: "/privacidade" },
+};
 
 export default function PrivacidadePage() {
     return (

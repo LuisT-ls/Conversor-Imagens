@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     title: "ImageStudio | Ferramentas Gratuitas",
     description: "Converta, comprima e edite suas imagens de forma rápida e segura. Ferramenta gratuita, 100% offline e com total foco na privacidade dos dados.",
   },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export const viewport: Viewport = {

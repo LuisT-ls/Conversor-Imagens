@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { UiShell } from "@/components/ui-shell";
+
+export const metadata: Metadata = {
+    title: "Documentação Oficial",
+    description: "Aprenda a usar todas as ferramentas do ImageStudio: conversor, editor e compressor de imagens.",
+    alternates: { canonical: "/documentacao" },
+};
 
 export default function DocumentacaoPage() {
     return (
