@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo.png" alt="ImageStudio Logo" width="80" height="80" />
+  <img src="public/images/logo.png" alt="ImageStudio Logo" width="80" height="80" />
 </p>
 
 <h1 align="center">ImageStudio</h1>
@@ -135,10 +135,16 @@ O **ImageStudio** é uma aplicação web progressiva (PWA) completa para **conve
 │   └── utils.ts                # Utilitários gerais (cn, etc.)
 │
 ├── public/                     # Arquivos estáticos
-│   ├── logo.png                # Logo do ImageStudio
-│   ├── apple-touch-icon.png    # Ícone PWA (Apple)
-│   ├── icon-192x192.png        # Ícone PWA 192px
-│   └── icon-512x512.png        # Ícone PWA 512px
+│   └── images/                 # Todas as imagens do projeto
+│       ├── logo.png            # Logo do ImageStudio
+│       ├── og-image.png        # Imagem Open Graph (1200×630)
+│       ├── imagem-preview.jpg  # Preview para compartilhamento
+│       └── favicons/           # Ícones do app
+│           ├── apple-touch-icon.png
+│           ├── icon-192x192.png
+│           ├── icon-512x512.png
+│           ├── favicon-16x16.png
+│           └── favicon-32x32.png
 │
 ├── next.config.ts              # Configuração do Next.js + PWA
 ├── tsconfig.json               # Configuração do TypeScript
