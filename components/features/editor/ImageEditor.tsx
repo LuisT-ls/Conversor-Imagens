@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as fabric from "fabric";
-import { Download, RefreshCw, Sun, Contrast, Droplets, RotateCw, FlipHorizontal, Settings, Image as ImageIcon } from "lucide-react";
+import { Download, RefreshCw, Sun, Contrast, Droplets, RotateCw, FlipHorizontal, Settings, Image as ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ export default function ImageEditor({ onSave }: ImageEditorProps) {
 
     const [originalImage, setOriginalImage] = useState<fabric.Image | null>(null);
     const [hasImage, setHasImage] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
 
     // Filter states
     const [brightness, setBrightness] = useState([0]);
@@ -174,16 +175,22 @@ export default function ImageEditor({ onSave }: ImageEditorProps) {
 
     const handleExport = () => {
         if (!fabricCanvas) return;
+        setIsExporting(true);
+        toast.info("Processando imagem para exportação...");
+
         fabricCanvas.discardActiveObject();
         fabricCanvas.renderAll();
 
         const img = fabricCanvas.getObjects()[0] as fabric.Image;
-        if (!img) return;
+        if (!img) {
+            setIsExporting(false);
+            return;
+        }
 
         const rect = img.getBoundingRect();
         const dataURL = fabricCanvas.toDataURL({
             format: "png",
-            multiplier: 1,
+            multiplier: 2, // Export with higher quality
             left: rect.left,
             top: rect.top,
             width: rect.width,
@@ -194,6 +201,11 @@ export default function ImageEditor({ onSave }: ImageEditorProps) {
             .then(res => res.blob())
             .then(blob => {
                 if (onSave) onSave(blob);
+                setIsExporting(false);
+            })
+            .catch(() => {
+                toast.error("Erro ao exportar a imagem.");
+                setIsExporting(false);
             });
     };
 
@@ -266,8 +278,17 @@ export default function ImageEditor({ onSave }: ImageEditorProps) {
                             </div>
 
                             <div className="pt-2 flex flex-col gap-2">
-                                <Button className="w-full" onClick={handleExport}>
-                                    <Download className="w-4 h-4 mr-2" /> Aplicar e Exportar
+                                <Button className="w-full font-bold" onClick={handleExport} disabled={isExporting}>
+                                    {isExporting ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            Exportando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download className="w-4 h-4 mr-2" /> Aplicar e Exportar
+                                        </>
+                                    )}
                                 </Button>
                                 <Button variant="outline" className="w-full text-red-500 hover:text-red-600" onClick={resetEditorData}>
                                     <RefreshCw className="w-4 h-4 mr-2" /> Desfazer Tudo

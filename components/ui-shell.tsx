@@ -37,7 +37,7 @@ export function UiShell({ children }: { children: React.ReactNode }) {
     }, []);
 
     return (
-        <div className="flex min-h-screen w-full flex-col bg-muted/20">
+        <div className="flex min-h-screen w-full flex-col bg-slate-50 dark:bg-muted/20">
             {/* Header Mobile / Desktop Superior */}
             <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-md sm:px-6 md:hidden">
                 <Sheet>
@@ -65,8 +65,8 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                                         <Link
                                             key={route.href}
                                             href={route.href}
-                                            className={`flex items-center gap-4 px-2.5 py-2 rounded-lg ${pathname === route.href
-                                                ? "bg-primary/10 text-primary font-semibold"
+                                            className={`flex items-center gap-4 px-2.5 py-2 rounded-lg transition-all duration-200 ${pathname === route.href
+                                                ? "bg-primary/10 text-primary font-semibold shadow-sm shadow-primary/5"
                                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                                 }`}
                                         >
@@ -84,9 +84,9 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                                         <Link
                                             key={route.href}
                                             href={route.href}
-                                            className={`flex items-center gap-4 px-2.5 py-2 rounded-lg text-sm ${pathname === route.href
+                                            className={`flex items-center gap-4 px-2.5 py-2 rounded-lg text-sm transition-all duration-200 ${pathname === route.href
                                                 ? "text-primary font-medium"
-                                                : "text-muted-foreground hover:text-foreground"
+                                                : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                                                 }`}
                                         >
                                             <Icon className="h-4 w-4" />
@@ -97,7 +97,7 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                             </div>
                         </nav>
                         <div className="mt-8">
-                            <div className="rounded-xl bg-muted/50 p-4 text-xs text-muted-foreground">
+                            <div className="rounded-xl bg-muted/50 p-4 text-xs text-muted-foreground border border-slate-300/40 dark:border-transparent">
                                 <p className="font-medium text-foreground mb-1">Privacidade 100%</p>
                                 Todo processamento é feito localmente no seu browser.
                             </div>
@@ -110,15 +110,15 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                         <ImageIcon className="h-5 w-5 text-primary" />
                         <span>ImageStudio</span>
                     </Link>
-                    <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-                        {isMounted ? (theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />) : <div className="h-5 w-5" />}
+                    <Button variant="ghost" size="icon" className="transition-transform duration-300 hover:rotate-12" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+                        {isMounted ? (theme === "light" ? <Moon className="h-5 w-5 transition-all duration-500" /> : <Sun className="h-5 w-5 transition-all duration-500" />) : <div className="h-5 w-5" />}
                     </Button>
                 </div>
             </header>
 
             <div className="flex flex-1 flex-col md:pl-64">
                 {/* Sidebar Desktop */}
-                <aside className="fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r bg-background/50 backdrop-blur-xl md:flex">
+                <aside className="fixed inset-y-0 left-0 z-10 hidden w-64 flex-col border-r border-slate-200 shadow-2xl shadow-slate-200/50 bg-white/80 backdrop-blur-xl md:flex dark:border-border dark:shadow-none dark:bg-background/50">
                     <div className="flex h-16 items-center border-b px-6 justify-between">
                         <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-lg">
                             <ImageIcon className="h-5 w-5 text-primary" />
@@ -129,7 +129,7 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                         </Button>
                     </div>
                     <div className="flex-1 overflow-auto overflow-x-hidden">
-                        <nav className="flex flex-col gap-2 px-4 py-6">
+                        <nav className="flex flex-col gap-3 px-4 py-6">
                             <p className="px-2 text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Ferramentas</p>
                             {routes.map((route) => {
                                 const Icon = route.icon;
@@ -137,12 +137,12 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                                     <Link
                                         key={route.href}
                                         href={route.href}
-                                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname === route.href
+                                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 h-10 ${pathname === route.href
                                             ? "bg-primary/10 text-primary font-medium"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                            : "text-foreground/70 hover:text-foreground hover:bg-muted/50 active:scale-95"
                                             }`}
                                     >
-                                        <Icon className="h-4 w-4" />
+                                        <Icon className="h-4 w-4 shrink-0" />
                                         {route.label}
                                     </Link>
                                 );
@@ -157,12 +157,12 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                                     <Link
                                         key={route.href}
                                         href={route.href}
-                                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all ${pathname === route.href
+                                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all ${pathname === route.href
                                             ? "text-primary font-medium"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                            : "text-foreground/60 hover:text-foreground hover:bg-muted/50"
                                             }`}
                                     >
-                                        <Icon className="h-4 w-4" />
+                                        <Icon className="h-4 w-4 shrink-0" />
                                         {route.label}
                                     </Link>
                                 );
@@ -170,7 +170,7 @@ export function UiShell({ children }: { children: React.ReactNode }) {
                         </nav>
                     </div>
                     <div className="mt-auto p-4 border-t">
-                        <div className="rounded-xl bg-muted/50 p-4 text-xs text-muted-foreground">
+                        <div className="rounded-xl bg-muted/50 p-4 text-xs text-muted-foreground border border-slate-200 dark:border-transparent">
                             <div className="flex items-center gap-2 mb-1">
                                 <ShieldAlert className="h-4 w-4 text-primary" />
                                 <p className="font-medium text-foreground">Privacidade 100%</p>

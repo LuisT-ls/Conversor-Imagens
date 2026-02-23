@@ -4,7 +4,7 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
-import { Download, Info, Image as ImageIcon, Settings, Trash2, ShieldCheck, CheckCircle2, ChevronDown } from "lucide-react";
+import { Download, Info, Image as ImageIcon, Settings, Trash2, ShieldCheck, CheckCircle2, ChevronDown, Loader2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
 import { useHistory } from "@/hooks/use-history";
@@ -138,6 +138,7 @@ export function ConversorFeature() {
     const convertFiles = async () => {
         if (files.length === 0) return;
         setIsProcessing(true);
+        toast.info("Iniciando conversão...");
 
         const baseOptions: ConversionOptions = {
             format,
@@ -226,38 +227,32 @@ export function ConversorFeature() {
             <div className="lg:col-span-2 flex flex-col gap-6">
 
                 {/* Drop Zone */}
-                <div
-                    className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors ${isDragging ? "border-primary bg-primary/5" : "border-border bg-muted/20"
+                <label
+                    className={`flex-1 border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer group relative overflow-hidden ${isDragging
+                        ? "border-primary bg-primary/10 scale-[1.01] shadow-lg shadow-primary/10"
+                        : "border-slate-300/60 bg-white/40 hover:border-primary/50 hover:bg-white/60 active:scale-[0.99] dark:border-border dark:bg-muted/20"
                         }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                 >
-                    <div className="flex flex-col items-center justify-center space-y-4">
-                        <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center">
-                            <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <div className="space-y-1">
-                            <h3 className="text-lg font-semibold">Arraste suas imagens aqui</h3>
-                            <p className="text-sm text-muted-foreground">Suporta JPG, PNG, WebP, AVIF, SVG, GIF (máx 50MB)</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <Button asChild onClick={() => document.getElementById("file-upload")?.click()}>
-                                <span>
-                                    Selecionar Arquivos
-                                    <input
-                                        id="file-upload"
-                                        type="file"
-                                        multiple
-                                        className="hidden"
-                                        accept="image/*"
-                                        onChange={handleFileInput}
-                                    />
-                                </span>
-                            </Button>
-                        </div>
+                    <input
+                        id="file-upload"
+                        type="file"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        multiple
+                        accept="image/png, image/jpeg, image/webp, image/avif"
+                        onChange={handleFileInput}
+                    />
+                    <div className={`h-16 w-16 mx-auto bg-muted rounded-full flex items-center justify-center mb-4 transition-transform duration-300 ${isDragging ? "scale-110 bg-primary/20" : "group-hover:scale-110"}`}>
+                        <UploadCloud className={`h-8 w-8 transition-colors ${isDragging ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
                     </div>
-                </div>
+                    <h3 className="text-lg font-bold tracking-tight">Arraste suas imagens aqui</h3>
+                    <p className="text-sm text-foreground/60 mb-6 max-w-[240px] mx-auto">Suporte para PNG, JPEG, WebP e AVIF</p>
+                    <span className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-md transition-all group-hover:bg-primary/90 active:scale-95">
+                        Ou selecione arquivos
+                    </span>
+                </label>
 
                 {/* File List */}
                 {files.length > 0 && (
@@ -414,22 +409,26 @@ export function ConversorFeature() {
 
                             {format === "webp" && (
                                 <div className="space-y-2">
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" checked={webpLossless} onChange={e => setWebpLossless(e.target.checked)} className="rounded" />
-                                        Compressão sem perdas (Lossless)
+                                    <label className="flex items-center gap-3 text-sm font-semibold text-foreground cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input type="checkbox" checked={webpLossless} onChange={e => setWebpLossless(e.target.checked)} className="h-4.5 w-4.5 rounded-md border-slate-300 accent-blue-600 transition-all focus:ring-2 focus:ring-blue-500/20" />
+                                        </div>
+                                        <span>Compressão sem perdas (Lossless)</span>
                                     </label>
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" checked={webpAlpha} onChange={e => setWebpAlpha(e.target.checked)} className="rounded" />
-                                        Preservar transparência
+                                    <label className="flex items-center gap-3 text-sm font-semibold text-foreground cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input type="checkbox" checked={webpAlpha} onChange={e => setWebpAlpha(e.target.checked)} className="h-4.5 w-4.5 rounded-md border-slate-300 accent-blue-600 transition-all focus:ring-2 focus:ring-blue-500/20" />
+                                        </div>
+                                        <span>Preservar transparência</span>
                                     </label>
                                 </div>
                             )}
 
                             {format === "ico" && (
                                 <div className="space-y-3">
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" checked={icoAllFormats} onChange={e => setIcoAllFormats(e.target.checked)} className="rounded" />
-                                        Criar pacote completo de Favicon (ZIP)
+                                    <label className="flex items-center gap-2.5 text-sm font-medium text-foreground/80 cursor-pointer group">
+                                        <input type="checkbox" checked={icoAllFormats} onChange={e => setIcoAllFormats(e.target.checked)} className="h-4 w-4 rounded border-input accent-primary shrink-0 transition-all focus:ring-primary/20" />
+                                        <span>Criar pacote completo de Favicon (ZIP)</span>
                                     </label>
                                     {!icoAllFormats && (
                                         <div className="space-y-2">
@@ -461,7 +460,12 @@ export function ConversorFeature() {
                             onClick={convertFiles}
                             disabled={isProcessing || files.length === 0 || files.every(f => f.status === "completed")}
                         >
-                            {isProcessing ? "Processando..." : `Converter ${files.filter(f => f.status !== "completed").length} arquivo(s)`}
+                            {isProcessing ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Processando...
+                                </>
+                            ) : `Converter ${files.filter(f => f.status !== "completed").length} arquivo(s)`}
                         </Button>
                     </CardFooter>
                 </Card>

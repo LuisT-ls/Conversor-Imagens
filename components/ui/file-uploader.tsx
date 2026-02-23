@@ -49,31 +49,33 @@ export function FileUploader({
     };
 
     return (
-        <div
-            className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors min-h-[400px] flex flex-col items-center justify-center ${isDragging ? "border-primary bg-primary/5" : "border-border bg-muted/20"
+        <label
+            className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300 min-h-[400px] flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden ${isDragging
+                ? "border-primary bg-primary/10 scale-[1.01] shadow-lg shadow-primary/10"
+                : "border-slate-300/60 bg-white/40 hover:border-primary/50 hover:bg-white/60 active:scale-[0.99] dark:border-border dark:bg-muted/20"
                 }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
         >
-            <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                {icon}
+            <input
+                id="file-uploader-comp"
+                type="file"
+                multiple={multiple}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                accept={accept}
+                onChange={handleFileInput}
+            />
+            <div className={`h-20 w-20 bg-muted rounded-full flex items-center justify-center mb-6 transition-transform duration-300 ${isDragging ? "scale-110 bg-primary/20" : "group-hover:scale-110"}`}>
+                <div className={`transition-colors ${isDragging ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`}>
+                    {icon}
+                </div>
             </div>
-            <h3 className="text-lg font-semibold">{label}</h3>
-            <p className="text-sm text-muted-foreground mb-4">{subtext}</p>
-            <Button asChild onClick={() => document.getElementById("file-uploader-comp")?.click()}>
-                <span>
-                    Selecionar Arquivos
-                    <input
-                        id="file-uploader-comp"
-                        type="file"
-                        multiple={multiple}
-                        className="hidden"
-                        accept={accept}
-                        onChange={handleFileInput}
-                    />
-                </span>
-            </Button>
-        </div>
+            <h3 className="text-xl font-bold tracking-tight">{label}</h3>
+            <p className="text-sm text-foreground/60 mb-8 max-w-[280px]">{subtext}</p>
+            <span className="inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-all group-hover:bg-primary/90 active:scale-95">
+                Selecionar Arquivo
+            </span>
+        </label>
     );
 }

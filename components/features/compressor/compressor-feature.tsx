@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useState, useCallback } from "react";
 import { saveAs } from "file-saver";
-import { Download, UploadCloud, ImageIcon, Settings, Scale, ArrowRight, ChevronDown } from "lucide-react";
+import { Download, UploadCloud, ImageIcon, Settings, Scale, ArrowRight, ChevronDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { useHistory } from "@/hooks/use-history";
@@ -105,6 +105,7 @@ export function CompressorFeature() {
     const doCompress = async () => {
         if (!state.originalFile) return;
         setIsCompressing(true);
+        toast.info("Iniciando compressão...");
 
         try {
             const format = keepFormat
@@ -219,31 +220,32 @@ export function CompressorFeature() {
 
                 {/* Dropzone or Results */}
                 {!state.originalFile ? (
-                    <div
-                        className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors min-h-[400px] flex flex-col items-center justify-center ${isDragging ? "border-primary bg-primary/5" : "border-border bg-muted/20"
+                    <label
+                        className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300 min-h-[400px] flex flex-col items-center justify-center cursor-pointer group relative overflow-hidden ${isDragging
+                            ? "border-primary bg-primary/10 scale-[1.01] shadow-lg shadow-primary/10"
+                            : "border-slate-300/60 bg-white/40 hover:border-primary/50 hover:bg-white/60 active:scale-[0.99] dark:border-border dark:bg-muted/20"
                             }`}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                     >
-                        <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                            <UploadCloud className="h-8 w-8 text-muted-foreground" />
+                        <input
+                            id="compressor-upload"
+                            type="file"
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                            accept="image/png, image/jpeg, image/webp, image/avif"
+                            onChange={handleFileInput}
+                        />
+                        <div className={`h-20 w-20 bg-muted rounded-full flex items-center justify-center mb-6 transition-transform duration-300 ${isDragging ? "scale-110 bg-primary/20" : "group-hover:scale-110"}`}>
+                            <UploadCloud className={`h-10 w-10 transition-colors ${isDragging ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
                         </div>
-                        <h3 className="text-lg font-semibold">Arraste a imagem para comprimir</h3>
-                        <p className="text-sm text-muted-foreground mb-4">JPG, PNG, WEBP, AVIF suportados</p>
-                        <Button asChild onClick={() => document.getElementById("compressor-upload")?.click()}>
-                            <span>
-                                Mais de 1 arquivo? Use o Conversor
-                                <input
-                                    id="compressor-upload"
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/png, image/jpeg, image/webp, image/avif"
-                                    onChange={handleFileInput}
-                                />
-                            </span>
-                        </Button>
-                    </div>
+                        <h3 className="text-xl font-bold tracking-tight">Arraste a imagem para comprimir</h3>
+                        <p className="text-sm text-foreground/60 mb-8 max-w-[280px]">Otimização inteligente para JPG, PNG, WEBP e AVIF</p>
+                        <span className="inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-all group-hover:bg-primary/90 active:scale-95">
+                            Selecionar Imagem
+                        </span>
+                        <p className="mt-4 text-xs text-muted-foreground/60">Mais de 1 arquivo? Use o Conversor</p>
+                    </label>
                 ) : (
                     <div className="space-y-6">
                         <div className="flex justify-between items-center bg-card p-4 rounded-xl border">
@@ -326,7 +328,7 @@ export function CompressorFeature() {
 
                         <div className="space-y-4">
                             <label className="flex items-center gap-2 text-sm font-medium">
-                                <input type="checkbox" className="rounded" checked={keepFormat} onChange={e => setKeepFormat(e.target.checked)} />
+                                <input type="checkbox" className="h-4 w-4 rounded accent-primary" checked={keepFormat} onChange={e => setKeepFormat(e.target.checked)} />
                                 Manter formato original
                             </label>
 
@@ -394,7 +396,12 @@ export function CompressorFeature() {
                             onClick={doCompress}
                             disabled={isCompressing || !state.originalFile}
                         >
-                            {isCompressing ? "Comprimindo..." : "Comprimir Agora"}
+                            {isCompressing ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Comprimindo...
+                                </>
+                            ) : "Comprimir Agora"}
                         </Button>
                     </CardFooter>
                 </Card>
