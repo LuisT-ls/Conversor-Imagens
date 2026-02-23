@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/image_converter_logo.svg" alt="ImageStudio Logo" width="80" height="80" />
+  <img src="public/logo.png" alt="ImageStudio Logo" width="80" height="80" />
 </p>
 
 <h1 align="center">ImageStudio</h1>
@@ -135,7 +135,7 @@ O **ImageStudio** é uma aplicação web progressiva (PWA) completa para **conve
 │   └── utils.ts                # Utilitários gerais (cn, etc.)
 │
 ├── public/                     # Arquivos estáticos
-│   ├── image_converter_logo.svg
+│   ├── logo.png                # Logo do ImageStudio
 │   ├── apple-touch-icon.png    # Ícone PWA (Apple)
 │   ├── icon-192x192.png        # Ícone PWA 192px
 │   └── icon-512x512.png        # Ícone PWA 512px
