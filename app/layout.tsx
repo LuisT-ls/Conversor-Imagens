@@ -57,14 +57,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/images/favicons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/images/favicons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/images/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [
-      { url: "/images/favicons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/images/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
     other: [
-      { rel: "icon", url: "/images/favicons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { rel: "icon", url: "/images/favicon/icon-192x192.png", sizes: "192x192", type: "image/png" },
     ],
   },
 };

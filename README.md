@@ -139,7 +139,7 @@ O **ImageStudio** é uma aplicação web progressiva (PWA) completa para **conve
 │       ├── logo.png            # Logo do ImageStudio
 │       ├── og-image.png        # Imagem Open Graph (1200×630)
 │       ├── imagem-preview.jpg  # Preview para compartilhamento
-│       └── favicons/           # Ícones do app
+│       └── favicon/            # Ícones do app
 │           ├── apple-touch-icon.png
 │           ├── icon-192x192.png
 │           ├── icon-512x512.png
